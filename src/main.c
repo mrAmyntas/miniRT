@@ -4,12 +4,6 @@
 #define HEIGHT 720
 
 
-typedef struct 	s_data {
-
-	mlx_image_t	*mlx_img;
-	mlx_t		*mlx;
-}				t_data;
-
 void	hook(void *param)
 {
 	t_data *data = param;
@@ -40,6 +34,15 @@ int32_t	main(void)
 {
 
 	t_data	data;
+
+
+	int t = 0;
+    int r = 255;
+    int g = 0;
+    int b = 0;
+    int color;
+    color = create_trgb(t, r, g , b);
+    printf("color       :%x  r:%d  g:%d  b:%d  t:%d\n", color, get_r(color), get_g(color), get_b(color), get_t(color));
 
 
 	data.mlx = mlx_init(WIDTH, HEIGHT, "MLX42", true);
