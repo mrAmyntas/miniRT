@@ -6,9 +6,10 @@
 /*   By: bhoitzin <bhoitzin@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/09/24 19:53:41 by bhoitzin      #+#    #+#                 */
-/*   Updated: 2022/04/21 19:21:59 by mgroen        ########   odam.nl         */
+/*   Updated: 2022/04/21 19:35:57 by mgroen        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #ifndef MINIRT_H
 # define MINIRT_H
@@ -28,6 +29,7 @@ typedef struct 	s_data {
 
 	mlx_image_t	*mlx_img;
 	mlx_t		*mlx;
+	int			color;
 }				t_data;
 
 typedef struct s_scene
