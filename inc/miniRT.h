@@ -6,11 +6,7 @@
 /*   By: bhoitzin <bhoitzin@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/09/24 19:53:41 by bhoitzin      #+#    #+#                 */
-<<<<<<< HEAD
-/*   Updated: 2022/04/21 16:51:37 by mgroen        ########   odam.nl         */
-=======
-/*   Updated: 2022/04/21 16:45:45 by bhoitzin      ########   odam.nl         */
->>>>>>> 4759e93f2683c43b67f68d3fbd97f30397d0e4c1
+/*   Updated: 2022/04/21 19:21:59 by mgroen        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +22,7 @@
 # include <fcntl.h>
 # include <memory.h>
 # include <math.h>
+# include "../libft/libft.h"
 
 typedef struct 	s_data {
 
@@ -35,6 +32,7 @@ typedef struct 	s_data {
 
 typedef struct s_scene
 {
+    int     state[3];
 	double  a_ratio;
     int     a_rgb;
     double  c_x[2];
@@ -75,6 +73,7 @@ typedef struct s_cy
     int     rgb;
 }				t_cy;
 
+char	*get_next_line(int fd);
 int		create_trgb(int t, int r, int g, int b);
 int		get_t(int trgb);
 int		get_r(int trgb);
@@ -83,5 +82,6 @@ int		get_b(int trgb);
 int 	add_shade(double distance, int color);
 int 	get_opposite(int color);
 void    my_line_put(t_data *data, int x, int y, int color);
+void    read_scene(t_scene *scene, char *name);
 
 #endif

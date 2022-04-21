@@ -1,19 +1,24 @@
 NAME = miniRT
 MLX_NAME = libmlx42.a
 CC = gcc
-FLAGS = -Wall -Werror -Wextra
+LIBFT_NAME = libft/libft.a
+FLAGS = #-Wall -Werror -Wextra
 OBJ_DIR = obj/
 SRC_DIR = src/
+LIBFT_DIR =	libft/
 SRC =	src/main.c\
-		src/colors.c
+		src/colours.c\
+		src/get_scene.c\
+		gnl/get_next_line.c\
+		gnl/get_next_line_utils.c
 
 INC = 	inc/miniRT.h
 
 OBJ = $(SRC:$(SRC_DIR)%.c=$(OBJ_DIR)%.o)
 
-all: $(MLX_NAME) $(OBJ_DIR) $(NAME)
+all: $(LIBFT_NAME) $(MLX_NAME) $(OBJ_DIR) $(NAME)
 
-$(NAME): $(OBJ)
+$(NAME): $(OBJ) $(LIBFT_NAME)
 	$(CC) $(OBJ) MLX42/libmlx42.a -lglfw -L "/Users/$(USER)/.brew/opt/glfw/lib/" -o $(NAME)
 
 $(MLX_NAME):
@@ -24,6 +29,9 @@ $(OBJ): $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 
 $(OBJ_DIR):
 	mkdir -p $@
+
+$(LIBFT_NAME): $(LIBFT_DIR)*.c $(LIBFT_DIR)
+	make -C libft
 
 clean:
 	rm -f obj/*.o
