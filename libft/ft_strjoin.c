@@ -6,7 +6,7 @@
 /*   By: bhoitzin <bhoitzin@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 15:54:18 by bhoitzin      #+#    #+#                 */
-/*   Updated: 2022/02/09 17:43:47 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/04/21 19:13:52 by mgroen        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	x = ft_strlen(s1) + ft_strlen(s2) + 1;
 	buff = (char *)malloc(sizeof(char) * x);
 	if (buff == NULL)
-		ft_error(NULL, -1);
+		return(NULL);
 	x = 0;
 	while (s1[x] != '\0')
 	{

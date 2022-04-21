@@ -6,7 +6,7 @@
 /*   By: basz <basz@student.codam.nl>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/09 17:43:42 by basz          #+#    #+#                 */
-/*   Updated: 2022/02/24 11:14:13 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/04/21 19:16:26 by mgroen        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ static void	ft_freebuff(int j, char **buff)
 	}
 	free(buff);
 	buff = NULL;
-	ft_error(NULL, -1);
 }
 
 static int	ft_wordlength(int j, const char *s, char c)
@@ -83,7 +82,7 @@ char	**ft_split(char const *s, char c)
 		return (NULL);
 	buff = (char **)malloc(sizeof(char *) * (1 + ft_wordcount(s, c, -1)));
 	if (buff == NULL)
-		ft_error(NULL, -1);
+		return(NULL);
 	j = 0;
 	while (j < ft_wordcount(s, c, -1))
 	{

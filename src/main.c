@@ -30,10 +30,11 @@ void	hook(void *param)
 
 }
 
-int32_t	main(void)
+int32_t	main(int argc, char **argv)
 {
 
 	t_data	data;
+	t_scene	scene;
 
 
 	int t = 0;
@@ -42,6 +43,7 @@ int32_t	main(void)
     int b = 0;
     int color;
     color = create_trgb(t, r, g , b);
+	read_scene(&scene, argv[1]);
     printf("color       :%x  r:%d  g:%d  b:%d  t:%d\n", color, get_r(color), get_g(color), get_b(color), get_t(color));
 
 
