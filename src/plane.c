@@ -11,4 +11,5 @@ int	plane(t_data *data)
 	mlx_loop_hook(data->mlx, &hook, &data);
 	mlx_loop(data->mlx);
 	mlx_terminate(data->mlx);
+	return 0;
 }
