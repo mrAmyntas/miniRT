@@ -10,6 +10,7 @@
 # include <fcntl.h>
 # include <memory.h>
 # include <math.h>
+# include "../libft/libft.h"
 
 typedef struct 	s_data {
 
@@ -22,6 +23,7 @@ typedef struct 	s_data {
 
 typedef struct s_scene
 {
+    int     state[3];
 	double  a_ratio;
     int     a_rgb;
     double  c_x[2];
@@ -62,6 +64,7 @@ typedef struct s_cy
     int     rgb;
 }				t_cy;
 
+char	*get_next_line(int fd);
 int		create_trgb(int t, int r, int g, int b);
 int		get_t(int trgb);
 int		get_r(int trgb);
@@ -72,5 +75,6 @@ int 	get_opposite(int color);
 void    my_line_put(t_data *data, int x, int y, int color);
 int		plane(t_data *data);
 void	hook(void *param);
+void    read_scene(t_scene *scene, char *name);
 
 #endif

@@ -25,10 +25,11 @@ void	hook(void *param)
 		mlx_set_mouse_pos(data->mlx, data->width/2-25, data->height/2-25); //cursor to center with M
 }
 
-int32_t	main(void)
+int32_t	main(int argc, char **argv)
 {
 
 	t_data	data;
+	t_scene	scene;
 
 	data.height = 720;
 	data.width = 1080;
@@ -36,6 +37,10 @@ int32_t	main(void)
     int r = 255;
     int g = 0;
     int b = 0;
+    int color;
+    color = create_trgb(t, r, g , b);
+	read_scene(&scene, argv[1]);
+    printf("color       :%x  r:%d  g:%d  b:%d  t:%d\n", color, get_r(color), get_g(color), get_b(color), get_t(color));
     data.color = create_trgb(t, r, g , b);
     printf("color       :%x  r:%d  g:%d  b:%d  t:%d\n", data.color, get_r(data.color), get_g(data.color), get_b(data.color), get_t(data.color));
 
