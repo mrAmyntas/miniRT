@@ -6,7 +6,7 @@
 /*   By: bhoitzin <bhoitzin@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/09/24 19:53:41 by bhoitzin      #+#    #+#                 */
-/*   Updated: 2022/04/21 15:42:17 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/04/21 16:45:45 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,20 @@
 # include <memory.h>
 # include <math.h>
 
+typedef struct 	s_data {
+
+	mlx_image_t	*mlx_img;
+	mlx_t		*mlx;
+}				t_data;
+
+int		create_trgb(int t, int r, int g, int b);
+int		get_t(int trgb);
+int		get_r(int trgb);
+int		get_g(int trgb);
+int		get_b(int trgb);
+int 	add_shade(double distance, int color);
+int 	get_opposite(int color);
+void    my_line_put(t_data *data, int x, int y, int color);
 
 
 #endif
