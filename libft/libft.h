@@ -6,7 +6,7 @@
 /*   By: basz <basz@student.codam.nl>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/31 11:39:05 by basz          #+#    #+#                 */
-/*   Updated: 2022/02/09 17:35:35 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/04/21 19:13:13 by mgroen        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 # include <stdio.h>
 # include <stddef.h>
 # include <string.h>
-# include "../inc/minishell.h"
 
 typedef struct s_list
 {
