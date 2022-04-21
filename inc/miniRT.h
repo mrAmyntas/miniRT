@@ -68,7 +68,7 @@ typedef struct s_scene
 }				t_scene;
 
 char	*get_next_line(int fd);
-int		create_trgb(int t, int r, int g, int b);
+int		create_rgbt(int t, int r, int g, int b);
 int		get_t(int trgb);
 int		get_r(int trgb);
 int		get_g(int trgb);
