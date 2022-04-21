@@ -13,7 +13,9 @@ typedef struct 	s_data {
 void	hook(void *param)
 {
 	t_data *data = param;
-	
+	int		x_mouse_pos;
+	int		y_mouse_pos;
+
 	if (mlx_is_key_down(data->mlx, MLX_KEY_ESCAPE))
 		mlx_close_window(data->mlx);
 	if (mlx_is_key_down(data->mlx, MLX_KEY_UP) || mlx_is_key_down(data->mlx, MLX_KEY_W))
@@ -24,19 +26,28 @@ void	hook(void *param)
 		data->mlx_img->instances[0].x -= 5;
 	if (mlx_is_key_down(data->mlx, MLX_KEY_RIGHT) || mlx_is_key_down(data->mlx, MLX_KEY_D))
 		data->mlx_img->instances[0].x += 5;
+	if (mlx_is_key_down(data->mlx, MLX_KEY_P)) // cursor position in terminal
+	{
+		mlx_get_mouse_pos(data->mlx, &x_mouse_pos, &y_mouse_pos);
+		printf("mouse x:%d mouse y:%d\n", x_mouse_pos, y_mouse_pos);
+	}
+	if (mlx_is_key_down(data->mlx, MLX_KEY_M))
+		mlx_set_mouse_pos(data->mlx, WIDTH/2-25, HEIGHT/2-25); //cursor to center with M
+
 }
 
 int32_t	main(void)
 {
 
-	t_data data;
+	t_data	data;
+
 
 	data.mlx = mlx_init(WIDTH, HEIGHT, "MLX42", true);
 	if (!data.mlx)
 		exit(EXIT_FAILURE);
 	data.mlx_img = mlx_new_image(data.mlx, 64, 64);
 	memset(data.mlx_img->pixels, 255, data.mlx_img->width * data.mlx_img->height * sizeof(int));
-	mlx_image_to_window(data.mlx, data.mlx_img, 0, 0);
+	mlx_image_to_window(data.mlx, data.mlx_img, WIDTH/2-25, HEIGHT/2-25);
 	mlx_loop_hook(data.mlx, &hook, &data);
 	mlx_loop(data.mlx);
 	mlx_terminate(data.mlx);
