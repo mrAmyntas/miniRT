@@ -1,9 +1,5 @@
 #include "../inc/miniRT.h"
 
-#define WIDTH 1080
-#define HEIGHT 720
-
-
 void	hook(void *param)
 {
 	t_data *data = param;
@@ -26,7 +22,7 @@ void	hook(void *param)
 		printf("mouse x:%d mouse y:%d\n", x_mouse_pos, y_mouse_pos);
 	}
 	if (mlx_is_key_down(data->mlx, MLX_KEY_M))
-		mlx_set_mouse_pos(data->mlx, WIDTH/2-25, HEIGHT/2-25); //cursor to center with M
+		mlx_set_mouse_pos(data->mlx, data->width/2-25, data->height/2-25); //cursor to center with M
 }
 
 int32_t	main(void)
@@ -34,7 +30,8 @@ int32_t	main(void)
 
 	t_data	data;
 
-
+	data.height = 720;
+	data.width = 1080;
 	int t = 0;
     int r = 255;
     int g = 0;
@@ -42,7 +39,8 @@ int32_t	main(void)
     data.color = create_trgb(t, r, g , b);
     printf("color       :%x  r:%d  g:%d  b:%d  t:%d\n", data.color, get_r(data.color), get_g(data.color), get_b(data.color), get_t(data.color));
 
-
+	plane(&data);
+	/*
 	data.mlx = mlx_init(WIDTH, HEIGHT, "MLX42", true);
 	if (!data.mlx)
 		exit(EXIT_FAILURE);
@@ -51,7 +49,7 @@ int32_t	main(void)
 	mlx_image_to_window(data.mlx, data.mlx_img, WIDTH/2-25, HEIGHT/2-25);
 	mlx_loop_hook(data.mlx, &hook, &data);
 	mlx_loop(data.mlx);
-	mlx_terminate(data.mlx);
+	mlx_terminate(data.mlx);*/
 	return (EXIT_SUCCESS);
 }
 

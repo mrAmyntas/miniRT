@@ -1,16 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        ::::::::            */
-/*   miniRT.h                                           :+:    :+:            */
-/*                                                     +:+                    */
-/*   By: bhoitzin <bhoitzin@student.codam.nl>         +#+                     */
-/*                                                   +#+                      */
-/*   Created: 2022/04/21 19:24:48 by bhoitzin      #+#    #+#                 */
-/*   Updated: 2022/04/21 19:24:52 by bhoitzin      ########   odam.nl         */
-/*                                                                            */
-/* ************************************************************************** */
-
-
 #ifndef MINIRT_H
 # define MINIRT_H
 
@@ -29,6 +16,8 @@ typedef struct 	s_data {
 	mlx_image_t	*mlx_img;
 	mlx_t		*mlx;
 	int			color;
+	int			width;
+	int			height;
 }				t_data;
 
 typedef struct s_scene
@@ -81,5 +70,7 @@ int		get_b(int trgb);
 int 	add_shade(double distance, int color);
 int 	get_opposite(int color);
 void    my_line_put(t_data *data, int x, int y, int color);
+int		plane(t_data *data);
+void	hook(void *param);
 
 #endif
