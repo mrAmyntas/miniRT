@@ -21,28 +21,12 @@ typedef struct 	s_data {
 	int			height;
 }				t_data;
 
-typedef struct s_scene
-{
-    int     state[3];
-	double  a_ratio;
-    int     a_rgb;
-    double  c_x[2];
-    double  c_y[2];
-    double  c_z[2];
-    int     c_fov;
-    double  l_x;
-    double  l_y;
-    double  l_z;
-    double  l_bright;
-}				t_scene;
-
 typedef struct s_pl
 {
 	double  x[2];
     double  y[2];
     double  z[2];
     int     rgb;
-    
 }				t_pl;
 
 typedef struct s_sp
@@ -63,6 +47,25 @@ typedef struct s_cy
     double  height;
     int     rgb;
 }				t_cy;
+
+typedef struct s_scene
+{
+    int     state[3];
+	double  a_ratio;
+    int     a_rgb;
+    double  c_x[2];
+    double  c_y[2];
+    double  c_z[2];
+    int     c_fov;
+    double  l_x;
+    double  l_y;
+    double  l_z;
+    double  l_bright;
+    int     l_rgb;
+    t_pl    *pl;
+    t_sp    *sp;
+    t_cy    *cy;
+}				t_scene;
 
 char	*get_next_line(int fd);
 int		create_trgb(int t, int r, int g, int b);
