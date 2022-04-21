@@ -13,7 +13,7 @@ OBJ = $(SRC:$(SRC_DIR)%.c=$(OBJ_DIR)%.o)
 all: $(MLX_NAME) $(OBJ_DIR) $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(OBJ) MLX42/libmlx42.a -lglfw -L "/Users/bhoitzin/.brew/opt/glfw/lib/" -o $(NAME)
+	$(CC) $(OBJ) MLX42/libmlx42.a -lglfw -L "/Users/$(USER)/.brew/opt/glfw/lib/" -o $(NAME)
 
 $(MLX_NAME):
 	make -C ./mlx42
@@ -29,8 +29,6 @@ clean:
 
 fclean: clean
 	rm -f $(NAME)
-	rm -f $(MLX_NAME)
-	make clean -C ./mlx
 
 re: fclean all
 
