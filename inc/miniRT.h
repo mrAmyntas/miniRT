@@ -6,7 +6,7 @@
 /*   By: bhoitzin <bhoitzin@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/09/24 19:53:41 by bhoitzin      #+#    #+#                 */
-/*   Updated: 2022/04/21 16:45:45 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/04/21 16:50:02 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ typedef struct 	s_data {
 
 	mlx_image_t	*mlx_img;
 	mlx_t		*mlx;
+	int			color;
 }				t_data;
 
 int		create_trgb(int t, int r, int g, int b);
