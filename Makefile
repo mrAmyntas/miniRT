@@ -4,7 +4,8 @@ CC = gcc
 FLAGS = -Wall -Werror -Wextra
 OBJ_DIR = obj/
 SRC_DIR = src/
-SRC =	src/main.c
+SRC =	src/main.c\
+		src/colors.c
 
 INC = 	inc/miniRT.h
 
