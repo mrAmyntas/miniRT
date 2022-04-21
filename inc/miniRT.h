@@ -5,10 +5,11 @@
 /*                                                     +:+                    */
 /*   By: bhoitzin <bhoitzin@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2021/09/24 19:53:41 by bhoitzin      #+#    #+#                 */
-/*   Updated: 2022/04/21 16:50:02 by bhoitzin      ########   odam.nl         */
+/*   Created: 2022/04/21 19:24:48 by bhoitzin      #+#    #+#                 */
+/*   Updated: 2022/04/21 19:24:52 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #ifndef MINIRT_H
 # define MINIRT_H
@@ -30,6 +31,48 @@ typedef struct 	s_data {
 	int			color;
 }				t_data;
 
+typedef struct s_scene
+{
+	double  a_ratio;
+    int     a_rgb;
+    double  c_x[2];
+    double  c_y[2];
+    double  c_z[2];
+    int     c_fov;
+    double  l_x;
+    double  l_y;
+    double  l_z;
+    double  l_bright;
+}				t_scene;
+
+typedef struct s_pl
+{
+	double  x[2];
+    double  y[2];
+    double  z[2];
+    int     rgb;
+    
+}				t_pl;
+
+typedef struct s_sp
+{
+	double  x;
+    double  y;
+    double  z;
+    double  size;
+    int     rgb;
+}				t_sp;
+
+typedef struct s_cy
+{
+	double  x[2];
+    double  y[2];
+    double  z[2];
+    double  diameter;
+    double  height;
+    int     rgb;
+}				t_cy;
+
 int		create_trgb(int t, int r, int g, int b);
 int		get_t(int trgb);
 int		get_r(int trgb);
@@ -38,6 +81,5 @@ int		get_b(int trgb);
 int 	add_shade(double distance, int color);
 int 	get_opposite(int color);
 void    my_line_put(t_data *data, int x, int y, int color);
-
 
 #endif
