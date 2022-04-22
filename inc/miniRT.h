@@ -77,7 +77,7 @@ int		get_b(int trgb);
 int 	add_shade(double distance, int color);
 int 	get_opposite(int color);
 void    my_line_put(t_data *data, int x, int y, int color);
-int		plane(t_data *data);
+int		plane(t_data *data, t_scene *scene);
 void	hook(void *param);
 void    read_scene(t_scene *scene, char *name);
 
