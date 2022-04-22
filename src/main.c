@@ -25,7 +25,7 @@ void	hook(void *param)
 		mlx_set_mouse_pos(data->mlx, data->width/2-25, data->height/2-25); //cursor to center with M
 }
 
-int32_t	main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
 
 	t_data	data;

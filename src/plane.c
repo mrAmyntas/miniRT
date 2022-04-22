@@ -42,8 +42,10 @@ int	plane(t_data *data, t_scene *scene)
 	double t = (N*(Q-E)) / (N*D);
 // intersect = E + tD
 	
+	if ((N*D) == 0)
+		printf("parralellllelol\n");
 	if (t < 0)
-		printf("no intersect");
+		printf("no intersect\n");
 
 	intersect = E + t * D;
 	printf("intersect: %f\n", intersect);
