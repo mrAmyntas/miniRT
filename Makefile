@@ -2,8 +2,8 @@ NAME = miniRT
 MLX_NAME = libmlx42.a
 CC = gcc
 LIBFT_NAME = libft/libft.a
-FLAGS = -Wall -Werror -Wextra
-FLAGS += -fsanitize=address
+#FLAGS = -Wall -Werror -Wextra
+#FLAGS += -fsanitize=address
 OBJ_DIR = obj/
 SRC_DIR = src/
 LIBFT_DIR =	libft/
@@ -12,7 +12,8 @@ SRC =	src/main.c\
 		src/get_scene.c\
 		gnl/get_next_line.c\
 		gnl/get_next_line_utils.c\
-		src/plane.c
+		src/plane.c\
+		src/globe.c
 
 INC = 	inc/miniRT.h\
 		libft/libft.h
