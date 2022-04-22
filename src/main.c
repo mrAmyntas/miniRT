@@ -34,7 +34,7 @@ int32_t	main(int argc, char **argv)
 	data.height = 720;
 	data.width = 1080;
 	if (argc != 2)
-		return (1);
+		ft_error(1, "Invalid amount of arguments\n");
 	read_scene(&scene, argv[1]);
 	plane(&data, &scene);
 	/*
