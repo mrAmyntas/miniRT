@@ -2,6 +2,7 @@
 
 void    ft_error(int num, char *msg)
 {
+    write(2, "Error\n", 6);
     if (num == -1)
     {
         perror(msg);
@@ -62,6 +63,7 @@ double  ft_atod(char *str)
     if (nums[1])
         digit /= pow(10, ft_strlen(nums[1]));
     digit += x;
+    free_strstr(nums);
     return (digit);
 }
 
@@ -119,6 +121,7 @@ void     read_l(t_scene *scene, char **line)
     scene->l_bright = ft_atod(line[2]);
     coords = ft_split(line[3], ',');
     scene->l_rgb = create_rgb(ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
+    free_strstr(coords);
     printf("L %f, %f, %f  %f  %X\n", scene->l_x, scene->l_y, scene->l_z, scene->l_bright, scene->l_rgb);
 }
 
@@ -141,6 +144,7 @@ void     read_pl(t_scene *scene, char **line)
     free_strstr(coords);
     coords = ft_split(line[3], ',');
     scene->pl[i].rgb = create_rgb(ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
+    free_strstr(coords);
     printf("pl %f, %f, %f   %f, %f, %f  %X\n", scene->pl[i].x[0], scene->pl[i].y[0], scene->pl[i].z[0], scene->pl[i].x[1], scene->pl[i].y[1], scene->pl[i].z[1], scene->pl[i].rgb);
     i++;
 }
@@ -160,6 +164,7 @@ void     read_sp(t_scene *scene, char **line)
     scene->sp[i].size = ft_atod(line[2]);
     coords = ft_split(line[3], ',');
     scene->sp[i].rgb = create_rgb(ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
+    //free_strstr(coords);
     printf("sp %f, %f, %f   %f  %X\n", scene->sp[i].x, scene->sp[i].y, scene->sp[i].z, scene->sp[i].size, scene->sp[i].rgb);
     i++;
 }
@@ -185,6 +190,7 @@ void     read_cy(t_scene *scene, char **line)
     scene->cy[i].height = ft_atod(line[4]);
     coords = ft_split(line[5], ',');
     scene->cy[i].rgb = create_rgb(ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
+    //free_strstr(coords);
     printf("cy %f, %f, %f  %f, %f, %f  %f  %f  %X\n", scene->cy[i].x[0], scene->cy[i].y[0], scene->cy[i].z[0], scene->cy[i].x[1], scene->cy[i].y[1], scene->cy[i].z[1], scene->cy[i].diameter, scene->cy[i].height, scene->cy[i].rgb);
     i++;
 }
@@ -216,8 +222,12 @@ void    count_objects(t_scene *scene, char *name)
                 && strncmp(splitted_str[0], "L", 2)
                     && strncmp(splitted_str[0], "\n", 2))
             ft_error(1, "Invalid element(s)\n");
+        free(str);
+        free_strstr(splitted_str);
+        str = NULL;
         str = get_next_line(fd);
     }
+
 }
 
 void    read_scene(t_scene *scene, char *name)
@@ -232,9 +242,9 @@ void    read_scene(t_scene *scene, char *name)
     count_objects(scene, name);
     fd = open(name, O_RDONLY);
     str = get_next_line(fd);
-    scene->pl = malloc(sizeof(t_pl) * scene->state[0]);
-    scene->sp = malloc(sizeof(t_sp) * scene->state[1]);
-    scene->cy = malloc(sizeof(t_cy) * scene->state[2]);
+    scene->pl = malloc(sizeof(t_pl) * (scene->state[0] + 2));
+    scene->sp = malloc(sizeof(t_sp) * (scene->state[1] + 2));
+    scene->cy = malloc(sizeof(t_cy) * (scene->state[2] + 2));
     printf("%i, %i, %i\n", scene->amount[0], scene->amount[1], scene->amount[2]);
     while (str)
     {
@@ -256,4 +266,5 @@ void    read_scene(t_scene *scene, char *name)
         str = NULL;
         str = get_next_line(fd);
     }
+    free(str);
 }
