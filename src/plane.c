@@ -19,8 +19,11 @@ int	plane(t_data *data, t_scene *scene)
 	double c_z_coord = scene->c_z[0];
 
 
-	printf("3d vector: [%f,%f,%f]\n", x_vector, y_vector, z_vector);
-	printf("coords: [%f,%f,%f]\n", x_coord, y_coord, z_coord);
+	printf("3d vector pl: [%f,%f,%f]\n", x_vector, y_vector, z_vector);
+	printf("coords pl: [%f,%f,%f]\n", x_coord, y_coord, z_coord);
+
+	printf("3d vector cam: [%f,%f,%f]\n", c_x_vector, c_y_vector, c_z_vector);
+	printf("coords cam: [%f,%f,%f]\n", c_x_coord, c_y_coord, c_z_coord);
 
 	//intersection camera ray and plane
 	double intersect;
@@ -35,11 +38,15 @@ int	plane(t_data *data, t_scene *scene)
 	double Q = sqrt((x_coord * x_coord) + (y_coord * y_coord) + (z_coord * z_coord));
 	double E = sqrt((c_x_coord * c_x_coord) + (c_y_coord * c_y_coord) + (c_z_coord * c_z_coord));
 	double D = sqrt((c_x_vector * c_x_vector) + (c_y_vector * c_y_vector) + (c_z_vector * c_z_vector));
+	double N = sqrt((x_vector * x_vector) + (y_vector * y_vector) + (z_vector * z_vector));
+	double t = (N*(Q-E)) / (N*D);
+// intersect = E + tD
+	
+	if (t < 0)
+		printf("no intersect");
 
-	intersect = (Q-E) / D;
+	intersect = E + t * D;
 	printf("intersect: %f\n", intersect);
-
-
 	return 0;
 }
 // |v| = |(x, y, z)| = sqrt( x² + y² + z² )
