@@ -34,7 +34,7 @@ int32_t	main(int argc, char **argv)
 	data.height = 720;
 	data.width = 1080;
 	read_scene(&scene, argv[1]);
-	//plane(&data);
+	plane(&data, &scene);
 	/*
 	data.mlx = mlx_init(WIDTH, HEIGHT, "MLX42", true);
 	if (!data.mlx)
