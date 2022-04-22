@@ -2,7 +2,7 @@ NAME = miniRT
 MLX_NAME = libmlx42.a
 CC = gcc
 LIBFT_NAME = libft/libft.a
-FLAGS = -Wall -Werror -Wextra
+FLAGS = #-Wall -Werror -Wextra
 FLAGS += -fsanitize=address
 OBJ_DIR = obj/
 SRC_DIR = src/
