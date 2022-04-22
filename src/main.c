@@ -36,7 +36,7 @@ int	main(int argc, char **argv)
 	if (argc != 2)
 		ft_error(1, "Invalid amount of arguments\n");
 	read_scene(&scene, argv[1]);
-	plane(&data);
+	plane(&data, &scene);
 	globe(&data, &scene);
 	/*
 	data.mlx = mlx_init(WIDTH, HEIGHT, "MLX42", true);
