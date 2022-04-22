@@ -33,6 +33,8 @@ int32_t	main(int argc, char **argv)
 
 	data.height = 720;
 	data.width = 1080;
+	if (argc != 2)
+		return (1);
 	read_scene(&scene, argv[1]);
 	//plane(&data);
 	/*
@@ -45,7 +47,11 @@ int32_t	main(int argc, char **argv)
 	mlx_loop_hook(data.mlx, &hook, &data);
 	mlx_loop(data.mlx);
 	mlx_terminate(data.mlx);*/
-	return (EXIT_SUCCESS);
+	free(scene.pl);
+	free(scene.cy);
+	free(scene.sp);
+	//system("leaks miniRT");
+	return(EXIT_SUCCESS);
 }
 
 //Plane:
