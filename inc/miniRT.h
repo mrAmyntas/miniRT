@@ -15,6 +15,7 @@
 typedef struct 	s_data {
 
 	mlx_image_t	*mlx_img;
+    mlx_image_t *mlx_img2;
 	mlx_t		*mlx;
 	int			color;
 	int			width;
@@ -81,5 +82,6 @@ int		plane(t_data *data, t_scene *scene);
 void	hook(void *param);
 void    read_scene(t_scene *scene, char *name);
 void    ft_error(int num, char *msg);
+void    globe(t_data *data, t_scene *scene);
 
 #endif

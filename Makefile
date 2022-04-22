@@ -12,7 +12,8 @@ SRC =	src/main.c\
 		src/get_scene.c\
 		gnl/get_next_line.c\
 		gnl/get_next_line_utils.c\
-		src/plane.c
+		src/plane.c\
+		src/globe.c
 
 INC = 	inc/miniRT.h\
 		libft/libft.h
