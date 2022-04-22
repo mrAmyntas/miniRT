@@ -1,6 +1,6 @@
 #include "../inc/miniRT.h"
 
-int	create_trgb(int t, int r, int g, int b)
+int	create_rgbt(int t, int r, int g, int b)
 {
 	return (t << 24 | r << 16 | g << 8 | b);
 }
@@ -40,7 +40,7 @@ int add_shade(double distance, int color)
     g = get_g(color);
     g = g * distance;
     t = get_t(color);
-    color = create_trgb(t, r, g, b);
+    color = create_rgbt(t, r, g, b);
     return (color);
 }
 
@@ -55,14 +55,14 @@ int get_opposite(int color)
     b = 255 - get_b(color);
     g = 255 - get_g(color);
     t = get_t(color);
-    color = create_trgb(t, r, g, b);
+    color = create_rgbt(t, r, g, b);
     return (color);
 }
 
 
 void    my_line_put(t_data *data, int x, int y, int color)
 {
-    while (x < 1920)
+    while (x < 100)
     {
         mlx_put_pixel(data->mlx_img, x, y, color);
         x++;
