@@ -50,6 +50,7 @@ typedef struct s_cy
 
 typedef struct s_scene
 {
+    int     amount[3];
     int     state[3];
 	double  a_ratio;
     int     a_rgb;
