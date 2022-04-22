@@ -15,6 +15,12 @@ void    ft_error(int num, char *msg)
 
 int	create_rgb(int r, int g, int b)
 {
+    if (r < 0 || r > 255)
+        ft_error(1, "R colour out of range\n");
+    if (g < 0 || r > 255)
+        ft_error(1, "G colour out of range\n");
+    if (b < 0 || r > 255)
+        ft_error(1, "B colour out of range\n");
 	return (r << 24 | g << 16 | b << 8 | 255);
 }
 
@@ -77,7 +83,11 @@ void     read_a(t_scene *scene, char **line)
         ft_error(1, "Wrong number of arguments for ambient lighting\n");
     scene->state[0] = 1;
     scene->a_ratio = ft_atod(line[1]);
+    if (scene->a_ratio < 0 || scene->a_ratio > 1)
+        ft_error(1, "Ambient lighting ratio is out of range\n");
     colours = ft_split(line[2], ',');
+    if (strstr_len(colours) != 3)
+        ft_error(1, "Wrong number of colours for ambient lighting\n");
     scene->a_rgb = create_rgb(ft_atoi(colours[0]), ft_atoi(colours[1]), ft_atoi(colours[2]));
     free_strstr(colours);
     printf("A: %f %X\n", scene->a_ratio, scene->a_rgb);
@@ -92,14 +102,21 @@ void     read_c(t_scene *scene, char **line)
     if (strstr_len(line) != 4)
         ft_error(1, "Wrong number of arguments for camera\n");
     coords = ft_split(line[1], ',');
+    if (strstr_len(coords) != 3)
+        ft_error(1, "Wrong number of coordinates for camera\n");
     scene->c_x[0] = ft_atod(coords[0]);
     scene->c_y[0] = ft_atod(coords[1]);
     scene->c_z[0] = ft_atod(coords[2]);
     free_strstr(coords);
     coords = ft_split(line[2], ',');
+    if (strstr_len(coords) != 3)
+        ft_error(1, "Wrong number of vectors for camera\n");
     scene->c_x[1] = ft_atod(coords[0]);
     scene->c_y[1] = ft_atod(coords[1]);
     scene->c_z[1] = ft_atod(coords[2]);
+    if (scene->c_x[1] < -1 || scene->c_x[1] > 1 || scene->c_y[1] < -1
+        || scene->c_y[1] > 1 || scene->c_z[1] < -1 || scene->c_z[1] > 1)
+        ft_error(1, "One of the vectors for camera is out of range\n");
     free_strstr(coords);
     scene->c_fov = ft_atoi(line[3]);
     printf("C: %f, %f, %f   %f, %f, %f  %i\n", scene->c_x[0], scene->c_y[0], scene->c_z[0], scene->c_x[1], scene->c_y[1], scene->c_z[1], scene->c_fov);
@@ -114,12 +131,16 @@ void     read_l(t_scene *scene, char **line)
     if (strstr_len(line) != 4)
         ft_error(1, "Wrong number of arguments for light\n");
     coords = ft_split(line[1], ',');
+    if (strstr_len(coords) != 3)
+        ft_error(1, "Wrong number of coordinates for light\n");
     scene->l_x = ft_atod(coords[0]);
     scene->l_y = ft_atod(coords[1]);
     scene->l_z = ft_atod(coords[2]);
     free_strstr(coords);
     scene->l_bright = ft_atod(line[2]);
     coords = ft_split(line[3], ',');
+    if (strstr_len(coords) != 3)
+        ft_error(1, "Wrong number of colours for light\n");
     scene->l_rgb = create_rgb(ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
     free_strstr(coords);
     printf("L %f, %f, %f  %f  %X\n", scene->l_x, scene->l_y, scene->l_z, scene->l_bright, scene->l_rgb);
@@ -133,16 +154,25 @@ void     read_pl(t_scene *scene, char **line)
     if (strstr_len(line) != 4)
         ft_error(1, "Wrong number of arguments for a plane\n");
     coords = ft_split(line[1], ',');
+    if (strstr_len(coords) != 3)
+        ft_error(1, "Wrong number of coordinates for a plane\n");
     scene->pl[i].x[0] = ft_atod(coords[0]);
     scene->pl[i].y[0] = ft_atod(coords[1]);
     scene->pl[i].z[0] = ft_atod(coords[2]);
     free_strstr(coords);
     coords = ft_split(line[2], ',');
+    if (strstr_len(coords) != 3)
+        ft_error(1, "Wrong number of vectors for a plane\n");
     scene->pl[i].x[1] = ft_atod(coords[0]);
     scene->pl[i].y[1] = ft_atod(coords[1]);
     scene->pl[i].z[1] = ft_atod(coords[2]);
+    if (scene->pl[i].x[1] < -1 || scene->pl[i].x[1] > 1 || scene->pl[i].y[1] < -1
+        || scene->pl[i].y[1] > 1 || scene->pl[i].z[1] < -1 || scene->pl[i].z[1] > 1)
+        ft_error(1, "One of the vectors for a plane is out of range\n");
     free_strstr(coords);
     coords = ft_split(line[3], ',');
+    if (strstr_len(coords) != 3)
+        ft_error(1, "Wrong number of colours for a plane\n");
     scene->pl[i].rgb = create_rgb(ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
     free_strstr(coords);
     printf("pl %f, %f, %f   %f, %f, %f  %X\n", scene->pl[i].x[0], scene->pl[i].y[0], scene->pl[i].z[0], scene->pl[i].x[1], scene->pl[i].y[1], scene->pl[i].z[1], scene->pl[i].rgb);
@@ -157,12 +187,16 @@ void     read_sp(t_scene *scene, char **line)
     if (strstr_len(line) != 4)
         ft_error(1, "Wrong number of arguments for a sphere\n");
     coords = ft_split(line[1], ',');
+    if (strstr_len(coords) != 3)
+        ft_error(1, "Wrong number of coordinates for a sphere\n");
     scene->sp[i].x = ft_atod(coords[0]);
     scene->sp[i].y = ft_atod(coords[1]);
     scene->sp[i].z = ft_atod(coords[2]);
     free_strstr(coords);
     scene->sp[i].size = ft_atod(line[2]);
     coords = ft_split(line[3], ',');
+    if (strstr_len(coords) != 3)
+        ft_error(1, "Wrong number of vectors for a sphere\n");
     scene->sp[i].rgb = create_rgb(ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
     //free_strstr(coords);
     printf("sp %f, %f, %f   %f  %X\n", scene->sp[i].x, scene->sp[i].y, scene->sp[i].z, scene->sp[i].size, scene->sp[i].rgb);
@@ -177,18 +211,27 @@ void     read_cy(t_scene *scene, char **line)
     if (strstr_len(line) != 6)
         ft_error(1, "Wrong number of arguments for a cylinder\n");
     coords = ft_split(line[1], ',');
+    if (strstr_len(coords) != 3)
+        ft_error(1, "Wrong number of coordinates for a cylinder\n");
     scene->cy[i].x[0] = ft_atod(coords[0]);
     scene->cy[i].y[0] = ft_atod(coords[1]);
     scene->cy[i].z[0] = ft_atod(coords[2]);
     free_strstr(coords);
     coords = ft_split(line[2], ',');
+    if (strstr_len(coords) != 3)
+        ft_error(1, "Wrong number of vectors for a cylinder\n");
     scene->cy[i].x[1] = ft_atod(coords[0]);
     scene->cy[i].y[1] = ft_atod(coords[1]);
     scene->cy[i].z[1] = ft_atod(coords[2]);
+    if (scene->cy[i].x[1] < -1 || scene->cy[i].x[1] > 1 || scene->cy[i].y[1] < -1
+        || scene->cy[i].y[1] > 1 || scene->cy[i].z[1] < -1 || scene->cy[i].z[1] > 1)
+        ft_error(1, "One of the vectors for a cylinder is out of range\n");
     free_strstr(coords);
     scene->cy[i].diameter = ft_atod(line[3]);
     scene->cy[i].height = ft_atod(line[4]);
     coords = ft_split(line[5], ',');
+    if (strstr_len(coords) != 3)
+        ft_error(1, "Wrong number of colours for a cylinder\n");
     scene->cy[i].rgb = create_rgb(ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
     //free_strstr(coords);
     printf("cy %f, %f, %f  %f, %f, %f  %f  %f  %X\n", scene->cy[i].x[0], scene->cy[i].y[0], scene->cy[i].z[0], scene->cy[i].x[1], scene->cy[i].y[1], scene->cy[i].z[1], scene->cy[i].diameter, scene->cy[i].height, scene->cy[i].rgb);
