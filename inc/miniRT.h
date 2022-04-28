@@ -101,7 +101,7 @@ void		draw_plane(t_data *data, t_scene *scene, int num);
 int			plane(t_data *data, t_scene *scene, int num);
 bool		intersect_eye_plane(t_scene *scene, t_vector *vec1, int num);
 bool		is_P_on_plane(t_scene *scene, t_vector P, int num);
-bool		cast_ray_camera_to_plane(t_scene *scene, t_vector *new, int num);
+bool		cast_ray_cam_to_space_check_if_hit_pl(t_scene *scene, int num);
 
 // *** VECTOR STUFF *** \\
 

@@ -69,15 +69,14 @@ bool	is_P_on_plane(t_scene *scene, t_vector P, int num)
 	return (false);
 }
 
-//enter pixel camera coords to check if in the current direction the camera ray will intersect with the plane and where (if yes, new is set to those coords)
-bool	cast_ray_camera_to_plane(t_scene *scene, t_vector *new, int num)
+//check if in the current direction the camera ray will intersect with the plane[num]
+bool	cast_ray_cam_to_space_check_if_hit_pl(t_scene *scene, int num)
 {
 	double		t;
 
 	t = dot_product(scene->pl[num].orth_vec, subtract_vectors(scene->pl[num].coord, scene->cam->eye)) / dot_product(scene->pl[num].orth_vec, scene->current_dir);
 	if (t < 0)
 		return (false);
-	*new = add_vectors(scene->cam->eye, multiply_vector(scene->current_dir, t));
 	return (true);
 }
 
