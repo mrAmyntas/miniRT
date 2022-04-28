@@ -11,7 +11,7 @@ t_vector add_vectors(t_vector vec1, t_vector vec2)
 	return (new);
 }
 
-//vector substraction
+//Substract vec2 from vec1
 t_vector subtract_vectors(t_vector vec1, t_vector vec2)
 {
 	t_vector new;
@@ -22,7 +22,7 @@ t_vector subtract_vectors(t_vector vec1, t_vector vec2)
 	return (new);
 }
 
-//vector multiplication
+//Multiply vec1 by factor
 t_vector multiply_vector(t_vector vec1, double factor)
 {
 	t_vector new;
@@ -56,7 +56,7 @@ bool	intersect_eye_plane(t_scene *scene, t_vector *vec1, int num)
 	return (true);
 }
 
-//checks if point is on plane
+//checks if point P is on plane
 bool	is_P_on_plane(t_scene *scene, t_vector P, int num)
 {
 	double		t;
@@ -67,6 +67,31 @@ bool	is_P_on_plane(t_scene *scene, t_vector P, int num)
 	if (t == 0)
 		return (true);
 	return (false);
+}
+
+//enter pixel camera coords to check if in the current direction the camera ray will intersect with the plane and where (if yes, new is set to those coords)
+bool	cast_ray_camera_to_plane(t_scene *scene, t_vector *new, int num)
+{
+	double		t;
+
+	t = dot_product(scene->pl[num].orth_vec, subtract_vectors(scene->pl[num].coord, scene->cam->eye)) / dot_product(scene->pl[num].orth_vec, scene->current_dir);
+	if (t < 0)
+		return (false);
+	*new = add_vectors(scene->cam->eye, multiply_vector(scene->current_dir, t));
+	return (true);
+}
+
+//Normalize a vector
+t_vector	normalize_vector(t_vector vec1)
+{
+	double		len;
+	t_vector	new;
+
+	len = sqrt((vec1.x * vec1.x) + (vec1.y * vec1.y) + (vec1.z * vec1.z));
+	new.x = vec1.x / len;
+	new.y = vec1.y / len;
+	new.z = vec1.z / len;
+	return (new);
 }
 
 //intersection camera ray and plane

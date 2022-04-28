@@ -29,8 +29,8 @@ typedef struct s_data {
 	mlx_image_t	*mlx_img2;
 	mlx_t		*mlx;
 	int			color;
-	int			width;
-	int			height;
+	double		width;
+	double		height;
 }	t_data;
 
 typedef struct s_pl
@@ -72,16 +72,17 @@ typedef struct s_light
 
 typedef struct s_scene
 {
-    int     amount[3];
-    int     state[3];
-	double  a_ratio;
-    int     a_rgb;
-    double  c_fov;
-	t_ray	*cam;
-    t_pl    *pl;
-    t_sp    *sp;
-    t_cy    *cy;
-	t_light	*light;
+    int     	amount[3];
+    int    		state[3];
+	double 		a_ratio;
+    int    		a_rgb;
+    double  	c_fov;
+	t_vector	current_dir;
+	t_ray		*cam;
+    t_pl   		*pl;
+    t_sp    	*sp;
+    t_cy    	*cy;
+	t_light		*light;
 }				t_scene;
 
 char		*get_next_line(int fd);
@@ -89,26 +90,28 @@ void		hook(void *param);
 void		read_scene(t_scene *scene, char *name);
 void		ft_error(int num, char *msg);
 
-// *** GLOBE STUFF
+// *** GLOBE STUFF \\
 
 void		globe(t_data *data, t_scene *scene);
 
 
-// *** PLANE STUFF ***
+// *** PLANE STUFF *** \\
 
 void		draw_plane(t_data *data, t_scene *scene, int num);
 int			plane(t_data *data, t_scene *scene, int num);
 bool		intersect_eye_plane(t_scene *scene, t_vector *vec1, int num);
 bool		is_P_on_plane(t_scene *scene, t_vector P, int num);
+bool		cast_ray_camera_to_plane(t_scene *scene, t_vector *new, int num);
 
-// *** VECTOR STUFF ***
+// *** VECTOR STUFF *** \\
 
 t_vector	add_vectors(t_vector vec1, t_vector vec2);
 t_vector 	subtract_vectors(t_vector vec1, t_vector vec2);
 t_vector 	multiply_vector(t_vector vec1, double factor);
 double		dot_product(t_vector vec1, t_vector vec2);
+t_vector	normalize_vector(t_vector vec1);
 
-// *** COLOUR STUFF ***
+// *** COLOUR STUFF *** \\
 int			create_rgbt(int r, int g, int b, int t);
 int			get_t(int rgbt);
 int			get_r(int rgbt);
