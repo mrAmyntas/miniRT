@@ -29,13 +29,13 @@ $(NAME): $(OBJ) $(LIBFT_NAME)
 $(MLX_NAME):
 	make -C ./mlx42
 
-$(OBJ): $(OBJ_DIR)%.o: $(SRC_DIR)%.c
+$(OBJ): $(OBJ_DIR)%.o: $(SRC_DIR)%.c $(INC)
 	$(CC) -c $(FLAGS) -o $@ $<
 
 $(OBJ_DIR):
 	mkdir -p $@
 
-$(LIBFT_NAME): $(LIBFT_DIR)*.c $(LIBFT_DIR)
+$(LIBFT_NAME): $(LIBFT_DIR)*.c $(LIBFT_DIR) libft/libft.h
 	make -C libft
 
 clean:

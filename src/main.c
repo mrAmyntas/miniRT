@@ -36,8 +36,19 @@ int	main(int argc, char **argv)
 	if (argc != 2)
 		ft_error(1, "Invalid amount of arguments\n");
 	read_scene(&scene, argv[1]);
+	data.mlx = mlx_init(data.width, data.height, "MLX42", true);
+	if (!data.mlx)
+		exit(EXIT_FAILURE);
+	data.mlx_img = mlx_new_image(data.mlx, data.width, data.height);
 	plane(&data, &scene, 0);
 	globe(&data, &scene);
+
+
+	mlx_loop_hook(data.mlx, &hook, &data);
+	mlx_loop(data.mlx);
+	mlx_terminate(data.mlx);
+
+	// free stuff
 	free(scene.pl);
 	free(scene.cy);
 	free(scene.sp);
