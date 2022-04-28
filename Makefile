@@ -6,17 +6,18 @@ FLAGS = #-Wall -Werror -Wextra
 FLAGS += -fsanitize=address
 OBJ_DIR = obj/
 SRC_DIR = src/
+GNL_DIR = gnl/
+
 LIBFT_DIR =	libft/
 SRC =	src/main.c\
 		src/colours.c\
 		src/get_scene.c\
-		gnl/get_next_line.c\
-		gnl/get_next_line_utils.c\
 		src/plane.c\
-		src/globe.c
+		src/globe.c\
+		src/vectorstuff.c
 
 INC = 	inc/miniRT.h\
-		libft/libft.h
+		libft/libft.h\
 
 OBJ = $(SRC:$(SRC_DIR)%.c=$(OBJ_DIR)%.o)
 
@@ -28,7 +29,7 @@ $(NAME): $(OBJ) $(LIBFT_NAME)
 $(MLX_NAME):
 	make -C ./mlx42
 
-$(OBJ): $(OBJ_DIR)%.o: $(SRC_DIR)%.c 
+$(OBJ): $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	$(CC) -c $(FLAGS) -o $@ $<
 
 $(OBJ_DIR):
@@ -42,6 +43,7 @@ clean:
 
 fclean: clean
 	rm -f $(NAME)
+	rm -f $(LIBFT_NAME)
 
 re: fclean all
 
