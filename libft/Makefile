@@ -42,7 +42,10 @@ SRC =	ft_isalnum.c\
 		ft_lstdelone.c\
 		ft_lstclear.c\
 		ft_lstiter.c\
-		ft_lstmap.c
+		ft_lstmap.c\
+		get_next_line.c\
+		get_next_line_utils.c
+
 OBJECTS = $(SRC:.c=.o)
 CFLAGS = -Wall -Werror -Wextra #-fsanitize=address
 CC = gcc
