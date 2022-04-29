@@ -20,10 +20,10 @@ int	main(int argc, char **argv)
 	if (argc != 2)
 		ft_error(1, "Invalid amount of arguments\n");
 	read_scene(&scene, argv[1]);
-	plane(&data, &scene);
 	data.mlx = mlx_init(data.width, data.height, "MLX42", true);
 	if (!data.mlx)
 		exit(EXIT_FAILURE);
+	plane(&data, &scene);
 	sphere(&data, &scene);
 	mlx_loop_hook(data.mlx, &hook, data.mlx);
 	mlx_loop(data.mlx);
@@ -36,13 +36,9 @@ int	main(int argc, char **argv)
 	free(scene.pl);
 	free(scene.cy);
 	free(scene.sp);
+	free(scene.light);
+	free(scene.cam);
+
 	//system("leaks miniRT");
 	return(EXIT_SUCCESS);
 }
-
-//Plane:
-//pl 0.0,0.0,-10.0 0.0,1.0,0.0 0,0,225
-//identifier: pl
-//x,y,z coordinates: 0.0,0.0,-10.0
-//3d normalized orientation vector. In range [-1,1] for each x,y,z axis: 0.0,0.0,1.0
-//R,G,B colors in range [0-255]: 0, 0, 255
