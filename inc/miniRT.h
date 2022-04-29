@@ -14,17 +14,18 @@
 # include "../libft/libft.h"
 
 
-typedef struct 	s_matrix3x3 {
-	t_vect3d	col1;
-	t_vect3d	col2;
-	t_vect3d	col3;
-}				t_matrix3x3;
 
 typedef struct	s_vect3d {
 	double		x;
 	double		y;
 	double		z;
 }				t_vect3d;
+
+typedef struct 	s_matrix3x3 {
+	t_vect3d	row1;
+	t_vect3d	row2;
+	t_vect3d	row3;
+}				t_matrix3x3;
 
 typedef struct 	s_ray {
 	t_vect3d	dir;
@@ -102,6 +103,7 @@ char		*get_next_line(int fd);
 void		hook(void *param);
 void		read_scene(t_scene *scene, char *name);
 void		ft_error(int num, char *msg);
+t_vect3d	calc_current_dir(t_data *data, t_scene *scene, double x, double y, int num);
 
 // *** GLOBE STUFF \\
 
@@ -123,6 +125,9 @@ t_vect3d 	subtract_vectors(t_vect3d vec1, t_vect3d vec2);
 t_vect3d 	multiply_vector(t_vect3d vec1, double factor);
 double		dot_product(t_vect3d vec1, t_vect3d vec2);
 t_vect3d	normalize_vector(t_vect3d vec1);
+t_vect3d 	camera_to_world(t_scene *scene, t_ray ray);
+double		magnitude(t_vect3d vec1);
+t_vect3d	cross_product(t_vect3d vec1, t_vect3d vec2);
 
 // *** COLOUR STUFF *** \\
 int			create_rgbt(int r, int g, int b, int t);
