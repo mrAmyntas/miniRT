@@ -73,19 +73,17 @@ bool	is_P_on_plane(t_scene *scene, t_vect3d P, int num)
 bool	cast_ray_cam_to_space_check_if_hit_pl(t_scene *scene, int num)
 {
 	double		t;
-	t_vect3d	tmp;
+	t_vect3d	tmp;	
 
 	tmp = subtract_vectors(scene->pl[num].coord, scene->cam->eye);
-	tmp = normalize_vector(tmp);
+	//tmp = normalize_vector(subtract_vectors(scene->pl[num].coord, scene->cam->eye));
 	if (dot_product(scene->pl[num].orth_vec, scene->current_dir) == 0)
 	{
 		//then the ray is parallel to the plane, and there is no intersection point
 		printf("parralel\n");
+		return (false);
 	}
-	t = (dot_product(scene->pl[num].orth_vec, tmp));
-	t = t / (dot_product(scene->pl[num].orth_vec, scene->current_dir));
-	//t = dot_product(scene->pl[num].orth_vec, subtract_vectors(scene->pl[num].coord, scene->cam->eye)) / dot_product(scene->pl[num].orth_vec, scene->current_dir);
-	//printf("t:%f\n", t);
+	t = (dot_product(scene->pl[num].orth_vec, tmp)) / (dot_product(scene->pl[num].orth_vec, scene->current_dir));
 	if (t > 0)
 		return (true);
 	return (false);
@@ -102,6 +100,22 @@ t_vect3d	normalize_vector(t_vect3d vec1)
 	new.y = vec1.y / len;
 	new.z = vec1.z / len;
 	return (new);
+}
+
+//Multiply vector (as 1x3 matrix) with a matrix (3x3)
+t_vect3d	mult_vect3d_matrix3x3(t_vect3d vec, t_matrix3x3 matrix)
+{
+	t_vect3d new;
+
+	new.x = vec.x * matrix.col1.x 
+
+// // multiply coeffs from row 1 with coeffs from column 1
+// Ptransformed.x = P.x * c00 + P.y * c10 + P.z * c20 
+// // multiply coeffs from row 1 with coeffs from column 2
+// Ptransformed.y = P.x * c01 + P.y * c11 + P.z * c21 
+// // multiply coeffs from row 1 with coeffs from column 3
+// Ptransformed.z = P.x * c02 + P.y * c12 + P.z * c22
+
 }
 
 //intersection camera ray and plane

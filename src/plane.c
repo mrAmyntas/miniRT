@@ -3,16 +3,15 @@
 void calc_hit(t_data *data, t_scene *scene, double x, double y, int num)
 {
 	t_ray		ray;
-	t_vect3d 	O;
 
-	O.x = 0;
-	O.y = 0;
-	O.z = 0;
 	ray.eye.x = (2 * ((x + 0.5) / data->width) - 1) * (data->width / data->height) * tan(scene->c_fov * M_PI / 180 / 2);
 	ray.eye.y = (1 - 2 * ((y + 0.5) / data->height)) * tan(scene->c_fov * M_PI / 180 / 2);	
-	ray.eye.z = -1; //image is 1 from the camera
+	ray.eye.z = 1; //image is 1 from the camera (1 or -1 ?????????????)
 	scene->current_dir = normalize_vector(subtract_vectors(ray.eye, scene->origin)); //set current dir to its value by using the vector given by the 2 points ray.eye and origin(0,0,0)
 	//the ray.eye is a point on the 'image plane' where we build our image. The camera is assumed to be at the origin point for now.
+
+	//camera-to-world translation
+	
 	if (cast_ray_cam_to_space_check_if_hit_pl(scene, num)) // = hit
 		mlx_put_pixel(data->mlx_img, x, y, data->color);
 }
@@ -35,13 +34,14 @@ int	plane(t_data *data, t_scene *scene)
 	{
 		draw_plane(data, scene, i);
 	}
-	mlx_image_to_window(data->mlx, data->mlx_img, 10, 10);
+	mlx_image_to_window(data->mlx, data->mlx_img, 0, 0);
 	return 0;
 
 
 
 	// printf("coords check: cam: [%f,%f,%f]\ncoords check: pl:  [%f,%f,%f]\n", scene->cam->coord.x,scene->cam->coord.y,scene->cam->coord.z, scene->pl[num].coord.x,scene->pl[num].coord.y,scene->pl[num].coord.z);
-	// printf("vec check: cam: [%f,%f,%f]\nvec check: pl:  [%f,%f,%f]\n", scene->cam->vec.x,scene->cam->vec.y,scene->cam->vec.z, scene->pl[num].vec.x,scene->pl[num].vec.y,scene->pl[num].vec.z);
+	// printf("vec check: cam: [%f,%f,%f]\nvec check: pl:  [%f,%f,%f]\n", scene->cam->eye.x,scene->cam->eye.y,scene->cam->eye.z, scene->pl[0].orth_vec.x,scene->pl[0].orth_vec.y,scene->pl[0].orth_vec.z);
+
 	// t_vect3d tmp = {12310, 760, 2};
 	// if (is_P_on_plane(scene, tmp, num))
 	// 	printf("P is on the plane!\n");

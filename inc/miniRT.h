@@ -13,6 +13,13 @@
 # include <stdbool.h>
 # include "../libft/libft.h"
 
+
+typedef struct 	s_matrix3x3 {
+	t_vect3d	col1;
+	t_vect3d	col2;
+	t_vect3d	col3;
+}				t_matrix3x3;
+
 typedef struct	s_vect3d {
 	double		x;
 	double		y;
