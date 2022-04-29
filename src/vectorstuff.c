@@ -103,10 +103,11 @@ t_vect3d	normalize_vector(t_vect3d vec1)
 }
 
 //Multiply vector (as 1x3 matrix) with a matrix (3x3)
-t_vect3d	mult_vect3d_matrix3x3(t_vect3d vec, t_matrix3x3 matrix)
+t_vect3d	mult_vect3d_matrix4x4(t_vect3d vec, t_matrix3x3 matrix)
 {
 	t_vect3d new;
 
+<<<<<<< HEAD
 	new.x = vec.x * matrix.col1.x;
 
 // // multiply coeffs from row 1 with coeffs from column 1
@@ -115,8 +116,96 @@ t_vect3d	mult_vect3d_matrix3x3(t_vect3d vec, t_matrix3x3 matrix)
 // Ptransformed.y = P.x * c01 + P.y * c11 + P.z * c21 
 // // multiply coeffs from row 1 with coeffs from column 3
 // Ptransformed.z = P.x * c02 + P.y * c12 + P.z * c22
+=======
+	new.x = vec.x * matrix.row1.x + vec.y * matrix.row1.y + vec.z * matrix.row1.z;
+	new.y = vec.x * matrix.row2.x + vec.y * matrix.row2.y + vec.z * matrix.row2.z;
+	new.z = vec.x * matrix.row3.x + vec.y * matrix.row3.y + vec.z * matrix.row3.z;
 	return (new);
 }
+
+double		magnitude(t_vect3d vec1)
+{
+	double	result;
+
+	result = sqrt(vec1.x * vec1.x + vec1.y * vec1.y + vec1.z * vec1.z);
+	return (result);
+}
+
+t_vect3d	cross_product(t_vect3d a, t_vect3d b)
+{
+	//double		dot_p;
+	//double		angle;
+	t_vect3d	c;
+	//t_vect3d	n;
+
+	//a × b = |a| |b| sin(θ) n
+	// dot_p = dot_product(vec1, vec2);
+	// angle = arccos(dot_p / (magnitude(vec1) * magnitude(vec2)));
+	// for n: a x b means:
+	// 	a . n = 0
+	// b . n = 0
+	// so solve: non zero solutions for these 2 equations
+	// 𝑎1𝑛1+𝑎2𝑛2+𝑎3𝑛3=0
+	// 𝑏1𝑛1+𝑏2𝑛2+𝑏3𝑛3=0
+	// n = ????????????????????
+	// result = multiply_vector(n, magnitude(vec1) * magnitude(vec2) * sin(angle));
+
+	c.x = (a.y * b.z) - (a.z * b.y);
+	c.y = (a.z * b.x) - (a.x * b.z);
+	c.z = (a.x * b.y) - (a.y * b.x);
+	return (c);
+
+}
+t_vect3d camera_to_world(t_scene *scene, t_ray ray)
+{
+	t_vect3d	new;
+	t_matrix3x3	matrix;
+
+	new.x = 0;
+	new.y = 1;
+	new.z = 0;
+	matrix.row1 = multiply_vector(scene->cam->dir, -1);
+	matrix.row2 = cross_product(new, matrix.row1);
+	matrix.row3 = cross_product(matrix.row1, matrix.row2);
+	new = mult_vect3d_matrix4x4(ray.eye, matrix);
+	return (new);
+
+
+	// t_matrix	matrix;
+	// t_vec3d		forward;
+	// t_vec3d		right;
+	// t_vec3d		up;
+
+	// forward = vec_multi(camera->vector, -1);
+	// right = vec_cross_prod(vec_normalize(vec_new(0, 1, 0)), forward);
+	// up = vec_cross_prod(forward, right);
+	// matrix.forward = forward;
+	// matrix.right = right;
+	// matrix.up = up;
+	// return (multi_vec_matrix(ray, matrix));
+
+>>>>>>> 013388af888d65c2c657e1e3f74d61648f86cfe1
+	return (new);
+}
+
+
+//MATRIX
+
+// P'.x = P.x * M00 + P.y * M10 + P.z * M20 + M30; 
+// P'.y = P.x * M01 + P.y * M11 + P.z * M21 + M31; 
+// P'.z = P.x * M02 + P.y * M12 + P.z * M22 + M32; 
+// w'   = P.x * M03 + P.y * M13 + P.z * M23 + M33; 
+// if (w' != 1 && w' != 0) { 
+//     P'.x /= w', P'.y /= w', P'.z /= w'; 
+// } 
+
+
+// Translation of P is just
+// PTx = Px + Tx 
+// PTy = Py + Ty 
+// PTz = Pz + Tz 
+
+//Rotation is a multiplication with a rotatiom matrix (each row of matrix represents an axis (x - y - z))
 
 //intersection camera ray and plane
 //	if N * (P - Q) = 0 -> P is on plane
