@@ -107,7 +107,7 @@ t_vect3d	calc_current_dir(t_data *data, t_scene *scene, double x, double y, int 
 
 // *** GLOBE STUFF \\
 
-void		globe(t_data *data, t_scene *scene);
+void		sphere(t_data *data, t_scene *scene);
 
 
 // *** PLANE STUFF *** \\
