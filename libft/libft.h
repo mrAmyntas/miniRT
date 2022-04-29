@@ -6,7 +6,7 @@
 /*   By: basz <basz@student.codam.nl>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/31 11:39:05 by basz          #+#    #+#                 */
-/*   Updated: 2022/04/21 19:13:13 by mgroen        ########   odam.nl         */
+/*   Updated: 2022/04/28 18:38:14 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,5 +69,14 @@ void				ft_lstclear(t_list **lst, void (*del)(void *));
 void				ft_lstiter(t_list *lst, void (*f)(void *));
 t_list				*ft_lstmap(t_list *lst, void *(*f)(void *),
 						void (*del)(void *));
+char				*get_next_line(int fd);
+size_t				gnl_strlen(const char *str);
+char				*gnl_strjoin(char const *s1, char const *s2);
+char				*gnl_substr(char const *s, unsigned int start, size_t len);
+char				*gnl_strdup(const char *s1);
+int					gnl_stop_newline(const char *str);
 
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 128
+# endif
 #endif
