@@ -1,91 +1,136 @@
 #include "../inc/miniRT.h"
 
-void    draw_line(t_data *data, int x, int ystart, int yend)
+void    draw_line(t_data *data, t_scene *scene, double y, double x, int set)
 {
-    mlx_put_pixel(data->mlx_img2, ystart, x, 0xFF0000FF);
-    while (ystart < yend)
+    double  ystart;
+
+    ystart = (scene->sp[0].size - y) - ((scene->sp[0].size / 2 + scene->sp[0].y) * 2);
+    while (ystart <= y)
     {
+        if (ystart >= 0)
+            mlx_put_pixel(data->mlx_img2, x, ystart, 0xFF0000FF);
         ystart++;
-        mlx_put_pixel(data->mlx_img2, ystart, x, 0xFF0000FF);
-    }
+    } 
 }
 
-void    put_pixels(t_data *data, int x, int y, int xcenter, int ycenter)
+void    sphere3(t_data *data, t_scene *scene)
 {
-    int i;
+    double  x;
+    double  y;
+    int     set;
 
-    i = 0;
-    while(i < (xcenter - 25))
+    data->mlx_img2 = mlx_new_image(data->mlx, 1080, 720);
+	memset(data->mlx_img2->pixels, 0, data->mlx_img2->width * data->mlx_img2->height * sizeof(int));
+    x = scene->sp[0].x - (scene->sp[0].size / 2);
+    while(x <= scene->sp[0].x + (scene->sp[0].size / 2))
     {
-        mlx_put_pixel(data->mlx_img2, xcenter + x - i, ycenter + y, 0xFF0000FF);
-        mlx_put_pixel(data->mlx_img2, xcenter + x - i, ycenter - y, 0xFF0000FF);
-        mlx_put_pixel(data->mlx_img2, xcenter + y - i, ycenter + x, 0xFF0000FF);
-        mlx_put_pixel(data->mlx_img2, xcenter + y - i, ycenter - x, 0xFF0000FF);
-        mlx_put_pixel(data->mlx_img2, xcenter - x + i, ycenter + y, 0xFF0000FF);
-        mlx_put_pixel(data->mlx_img2, xcenter - x + i, ycenter - y, 0xFF0000FF);
-        mlx_put_pixel(data->mlx_img2, xcenter - y + i, ycenter + x, 0xFF0000FF);
-        mlx_put_pixel(data->mlx_img2, xcenter - y + i, ycenter - x, 0xFF0000FF);
-        i += 25;
+        set = 1;
+        y = pow(x - scene->sp[0].x, 2) + pow(scene->sp[0].z, 2) - pow((scene->sp[0].size / 2), 2);
+        if (y < 0)
+        {
+            y *= -1;
+            set = -1;
+        }
+        y = sqrt(y);
+        if (x >= 0)
+            draw_line(data, scene, y - scene->sp[0].y, x, set);
+        x++;
     }
-    return;
-    mlx_put_pixel(data->mlx_img2, xcenter - x + 10, ycenter + y, 0xFF0000FF);
-    mlx_put_pixel(data->mlx_img2, xcenter - x + 10, ycenter - y, 0xFF0000FF);
-    mlx_put_pixel(data->mlx_img2, xcenter - y + 10, ycenter + x, 0xFF0000FF);
-    mlx_put_pixel(data->mlx_img2, xcenter - y + 10, ycenter - x, 0xFF0000FF);
-    mlx_put_pixel(data->mlx_img2, xcenter - x + 20, ycenter + y, 0xFF0000FF);
-    mlx_put_pixel(data->mlx_img2, xcenter - x + 20, ycenter - y, 0xFF0000FF);
-    mlx_put_pixel(data->mlx_img2, xcenter - y + 20, ycenter + x, 0xFF0000FF);
-    mlx_put_pixel(data->mlx_img2, xcenter - y + 20, ycenter - x, 0xFF0000FF);
-    return;
-    
-    draw_line(data, xcenter + x, ycenter - y, ycenter + y);
-
-    draw_line(data, xcenter - x, ycenter - y, ycenter + y);
-
-    draw_line(data, xcenter + y, ycenter - x, ycenter + x);
-    
-    draw_line(data, xcenter - y, ycenter - x, ycenter + x);
+    mlx_image_to_window(data->mlx, data->mlx_img2, 0, 0);
 }
 
-void    sphere2(t_data *data, t_scene *scene)
+double  calc_t0(double b, double c)
 {
-    double  r;
+    double  t[2];
 
-    r = pow(scene->sp.x, 2) + pow(scene->sp.y, 2) + pow(scene->sp.z, 2);
+    if ((pow(b, 2) - (4 * c)) < 0)
+        return (-1);
+    t[0] = (b * -1) + sqrt((pow(b, 2) - (4 * c)));
+    t[0] /= 2;
+    t[1] = (b * -1) - sqrt((pow(b, 2) - (4 * c)));
+    t[1] /= 2;
+    printf("%f, %f\n", t[0], t[1]);
+    if (t[0] <= t[1])
+        return (t[0]);
+    return (t[1]);
+}
+
+t_vect3d    calc_current_dir(t_data *data, t_scene *scene, double x, double y)
+{
+    t_ray		ray;
+
+	ray.eye.x = (2 * ((x + 0.5) / data->width) - 1) * (data->width / data->height) * tan(scene->c_fov * M_PI / 180 / 2);
+	ray.eye.y = (1 - 2 * ((y + 0.5) / data->height)) * tan(scene->c_fov * M_PI / 180 / 2);	
+	ray.eye.z = 1;
+	return(normalize_vector(subtract_vectors(ray.eye, scene->origin)));
+}
+
+void    sphere2(t_data *data, t_scene *scene, int i, int j)
+{
+    t_vect3d    C;
+    t_vect3d    new;
+    t_vect3d    new_D;
+    t_vect3d    Phit;
+
+    t_vect3d    current_dir;
+
+    double      b;
+    double      magnitude;
+    double      c;
+    double      power;
+    double      t;
+    
+    C.x = scene->sp[0].x;
+    C.y = scene->sp[0].y;
+    C.z = scene->sp[0].z;
+
+    current_dir = calc_current_dir(data, scene, i, j);
+
+    // calculate b
+    new = subtract_vectors(scene->cam->eye, C);
+    new_D = multiply_vector(scene->cam->dir, 2);
+    b = dot_product(new, new_D);
+
+    // calculate c
+    power = pow(new.x, 2) + pow(new.y, 2) + pow(new.z, 2);
+    magnitude = sqrt(power);
+    c = pow(magnitude, 2) - pow(scene->sp[0].size / 2, 2);
+
+    // calculate t
+    t = calc_t0(b, c);
+    if (t != -1)
+    {
+        printf("hoi\n");
+        Phit = add_vectors(scene->cam->eye, multiply_vector(scene->cam->dir, t));
+    }
+    printf("%f %f %f\n", Phit.x, Phit.y, Phit.z);
 }
 
 void    sphere(t_data *data, t_scene *scene)
 {
-    int xcenter;
-    int ycenter;
-    int x;
-    int y;
-    int p;
+    int i;
+    int j;
 
-    sphere2(data, scene);
-    return;
-
-    x = 0;
-    y = scene->sp[0].size;
-    xcenter = y;
-    ycenter = y;
-    p = 1 - scene->sp[0].size;
-    data->mlx_img2 = mlx_new_image(data->mlx, (y * 2) + 1, (y * 2) + 1);
-	memset(data->mlx_img2->pixels, 0, data->mlx_img2->width * data->mlx_img2->height * sizeof(int));
-    data->mlx_img = mlx_new_image(data->mlx, 1080, 720);
-	memset(data->mlx_img->pixels, 200, data->mlx_img->width * data->mlx_img->height * sizeof(int));
-    while (x < y)
+    i = 0;
+    while (i < data->width)
     {
-        put_pixels(data, x, y, xcenter, ycenter);
-        x++;
-        if (p < 0)
-            p = p + 2 * x + 1;
-        else
+        j = 0;
+        while (j < data->height)
         {
-            y--;
-            p = p + 2 * (x - y) + 1;
+            sphere2(data, scene, i, j);
+            j++;
         }
+        i++;
     }
-    mlx_image_to_window(data->mlx, data->mlx_img, 0, 360);
-    mlx_image_to_window(data->mlx, data->mlx_img2, 150, 150);
 }
+
+
+// D = 3d vector camera
+// O = vector startpunt camera
+// C = vector middenpunt bol
+// R = de helft van size sp
+// b = 2 * D * (O - C)
+// c = |O - C| ^ 2 - R ^ 2
+// a = 1
+
+// voor B: tussen | | subtract_vectors, daarna dot_product, - R ^ 2

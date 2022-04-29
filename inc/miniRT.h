@@ -13,18 +13,17 @@
 # include <stdbool.h>
 # include "../libft/libft.h"
 
+typedef struct	s_vect3d {
+	double		x;
+	double		y;
+	double		z;
+}				t_vect3d;
 
 typedef struct 	s_matrix3x3 {
 	t_vect3d	col1;
 	t_vect3d	col2;
 	t_vect3d	col3;
 }				t_matrix3x3;
-
-typedef struct	s_vect3d {
-	double		x;
-	double		y;
-	double		z;
-}				t_vect3d;
 
 typedef struct 	s_ray {
 	t_vect3d	dir;
@@ -60,7 +59,7 @@ typedef struct s_sp
     int     	rgb;
 	//VECTOR iPV 3 DOUBLES! :))))
 	t_vect3d	coord;
-	double		radius;
+	double		size;
 
 }				t_sp;
 
