@@ -107,16 +107,6 @@ t_vect3d	mult_vect3d_matrix4x4(t_vect3d vec, t_matrix3x3 matrix)
 {
 	t_vect3d new;
 
-<<<<<<< HEAD
-	new.x = vec.x * matrix.col1.x;
-
-// // multiply coeffs from row 1 with coeffs from column 1
-// Ptransformed.x = P.x * c00 + P.y * c10 + P.z * c20 
-// // multiply coeffs from row 1 with coeffs from column 2
-// Ptransformed.y = P.x * c01 + P.y * c11 + P.z * c21 
-// // multiply coeffs from row 1 with coeffs from column 3
-// Ptransformed.z = P.x * c02 + P.y * c12 + P.z * c22
-=======
 	new.x = vec.x * matrix.row1.x + vec.y * matrix.row1.y + vec.z * matrix.row1.z;
 	new.y = vec.x * matrix.row2.x + vec.y * matrix.row2.y + vec.z * matrix.row2.z;
 	new.z = vec.x * matrix.row3.x + vec.y * matrix.row3.y + vec.z * matrix.row3.z;
@@ -184,7 +174,6 @@ t_vect3d camera_to_world(t_scene *scene, t_ray ray)
 	// matrix.up = up;
 	// return (multi_vec_matrix(ray, matrix));
 
->>>>>>> 013388af888d65c2c657e1e3f74d61648f86cfe1
 	return (new);
 }
 

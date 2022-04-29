@@ -101,7 +101,7 @@ char		*get_next_line(int fd);
 void		hook(void *param);
 void		read_scene(t_scene *scene, char *name);
 void		ft_error(int num, char *msg);
-t_vect3d	calc_current_dir(t_data *data, t_scene *scene, double x, double y, int num);
+t_vect3d	calc_current_dir(t_data *data, t_scene *scene, double x, double y);
 
 // *** GLOBE STUFF \\
 

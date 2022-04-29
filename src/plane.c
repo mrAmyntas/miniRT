@@ -1,6 +1,6 @@
 #include "../inc/miniRT.h"
 
-t_vect3d	calc_current_dir(t_data *data, t_scene *scene, double x, double y, int num)
+t_vect3d	calc_current_dir(t_data *data, t_scene *scene, double x, double y)
 {
 	t_ray		ray;
 
