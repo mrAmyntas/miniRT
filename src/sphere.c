@@ -55,16 +55,6 @@ double  calc_t0(double b, double c)
     return (t[1]);
 }
 
-t_vect3d    calc_current_dir(t_data *data, t_scene *scene, double x, double y)
-{
-    t_ray		ray;
-
-	ray.eye.x = (2 * ((x + 0.5) / data->width) - 1) * (data->width / data->height) * tan(scene->c_fov * M_PI / 180 / 2);
-	ray.eye.y = (1 - 2 * ((y + 0.5) / data->height)) * tan(scene->c_fov * M_PI / 180 / 2);	
-	ray.eye.z = 1;
-	return(normalize_vector(subtract_vectors(ray.eye, scene->origin)));
-}
-
 void    sphere2(t_data *data, t_scene *scene, int i, int j)
 {
     t_vect3d    C;
