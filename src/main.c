@@ -23,7 +23,7 @@ int	main(int argc, char **argv)
 	data.mlx = mlx_init(data.width, data.height, "MLX42", true);
 	if (!data.mlx)
 		exit(EXIT_FAILURE);
-	plane(&data, &scene);
+	//plane(&data, &scene);
 	sphere(&data, &scene);
 	mlx_loop_hook(data.mlx, &hook, data.mlx);
 	mlx_loop(data.mlx);

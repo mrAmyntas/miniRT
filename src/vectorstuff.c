@@ -107,7 +107,7 @@ t_vect3d	mult_vect3d_matrix3x3(t_vect3d vec, t_matrix3x3 matrix)
 {
 	t_vect3d new;
 
-	new.x = vec.x * matrix.col1.x 
+	new.x = vec.x * matrix.col1.x;
 
 // // multiply coeffs from row 1 with coeffs from column 1
 // Ptransformed.x = P.x * c00 + P.y * c10 + P.z * c20 
@@ -115,7 +115,7 @@ t_vect3d	mult_vect3d_matrix3x3(t_vect3d vec, t_matrix3x3 matrix)
 // Ptransformed.y = P.x * c01 + P.y * c11 + P.z * c21 
 // // multiply coeffs from row 1 with coeffs from column 3
 // Ptransformed.z = P.x * c02 + P.y * c12 + P.z * c22
-
+	return (new);
 }
 
 //intersection camera ray and plane

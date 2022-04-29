@@ -213,7 +213,7 @@ void	read_sp(t_scene *scene, char **line)
 	scene->sp[i].y = ft_atod(coords[1]);
 	scene->sp[i].z = ft_atod(coords[2]);
 	free_strstr(coords);
-	scene->sp[i].radius = ft_atod(line[2]);
+	scene->sp[i].size = ft_atod(line[2]);
 	coords = ft_split(line[3], ',');
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of vectors for a sphere\n");
