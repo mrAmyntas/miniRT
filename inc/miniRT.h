@@ -82,6 +82,6 @@ int		plane(t_data *data, t_scene *scene);
 void	hook(void *param);
 void    read_scene(t_scene *scene, char *name);
 void    ft_error(int num, char *msg);
-void    globe(t_data *data, t_scene *scene);
+void    sphere(t_data *data, t_scene *scene);
 
 #endif
