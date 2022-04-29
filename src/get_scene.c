@@ -299,6 +299,9 @@ int	set_scene(t_scene *scene, char *name)
 	scene->amount[0] = 0;
 	scene->amount[1] = 0;
 	scene->amount[2] = 0;
+	scene->origin.x = 0;
+	scene->origin.y = 0;
+	scene->origin.z = 0;
 	fd = open(name, O_RDONLY);
 	if (fd < 0)
 		ft_error(-1, "Open failed");
@@ -310,7 +313,6 @@ int	set_scene(t_scene *scene, char *name)
 	scene->cy = malloc(sizeof(t_cy) * (scene->state[2] + 2));
 	scene->cam = malloc(sizeof(t_ray));
 	scene->light = malloc(sizeof(t_light));
-
 	if (!scene->pl || !scene->sp || !scene->cy)
 		ft_error(1, "Malloc error\n");
 	return (fd);

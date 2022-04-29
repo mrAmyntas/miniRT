@@ -13,30 +13,35 @@
 # include <stdbool.h>
 # include "../libft/libft.h"
 
-typedef struct	s_vector {
+typedef struct	s_vect3d {
 	double		x;
 	double		y;
 	double		z;
-}				t_vector;
+}				t_vect3d;
 
 typedef struct 	s_ray {
-	t_vector	dir;
-	t_vector	eye;
+	t_vect3d	dir;
+	t_vect3d	eye;
 }				t_ray;
 
-typedef struct s_data {
+typedef struct 	s_data {
 	mlx_image_t	*mlx_img;
 	mlx_image_t	*mlx_img2;
 	mlx_t		*mlx;
 	int			color;
 	double		width;
 	double		height;
-}	t_data;
+}				t_data;
+
+typedef struct 	s_matrix {
+	t_vect3d	col;
+	t_vect3d	row;
+}				t_matrix;
 
 typedef struct s_pl
 {
-	t_vector	orth_vec;
-	t_vector	coord;
+	t_vect3d	orth_vec;
+	t_vect3d	coord;
     int			rgb;
 }				t_pl;
 
@@ -47,7 +52,7 @@ typedef struct s_sp
     double  	z;
     int     	rgb;
 	//VECTOR iPV 3 DOUBLES! :))))
-	t_vector	coord;
+	t_vect3d	coord;
 	double		radius;
 
 }				t_sp;
@@ -65,7 +70,7 @@ typedef struct s_cy
 typedef struct s_light
 {
 	double		brightness;
-	t_vector	ori;
+	t_vect3d	ori;
 	int			color;
 }				t_light;
 
@@ -77,12 +82,13 @@ typedef struct s_scene
 	double 		a_ratio;
     int    		a_rgb;
     double  	c_fov;
-	t_vector	current_dir;
+	t_vect3d	current_dir;
 	t_ray		*cam;
     t_pl   		*pl;
     t_sp    	*sp;
     t_cy    	*cy;
 	t_light		*light;
+	t_vect3d	origin;
 }				t_scene;
 
 char		*get_next_line(int fd);
@@ -98,18 +104,18 @@ void		globe(t_data *data, t_scene *scene);
 // *** PLANE STUFF *** \\
 
 void		draw_plane(t_data *data, t_scene *scene, int num);
-int			plane(t_data *data, t_scene *scene, int num);
-bool		intersect_eye_plane(t_scene *scene, t_vector *vec1, int num);
-bool		is_P_on_plane(t_scene *scene, t_vector P, int num);
+int			plane(t_data *data, t_scene *scene);
+bool		intersect_eye_plane(t_scene *scene, t_vect3d *vec1, int num);
+bool		is_P_on_plane(t_scene *scene, t_vect3d P, int num);
 bool		cast_ray_cam_to_space_check_if_hit_pl(t_scene *scene, int num);
 
 // *** VECTOR STUFF *** \\
 
-t_vector	add_vectors(t_vector vec1, t_vector vec2);
-t_vector 	subtract_vectors(t_vector vec1, t_vector vec2);
-t_vector 	multiply_vector(t_vector vec1, double factor);
-double		dot_product(t_vector vec1, t_vector vec2);
-t_vector	normalize_vector(t_vector vec1);
+t_vect3d	add_vectors(t_vect3d vec1, t_vect3d vec2);
+t_vect3d 	subtract_vectors(t_vect3d vec1, t_vect3d vec2);
+t_vect3d 	multiply_vector(t_vect3d vec1, double factor);
+double		dot_product(t_vect3d vec1, t_vect3d vec2);
+t_vect3d	normalize_vector(t_vect3d vec1);
 
 // *** COLOUR STUFF *** \\
 int			create_rgbt(int r, int g, int b, int t);

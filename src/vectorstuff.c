@@ -1,9 +1,9 @@
 #include "../inc/miniRT.h"
 
 //vector addition
-t_vector add_vectors(t_vector vec1, t_vector vec2)
+t_vect3d add_vectors(t_vect3d vec1, t_vect3d vec2)
 {
-	t_vector new;
+	t_vect3d new;
 
 	new.x = vec1.x + vec2.x;
 	new.y = vec1.y + vec2.y;
@@ -12,9 +12,9 @@ t_vector add_vectors(t_vector vec1, t_vector vec2)
 }
 
 //Substract vec2 from vec1
-t_vector subtract_vectors(t_vector vec1, t_vector vec2)
+t_vect3d subtract_vectors(t_vect3d vec1, t_vect3d vec2)
 {
-	t_vector new;
+	t_vect3d new;
 
 	new.x = vec1.x - vec2.x;
 	new.y = vec1.y - vec2.y;
@@ -23,9 +23,9 @@ t_vector subtract_vectors(t_vector vec1, t_vector vec2)
 }
 
 //Multiply vec1 by factor
-t_vector multiply_vector(t_vector vec1, double factor)
+t_vect3d multiply_vector(t_vect3d vec1, double factor)
 {
-	t_vector new;
+	t_vect3d new;
 
 	new.x = vec1.x * factor;
 	new.y = vec1.y * factor;
@@ -34,7 +34,7 @@ t_vector multiply_vector(t_vector vec1, double factor)
 }
 
 //calculates the dot product of 2 vectors
-double	dot_product(t_vector vec1, t_vector vec2)
+double	dot_product(t_vect3d vec1, t_vect3d vec2)
 {
 	double dot_product;
 
@@ -43,10 +43,10 @@ double	dot_product(t_vector vec1, t_vector vec2)
 }
 
 //if there is an intersect, sets vec1 to the coords
-bool	intersect_eye_plane(t_scene *scene, t_vector *vec1, int num)
+bool	intersect_eye_plane(t_scene *scene, t_vect3d *vec1, int num)
 {
 	double		t;
-	t_vector	intersect;
+	t_vect3d	intersect;
 
 
 	t = dot_product(scene->pl[num].orth_vec, subtract_vectors(scene->pl[num].coord, scene->cam->eye)) / dot_product(scene->pl[num].orth_vec, scene->cam->dir);
@@ -57,10 +57,10 @@ bool	intersect_eye_plane(t_scene *scene, t_vector *vec1, int num)
 }
 
 //checks if point P is on plane
-bool	is_P_on_plane(t_scene *scene, t_vector P, int num)
+bool	is_P_on_plane(t_scene *scene, t_vect3d P, int num)
 {
 	double		t;
-	t_vector	vec;
+	t_vect3d	vec;
 
 	vec = subtract_vectors(P, scene->pl[num].coord);
 	t = dot_product(scene->pl[num].orth_vec, vec);
@@ -73,18 +73,29 @@ bool	is_P_on_plane(t_scene *scene, t_vector P, int num)
 bool	cast_ray_cam_to_space_check_if_hit_pl(t_scene *scene, int num)
 {
 	double		t;
+	t_vect3d	tmp;
 
-	t = dot_product(scene->pl[num].orth_vec, subtract_vectors(scene->pl[num].coord, scene->cam->eye)) / dot_product(scene->pl[num].orth_vec, scene->current_dir);
-	if (t < 0)
-		return (false);
-	return (true);
+	tmp = subtract_vectors(scene->pl[num].coord, scene->cam->eye);
+	tmp = normalize_vector(tmp);
+	if (dot_product(scene->pl[num].orth_vec, scene->current_dir) == 0)
+	{
+		//then the ray is parallel to the plane, and there is no intersection point
+		printf("parralel\n");
+	}
+	t = (dot_product(scene->pl[num].orth_vec, tmp));
+	t = t / (dot_product(scene->pl[num].orth_vec, scene->current_dir));
+	//t = dot_product(scene->pl[num].orth_vec, subtract_vectors(scene->pl[num].coord, scene->cam->eye)) / dot_product(scene->pl[num].orth_vec, scene->current_dir);
+	//printf("t:%f\n", t);
+	if (t > 0)
+		return (true);
+	return (false);
 }
 
 //Normalize a vector
-t_vector	normalize_vector(t_vector vec1)
+t_vect3d	normalize_vector(t_vect3d vec1)
 {
 	double		len;
-	t_vector	new;
+	t_vect3d	new;
 
 	len = sqrt((vec1.x * vec1.x) + (vec1.y * vec1.y) + (vec1.z * vec1.z));
 	new.x = vec1.x / len;
