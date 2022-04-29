@@ -2,16 +2,19 @@
 
 void calc_hit(t_data *data, t_scene *scene, double x, double y, int num)
 {
-	t_vector P;
+	t_ray		ray;
+	t_vect3d 	O;
 
-	P.x = (2 * ((x + 0.5) / data->width) - 1) * (data->width / data->height) * tan(scene->c_fov * M_PI / 180 / 2);
-	P.y = (1 - 2 * ((y + 0.5) / data->height)) * tan(scene->c_fov * M_PI / 180 / 2);
-	P.z = scene->cam->eye.z + 1; //point is on viewport which is 1 in front of camera.
-	//The directional vector can be determined by subtracting the start from the terminal point.
-
-	scene->current_dir = normalize_vector(subtract_vectors(P, scene->cam->eye));
+	O.x = 0;
+	O.y = 0;
+	O.z = 0;
+	ray.eye.x = (2 * ((x + 0.5) / data->width) - 1) * (data->width / data->height) * tan(scene->c_fov * M_PI / 180 / 2);
+	ray.eye.y = (1 - 2 * ((y + 0.5) / data->height)) * tan(scene->c_fov * M_PI / 180 / 2);	
+	ray.eye.z = -1; //image is 1 from the camera
+	scene->current_dir = normalize_vector(subtract_vectors(ray.eye, scene->origin)); //set current dir to its value by using the vector given by the 2 points ray.eye and origin(0,0,0)
+	//the ray.eye is a point on the 'image plane' where we build our image. The camera is assumed to be at the origin point for now.
 	if (cast_ray_cam_to_space_check_if_hit_pl(scene, num)) // = hit
-		mlx_put_pixel(data->mlx_img, (x), (y), data->color);
+		mlx_put_pixel(data->mlx_img, x, y, data->color);
 }
 
 void	draw_plane(t_data *data, t_scene *scene, int num)
@@ -26,23 +29,25 @@ void	draw_plane(t_data *data, t_scene *scene, int num)
 	}
 }
 
-int	plane(t_data *data, t_scene *scene, int num)
+int	plane(t_data *data, t_scene *scene)
 {
-	draw_plane(data, scene, num);
+	for (int i = 0; i < scene->amount[0]; ++i)
+	{
+		draw_plane(data, scene, i);
+	}
 	mlx_image_to_window(data->mlx, data->mlx_img, 10, 10);
 	return 0;
 
 
 
-
 	// printf("coords check: cam: [%f,%f,%f]\ncoords check: pl:  [%f,%f,%f]\n", scene->cam->coord.x,scene->cam->coord.y,scene->cam->coord.z, scene->pl[num].coord.x,scene->pl[num].coord.y,scene->pl[num].coord.z);
 	// printf("vec check: cam: [%f,%f,%f]\nvec check: pl:  [%f,%f,%f]\n", scene->cam->vec.x,scene->cam->vec.y,scene->cam->vec.z, scene->pl[num].vec.x,scene->pl[num].vec.y,scene->pl[num].vec.z);
-	// t_vector tmp = {12310, 760, 2};
+	// t_vect3d tmp = {12310, 760, 2};
 	// if (is_P_on_plane(scene, tmp, num))
 	// 	printf("P is on the plane!\n");
 	// if (intersect_eye_plane(scene, &tmp, num))
 	// {
-	// 	printf("intersect:[%f,%f,%f]\n", tmp.x, tmp.y, tmp.z);
+	// 	printf("intersect:[%f,%f,%f]\n", tmray.eyep.x, tmray.eye.y, tmp.z);
 	// }
 
 }
@@ -52,7 +57,7 @@ int	plane(t_data *data, t_scene *scene, int num)
 //with fov of x, what is left most?
 //distance between camera and viewport: 𝑑=1/𝑡𝑎𝑛(𝜃𝑓𝑜𝑣/2)) ??? find source pls
 
-//t_vector right_edge_fov;
+//t_vect3d right_edge_fov;
 //right_edge_pov = cos(scene->pov)
 
 // PixelNDCx= (Pixelx+0.5) / ImageWidth   NDC = normalized device coordinates

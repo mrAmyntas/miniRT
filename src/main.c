@@ -40,7 +40,7 @@ int	main(int argc, char **argv)
 	if (!data.mlx)
 		exit(EXIT_FAILURE);
 	data.mlx_img = mlx_new_image(data.mlx, data.width, data.height);
-	plane(&data, &scene, 0);
+	plane(&data, &scene);
 	globe(&data, &scene);
 
 
