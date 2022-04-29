@@ -3,7 +3,7 @@ MLX_NAME = libmlx42.a
 CC = gcc
 LIBFT_NAME = libft/libft.a
 FLAGS = #-Wall -Werror -Wextra
-FLAGS += -fsanitize=address
+#FLAGS += -fsanitize=address
 OBJ_DIR = obj/
 SRC_DIR = src/
 GNL_DIR = gnl/
@@ -13,7 +13,7 @@ SRC =	src/main.c\
 		src/colours.c\
 		src/get_scene.c\
 		src/plane.c\
-		src/globe.c\
+		src/sphere.c\
 		src/vectorstuff.c
 
 INC = 	inc/miniRT.h\
