@@ -19,16 +19,30 @@ typedef struct	s_vect3d {
 	double		z;
 }				t_vect3d;
 
-typedef struct 	s_matrix3x3 {
-	t_vect3d	row1;
-	t_vect3d	row2;
-	t_vect3d	row3;
-}				t_matrix3x3;
+typedef struct 	s_matrix33d {
+	t_vect3d	x;
+	t_vect3d	y;
+	t_vect3d	z;
+}				t_matrix33d;
 
 typedef struct 	s_ray {
 	t_vect3d	dir;
 	t_vect3d	eye;
 }				t_ray;
+
+typedef struct 	s_vec4d {
+	double		x;
+	double		y;
+	double		z;
+	double		t;
+}				t_vec4d;
+
+typedef struct 	s_matrix44d {
+	t_vec4d		x;
+	t_vec4d		y;
+	t_vec4d		z;
+	t_vec4d		t;
+}				t_matrix44d;
 
 typedef struct 	s_data {
 	mlx_image_t	*mlx_img;
@@ -101,7 +115,7 @@ char		*get_next_line(int fd);
 void		hook(void *param);
 void		read_scene(t_scene *scene, char *name);
 void		ft_error(int num, char *msg);
-t_vect3d	calc_current_dir(t_data *data, t_scene *scene, double x, double y);
+t_ray		calc_ray(t_data *data, t_scene *scene, double x, double y);
 
 // *** GLOBE STUFF \\
 
@@ -114,7 +128,7 @@ void		draw_plane(t_data *data, t_scene *scene, int num);
 int			plane(t_data *data, t_scene *scene);
 bool		intersect_eye_plane(t_scene *scene, t_vect3d *vec1, int num);
 bool		is_P_on_plane(t_scene *scene, t_vect3d P, int num);
-bool		cast_ray_cam_to_space_check_if_hit_pl(t_scene *scene, int num);
+bool		cast_ray_cam_to_space_check_if_hit_pl(t_scene *scene, t_ray ray, int num);
 
 // *** VECTOR STUFF *** \\
 
@@ -126,6 +140,9 @@ t_vect3d	normalize_vector(t_vect3d vec1);
 t_vect3d 	camera_to_world(t_scene *scene, t_ray ray);
 double		magnitude(t_vect3d vec1);
 t_vect3d	cross_product(t_vect3d vec1, t_vect3d vec2);
+t_matrix44d	set_camera_to_world(t_vect3d from, t_vect3d to);
+t_vect3d	divide_vec_scalar(t_vect3d vec1, double s);
+t_ray		get_ray(t_scene *scene, t_data *data, double x, double y);
 
 // *** COLOUR STUFF *** \\
 int			create_rgbt(int r, int g, int b, int t);

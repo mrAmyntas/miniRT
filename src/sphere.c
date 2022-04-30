@@ -49,7 +49,7 @@ double  calc_t0(double b, double c)
     t[0] /= 2;
     t[1] = (b * -1) - sqrt((pow(b, 2) - (4 * c)));
     t[1] /= 2;
-    printf("%f, %f\n", t[0], t[1]);
+    //printf("%f, %f\n", t[0], t[1]);
     if (t[0] <= t[1])
         return (t[0]);
     return (t[1]);
@@ -63,6 +63,7 @@ void    sphere2(t_data *data, t_scene *scene, int i, int j)
     t_vect3d    Phit;
 
     t_vect3d    current_dir;
+	t_ray		ray;
 
     double      b;
     double      magnitude;
@@ -74,7 +75,8 @@ void    sphere2(t_data *data, t_scene *scene, int i, int j)
     C.y = scene->sp[0].y;
     C.z = scene->sp[0].z;
 
-    current_dir = calc_current_dir(data, scene, i, j);
+    ray = get_ray(data, scene, i, j); //deze toegevoegd als het goed is pakt hij de juiste ray voor de camera afhankelijk van i en j
+	// dus dan is ray.eye de positie van de camera en ray.dir de direction naar de pixil i,j.
 
     // calculate b
     new = subtract_vectors(scene->cam->eye, C);
@@ -90,10 +92,10 @@ void    sphere2(t_data *data, t_scene *scene, int i, int j)
     t = calc_t0(b, c);
     if (t != -1)
     {
-        printf("hoi\n");
+        //printf("hoi\n");
         Phit = add_vectors(scene->cam->eye, multiply_vector(scene->cam->dir, t));
     }
-    printf("%f %f %f\n", Phit.x, Phit.y, Phit.z);
+    //printf("%f %f %f\n", Phit.x, Phit.y, Phit.z);
 }
 
 void    sphere(t_data *data, t_scene *scene)
