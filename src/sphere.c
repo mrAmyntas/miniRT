@@ -75,7 +75,7 @@ void    sphere2(t_data *data, t_scene *scene, int i, int j)
     C.y = scene->sp[0].y;
     C.z = scene->sp[0].z;
 
-    ray = get_ray(data, scene, i, j); //deze toegevoegd als het goed is pakt hij de juiste ray voor de camera afhankelijk van i en j
+    ray = get_ray(scene, data, i, j); //deze toegevoegd als het goed is pakt hij de juiste ray voor de camera afhankelijk van i en j
 	// dus dan is ray.eye de positie van de camera en ray.dir de direction naar de pixil i,j.
 
     // calculate b

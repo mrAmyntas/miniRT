@@ -202,7 +202,7 @@ int i = 0;
 	mlx_terminate(data->mlx);*/
 
 
-
+//returns a ray with its eye same as the camera and direction towards the coords x and y
 t_ray	get_ray(t_scene *scene, t_data *data, double x, double y)
 {
 	t_vect3d LookAtPoint;
