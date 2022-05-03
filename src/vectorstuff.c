@@ -1,5 +1,19 @@
 #include "../inc/miniRT.h"
 
+
+//divide vector by scalar
+t_vect3d	divide_vec_scalar(t_vect3d vec1, double s)
+{
+	t_vect3d	new;
+
+	if (s == 0)
+		return (vec1);
+	new.x = vec1.x / s;
+	new.y = vec1.y / s;
+	new.z = vec1.z / s;
+	return (new);
+}
+
 //vector addition
 t_vect3d add_vectors(t_vect3d vec1, t_vect3d vec2)
 {
@@ -48,7 +62,8 @@ bool	intersect_eye_plane(t_scene *scene, t_vect3d *vec1, int num)
 	double		t;
 	t_vect3d	intersect;
 
-
+	if (dot_product(scene->pl[num].orth_vec, scene->cam->dir) == 0)
+		return (false);
 	t = dot_product(scene->pl[num].orth_vec, subtract_vectors(scene->pl[num].coord, scene->cam->eye)) / dot_product(scene->pl[num].orth_vec, scene->cam->dir);
 	if (t < 0)
 		return (false);
@@ -70,20 +85,19 @@ bool	is_P_on_plane(t_scene *scene, t_vect3d P, int num)
 }
 
 //check if in the current direction the camera ray will intersect with the plane[num]
-bool	cast_ray_cam_to_space_check_if_hit_pl(t_scene *scene, int num)
+bool	cast_ray_cam_to_space_check_if_hit_pl(t_scene *scene, t_ray ray, int num)
 {
 	double		t;
 	t_vect3d	tmp;	
 
-	tmp = subtract_vectors(scene->pl[num].coord, scene->cam->eye);
-	//tmp = normalize_vector(subtract_vectors(scene->pl[num].coord, scene->cam->eye));
-	if (dot_product(scene->pl[num].orth_vec, scene->current_dir) == 0)
+	tmp = subtract_vectors(scene->pl[num].coord, ray.eye);
+	if (dot_product(scene->pl[num].orth_vec, ray.dir) == 0)
 	{
 		//then the ray is parallel to the plane, and there is no intersection point
-		printf("parralel\n");
+		//printf("parralel\n");
 		return (false);
 	}
-	t = (dot_product(scene->pl[num].orth_vec, tmp)) / (dot_product(scene->pl[num].orth_vec, scene->current_dir));
+	t = (dot_product(scene->pl[num].orth_vec, tmp)) / (dot_product(scene->pl[num].orth_vec, ray.dir));
 	if (t > 0)
 		return (true);
 	return (false);
@@ -103,13 +117,13 @@ t_vect3d	normalize_vector(t_vect3d vec1)
 }
 
 //Multiply vector (as 1x3 matrix) with a matrix (3x3)
-t_vect3d	mult_vect3d_matrix4x4(t_vect3d vec, t_matrix3x3 matrix)
+t_vect3d	mult_vect3d_matrix4x4(t_vect3d vec, t_matrix33d matrix)
 {
 	t_vect3d new;
 
-	new.x = vec.x * matrix.row1.x + vec.y * matrix.row1.y + vec.z * matrix.row1.z;
-	new.y = vec.x * matrix.row2.x + vec.y * matrix.row2.y + vec.z * matrix.row2.z;
-	new.z = vec.x * matrix.row3.x + vec.y * matrix.row3.y + vec.z * matrix.row3.z;
+	new.x = vec.x * matrix.x.x + vec.y * matrix.x.y + vec.z * matrix.x.z;
+	new.y = vec.x * matrix.y.x + vec.y * matrix.y.y + vec.z * matrix.y.z;
+	new.z = vec.x * matrix.z.x + vec.y * matrix.z.y + vec.z * matrix.z.z;
 	return (new);
 }
 
@@ -146,19 +160,38 @@ t_vect3d	cross_product(t_vect3d a, t_vect3d b)
 	return (c);
 
 }
-t_vect3d camera_to_world(t_scene *scene, t_ray ray)
+
+t_vect3d lookAt(t_scene *scene, t_ray ray)
 {
 	t_vect3d	new;
-	t_matrix3x3	matrix;
+	t_matrix33d	matrix;
+	t_matrix44d	camToWorld;
 
 	new.x = 0;
 	new.y = 1;
 	new.z = 0;
-	matrix.row1 = multiply_vector(scene->cam->dir, -1);
-	matrix.row2 = cross_product(new, matrix.row1);
-	matrix.row3 = cross_product(matrix.row1, matrix.row2);
-	new = mult_vect3d_matrix4x4(ray.eye, matrix);
-	return (new);
+
+	// matrix.x = multiply_vector(scene->cam->dir, -1);
+	// matrix.y = cross_product(new, matrix.x);
+	// matrix.z = cross_product(matrix.x, matrix.y);
+	// new = mult_vect3d_matrix4x4(ray.eye, matrix);
+
+	
+//Vec3f right = crossProduct(randomVec, forward); 
+
+// The Look-At Method Limitations
+// The method is very simple and works generally well. 
+// Though it has an Achilles heels (a weakness). 
+// When the camera is vertical looking straight down or straight up, 
+// the forward axis gets very close to the arbitrary axis used to compute
+//  the right axis. The extreme case is of course when the froward axis
+//   and this arbitrary axis are perfectly parallel e.g. when the forward
+//    vector is either (0,1,0) or (0,-1,0). Unfortunately in this particular
+//     case, the cross product fails producing a result for the right 
+// 	vector. There is actually no real solution to this problem. 
+// 	You can either detect this case, and choose to set the vectors by 
+// 	hand (since you know what the configuration of the vectors should be anyway).
+// 	 A more elegant solution can be developed using quaternion interpolation.
 
 
 	// t_matrix	matrix;
@@ -177,6 +210,36 @@ t_vect3d camera_to_world(t_scene *scene, t_ray ray)
 	return (new);
 }
 
+t_matrix44d	set_camera_to_world(t_vect3d from, t_vect3d to)
+{
+	t_vect3d	new;
+	t_matrix33d	matrix;
+	t_matrix44d	camToWorld;
+
+	new.x = 0;
+	new.y = 1;
+	new.z = 0;
+	matrix.x = normalize_vector(subtract_vectors(to, from));
+	matrix.y = cross_product(new, matrix.x);
+	matrix.z = cross_product(matrix.x, matrix.y);
+	camToWorld.x.x = matrix.x.x;
+	camToWorld.x.y = matrix.x.y;
+	camToWorld.x.z = matrix.x.z;
+	camToWorld.y.x = matrix.y.x;
+	camToWorld.y.y = matrix.y.y;
+	camToWorld.y.z = matrix.y.z;
+	camToWorld.z.x = matrix.z.x;
+	camToWorld.z.y = matrix.z.y;
+	camToWorld.z.z = matrix.z.z;
+	camToWorld.t.x = from.x;
+	camToWorld.t.y = from.y;
+	camToWorld.t.z = from.z;
+	camToWorld.x.t = 0;
+	camToWorld.y.t = 0;
+	camToWorld.z.t = 0;
+	camToWorld.t.t = 1;
+	return (camToWorld);
+}
 
 //MATRIX
 

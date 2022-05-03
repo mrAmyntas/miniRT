@@ -1,56 +1,73 @@
 #include "../inc/miniRT.h"
 
-t_vect3d	calc_current_dir(t_data *data, t_scene *scene, double x, double y, int num)
-{
-	t_ray		ray;
+// t_ray	calc_ray(t_data *data, t_scene *scene, double x, double y)
+// {
+// 	t_ray	ray;
 
-	ray.eye.x = (2 * ((x + 0.5) / data->width) - 1) * (data->width / data->height) * tan(scene->c_fov * M_PI / 180 / 2);
-	ray.eye.y = (1 - 2 * ((y + 0.5) / data->height)) * tan(scene->c_fov * M_PI / 180 / 2);	
-	ray.eye.z = 1; //image is 1 from the camera (1 or -1 ?????????????)
-	scene->current_dir = normalize_vector(subtract_vectors(ray.eye, scene->origin)); //set current dir to its value by using the vector given by the 2 points ray.eye and origin(0,0,0)
-	return (scene->current_dir);
-}
+// 	ray.eye.x = (2 * ((x + 0.5) / data->width) - 1) * (data->width / data->height) * tan(scene->c_fov * M_PI / 180 / 2);
+// 	ray.eye.y = (1 - 2 * ((y + 0.5) / data->height)) * tan(scene->c_fov * M_PI / 180 / 2);	
+// 	ray.eye.z = -1;
+
+// 	ray.dir = normalize_vector(subtract_vectors(ray.eye, scene->origin));
+// 	scene->current_dir = normalize_vector(subtract_vectors(ray.eye, scene->origin));
+// 	return (ray);
+// }
 void calc_hit(t_data *data, t_scene *scene, double x, double y, int num)
 {
 	t_ray		ray;
+	//t_matrix44d	camToWorld;
 
-	ray.eye.x = (2 * ((x + 0.5) / data->width) - 1) * (data->width / data->height) * tan(scene->c_fov * M_PI / 180 / 2);
-	ray.eye.y = (1 - 2 * ((y + 0.5) / data->height)) * tan(scene->c_fov * M_PI / 180 / 2);	
-	ray.eye.z = 1; //image is 1 from the camera (1 or -1 ?????????????)
-	scene->current_dir = normalize_vector(subtract_vectors(ray.eye, scene->origin)); //set current dir to its value by using the vector given by the 2 points ray.eye and origin(0,0,0)
-	//the ray.eye is a point on the 'image plane' where we build our image. The camera is assumed to be at the origin point for now.
+	//ray = calc_ray(data, scene, x, y); //ray with eye as a pixel point and direction as origin->pixelpoint
+	//printf("ray.dir: %f %f %f   ray.eye: %f %f %f     ", ray.dir.x, ray.dir.y, ray.dir.z, ray.eye.x, ray.eye.y, ray.eye.z);
+	
+	//ray.eye = scene->cam->eye; //sets ray.eye to camera eye, its now 
+	//camToWorld = set_camera_to_world(scene->cam->eye, ray.eye);
+	//ray.dir = camera_to_world(scene, ray); //camera-to-world translation, sets new direction
+	//ray.dir = normalize_vector(ray.dir); //normalize
 
-	//camera-to-world translation
-	ray.dir = camera_to_world(scene, ray);
-	//ray.eye = scene->cam->eye;
-
+	ray = get_ray(scene, data, x, y);
 	//FIRE MY LASERS
-	if (cast_ray_cam_to_space_check_if_hit_pl(scene, num)) // = hit
-		mlx_put_pixel(data->mlx_img, x, (data->height - y), data->color);
+	if (cast_ray_cam_to_space_check_if_hit_pl(scene, ray, num)) // = hit
+	{
+		mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), data->color);
+	}
 }
-
-
 
 void	draw_plane(t_data *data, t_scene *scene, int num)
 {
+	int	i;
+	int	j;
+
 	data->color = scene->pl[0].rgb;
-	double aspect_ratio = data->width / data->height;
-		
-	for (double i = 0; i < data->width; ++i)
+	i = 0;
+	while (i < data->width + 1)
 	{
-		for (double j = 0; j < data->height; ++j)
+		j = 0;
+		while (j < data->height + 1)
+		{
 			calc_hit(data, scene, i, j, num);
+			j++;
+		}
+		i++;
 	}
 }
 
 int	plane(t_data *data, t_scene *scene)
 {
-	for (int i = 0; i < scene->amount[0]; ++i)
+	int	i;
+
+	data->mlx_img = mlx_new_image(data->mlx, data->width + 10, data->height + 10);
+	i = 0;
+	while (i < scene->amount[0])
 	{
 		draw_plane(data, scene, i);
+		i++;
 	}
-	mlx_image_to_window(data->mlx, data->mlx_img, 0, 0);
+	mlx_image_to_window(data->mlx, data->mlx_img, -1, -1);
 	return 0;
+}
+
+
 
 // Orthogonal matrices have a few interesting properties but maybe the most useful one in Computer Graphics, 
 // is that the transpose of an orthogonal matrix is equal to its inverse. Assuming Q is an orthogonal matrix, we can write:
@@ -67,8 +84,6 @@ int	plane(t_data *data, t_scene *scene)
 	// {
 	// 	printf("intersect:[%f,%f,%f]\n", tmray.eyep.x, tmray.eye.y, tmp.z);
 	// }
-
-}
 
 //scan left->right depending on fov?
 //we have a vector for camera direction (scene->cam->dir)
@@ -185,3 +200,54 @@ int i = 0;
 	mlx_loop_hook(data->mlx, &hook, data);
 	mlx_loop(data->mlx);
 	mlx_terminate(data->mlx);*/
+
+
+//returns a ray with its eye same as the camera and direction towards the coords x and y
+t_ray	get_ray(t_scene *scene, t_data *data, double x, double y)
+{
+	t_vect3d LookAtPoint;
+	t_vect3d viewDir;
+	t_vect3d up;
+	t_vect3d V;		
+	t_vect3d U;		
+
+
+	up.x = 0;
+	up.y = 1;
+	up.z = 0;
+	// pPOINT SHOULD BE ONE IN 'FRONT'  OF CAMERA, WHICH ISNT ALWAyS z + 1
+
+	LookAtPoint = add_vectors(scene->cam->eye, scene->cam->dir);
+	//LookAtPoint = scene->cam->eye;
+	//LookAtPoint.z = LookAtPoint.z + 1;// NOW IT ALWAYS LOOKS IN FRONT !!!!
+	viewDir = normalize_vector(subtract_vectors(LookAtPoint, scene->cam->eye));
+	//viewDir = scene->cam->dir;
+	U = cross_product(viewDir, up);
+	V = cross_product(U, viewDir);
+
+	U = normalize_vector(U);
+	V = normalize_vector(V);
+
+	double viewPlaneHalfWidth= tan(scene->c_fov * M_PI / 180 / 2);
+	double aspectRatio = data->height/data->width;
+	double viewPlaneHalfHeight = aspectRatio * viewPlaneHalfWidth;
+//	t_vect3d viewPlaneBottomLeftPoint = LookAtPoint - V * viewPlaneHalfHeight - U * viewPlaneHalfWidth;
+	t_vect3d tmp = subtract_vectors(LookAtPoint, multiply_vector(V, viewPlaneHalfHeight));
+	t_vect3d viewPlaneBottomLeftPoint = subtract_vectors(tmp, multiply_vector(U, viewPlaneHalfWidth));
+	// xIncVector = (U*2*halfWidth)/xResolution;
+	// yIncVector = (V*2*halfHeight)/yResolution;
+
+	tmp = multiply_vector(U, (2 * viewPlaneHalfWidth));
+	t_vect3d xIncVector = divide_vec_scalar(tmp, data->width);
+	tmp = multiply_vector(V, (2 * viewPlaneHalfHeight));
+	t_vect3d yIncVector = divide_vec_scalar(tmp, data->height);
+
+	tmp = add_vectors(viewPlaneBottomLeftPoint, multiply_vector(xIncVector, x));
+	t_vect3d ViewPlanePoint = add_vectors(tmp, multiply_vector(yIncVector, y));
+
+	t_ray	ray;
+
+	ray.eye = scene->cam->eye;
+	ray.dir = subtract_vectors(ViewPlanePoint, scene->cam->eye);
+	return (ray);
+}
