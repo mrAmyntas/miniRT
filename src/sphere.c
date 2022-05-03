@@ -49,11 +49,16 @@ double  calc_t0(double b, double c)
     t[0] /= 2;
     t[1] = (b * -1) - sqrt((pow(b, 2) - (4 * c)));
     t[1] /= 2;
+<<<<<<< HEAD
+=======
+    //printf("%f, %f\n", t[0], t[1]);
+>>>>>>> b1958511429a60de0eeb1bcb21664e9a4fcc6f4c
     if (t[0] <= t[1])
         return (t[0]);
     return (t[1]);
 }
 
+<<<<<<< HEAD
 t_vect3d    calc_current_dir2(t_data *data, t_scene *scene, double x, double y)
 {
     t_ray		ray;
@@ -64,6 +69,8 @@ t_vect3d    calc_current_dir2(t_data *data, t_scene *scene, double x, double y)
 	return(normalize_vector(subtract_vectors(ray.eye, scene->origin)));
 }
 
+=======
+>>>>>>> b1958511429a60de0eeb1bcb21664e9a4fcc6f4c
 void    sphere2(t_data *data, t_scene *scene, int i, int j)
 {
     t_vect3d    C;
@@ -72,6 +79,7 @@ void    sphere2(t_data *data, t_scene *scene, int i, int j)
     t_vect3d    Phit;
 
     t_vect3d    current_dir;
+	t_ray		ray;
 
     double      b;
     double      magnitude;
@@ -83,7 +91,8 @@ void    sphere2(t_data *data, t_scene *scene, int i, int j)
     C.y = scene->sp[0].y;
     C.z = scene->sp[0].z;
 
-    current_dir = calc_current_dir2(data, scene, i, j);
+    ray = get_ray(scene, data, i, j); //deze toegevoegd als het goed is pakt hij de juiste ray voor de camera afhankelijk van i en j
+	// dus dan is ray.eye de positie van de camera en ray.dir de direction naar de pixil i,j.
 
     // calculate b
     new = subtract_vectors(scene->cam->eye, C);
@@ -99,9 +108,10 @@ void    sphere2(t_data *data, t_scene *scene, int i, int j)
     t = calc_t0(b, c);
     if (t != -1)
     {
-        Phit = add_vectors(scene->cam->eye, multiply_vector(current_dir, t));
-        mlx_put_pixel(data->mlx_img2, i, j, 0xFF0000FF);
+        //printf("hoi\n");
+        Phit = add_vectors(scene->cam->eye, multiply_vector(scene->cam->dir, t));
     }
+    //mlx_put_pixel(data->mlx_img2, i, j, 0xFF0000FF);
 }
 
 void    sphere(t_data *data, t_scene *scene)
