@@ -67,14 +67,12 @@ typedef struct s_pl
 
 typedef struct s_sp
 {
-	double  	x;
-    double 		y;
-    double  	z;
+	t_vect3d	C;
     int     	rgb;
 	//VECTOR iPV 3 DOUBLES! :))))
 	t_vect3d	coord;
 	double		size;
-
+	double		hsl[3];
 }				t_sp;
 
 typedef struct s_cy
@@ -92,6 +90,7 @@ typedef struct s_light
 	double		brightness;
 	t_vect3d	ori;
 	int			color;
+	double		hsl[3];
 }				t_light;
 
 
@@ -152,5 +151,6 @@ int			get_g(int rgbt);
 int			get_b(int rgbt);
 int 		add_shade(double distance, int color);
 int 		get_opposite(int color);
+int			create_rgb(int r, int g, int b);
 
 #endif
