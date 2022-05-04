@@ -24,7 +24,7 @@ int	main(int argc, char **argv)
 	if (!data.mlx)
 		exit(EXIT_FAILURE);
 	plane(&data, &scene);
-	//sphere(&data, &scene);
+	sphere(&data, &scene);
 	//cylinder(&data, &scene);
 
 	mlx_loop_hook(data.mlx, &hook, data.mlx);

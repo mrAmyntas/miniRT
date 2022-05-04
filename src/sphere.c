@@ -114,7 +114,7 @@ void    sphere2(t_data *data, t_scene *scene, int i, int j, int count)
         //printf("%f %f %f\n", scene->sp->hsl[0], scene->sp->hsl[1], scene->sp->hsl[2] * bright);
         //printf("%f %f %f\n", scene->sp->hsl[0], scene->sp->hsl[1], scene->sp->hsl[2]);
         
-        printf("%f %f\n", scene->sp->hsl[2], bright);
+        //printf("%f %f\n", scene->sp->hsl[2], bright);
         scene->sp->hsl[2] = bright;
         rgb = hsl_to_rgb(scene->sp->hsl);
 

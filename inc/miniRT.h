@@ -80,6 +80,8 @@ typedef struct s_cy
 	double  x[2];
     double  y[2];
     double  z[2];
+	t_vect3d	eye;
+	t_vect3d	dir;
     double  diameter;
     double  height;
     int     rgb;
@@ -143,6 +145,7 @@ t_matrix44d	set_camera_to_world(t_vect3d from, t_vect3d to);
 t_vect3d	divide_vec_scalar(t_vect3d vec1, double s);
 t_ray		get_ray(t_scene *scene, t_data *data, double x, double y);
 double		distance_two_points(t_vect3d P1, t_vect3d P2);
+bool		compare_vectors(t_vect3d vec1, t_vect3d vec2);
 
 // *** COLOUR STUFF *** \\
 
@@ -154,6 +157,8 @@ int			get_b(int rgbt);
 int 		add_shade(double factor, int color);
 int 		get_opposite(int color);
 int			create_rgb(int r, int g, int b);
+int    		hsl_to_rgb(double hsl[3]);
+int			light_the_pixel(t_scene *scene, t_ray intersect);
 
 // *** CYLINDER STUFF *** \\\
 

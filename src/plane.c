@@ -12,14 +12,30 @@
 // 	scene->current_dir = normalize_vector(subtract_vectors(ray.eye, scene->origin));
 // 	return (ray);
 // }
+
+//lights the point
+int	light_the_pixel(t_scene *scene, t_ray intersect)
+{
+	t_vect3d	tmp;
+	double		angle;
+	double		distance;
+	double		bright;
+	int			rgb;
+
+	tmp = normalize_vector(subtract_vectors(scene->light->ori, intersect.eye));
+	angle = acos(dot_product(scene->pl->orth_vec, tmp)) / ( M_PI / 180);
+	distance = distance_two_points(scene->light->ori, intersect.eye);
+    bright = angle / distance * scene->light->brightness / 40;
+	if (angle == 0 || bright > 1)
+		bright = 1;
+	scene->sp->hsl[2] = bright;
+	return (hsl_to_rgb(scene->sp->hsl));
+}
+
 void calc_hit(t_data *data, t_scene *scene, double x, double y, int num)
 {
 	t_ray		ray;
 	t_ray		intersect;
-	t_vect3d	tmp;
-	int			color;
-	int			angle;
-	int			distance;
 	//t_matrix44d	camToWorld;
 
 	//ray = calc_ray(data, scene, x, y); //ray with eye as a pixel point and direction as origin->pixelpoint
@@ -30,13 +46,10 @@ void calc_hit(t_data *data, t_scene *scene, double x, double y, int num)
 	//ray.dir = camera_to_world(scene, ray); //camera-to-world translation, sets new direction
 	//ray.dir = normalize_vector(ray.dir); //normalize
 
-	color = data->color;
 	ray = get_ray(scene, data, x, y);
 	//FIRE MY LASERS
 	// cos a = N . L (dot product normal and light vector)
 	// a = arccos (n . l)
-
-
 
 	if (cast_ray_to_space_check_if_hit_pl(scene, &ray, num)) // = hit -> ray now has intersec coords
 	{
@@ -49,39 +62,18 @@ void calc_hit(t_data *data, t_scene *scene, double x, double y, int num)
 			//cast ray from camera to light, if this hits plane, check if it was BEFORE light
 			ray.eye = scene->cam->eye;
 			ray.dir = normalize_vector(subtract_vectors(scene->light->ori, ray.eye));
-			if (cast_ray_to_space_check_if_hit_pl(scene, &ray, num)) // light hits plane
+			if (cast_ray_to_space_check_if_hit_pl(scene, &ray, num)) // camera -> light hits plane 
 			{
-				if (distance_two_points(scene->cam->eye, ray.eye) < distance_two_points(scene->cam->eye, scene->light->ori))
-				{	//from cam -> obj hits first, so light is behind plane
-					color = add_shade(0.9, data->color);
-					mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), color);
-				}
+				if (distance_two_points(scene->cam->eye, ray.eye) < distance_two_points(scene->cam->eye, scene->light->ori))//from cam -> obj hits first, so light is behind plane
+					mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), add_shade(0.9, data->color));
 				else
-				{
-//					printf("eye: %f %f %f  ", ray.eye.x, ray.eye.y, ray.eye.z);
-					tmp = normalize_vector(subtract_vectors(scene->light->ori, intersect.eye));
-					angle = acos(dot_product(scene->pl->orth_vec, tmp)) / ( M_PI / 180);
-					distance = distance_two_points(scene->light->ori, intersect.eye);
-					printf("x:%f y:%f angle:%d\n", x, y, angle);
-					mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), color);
-				}
+					mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), light_the_pixel(scene, intersect));
 			}
 			else
-			{
-//					printf("eye: %f %f %f  ", ray.eye.x, ray.eye.y, ray.eye.z);
-					tmp = normalize_vector(subtract_vectors(scene->light->ori, intersect.eye));
-					angle = acos(dot_product(scene->pl->orth_vec, tmp)) / ( M_PI / 180);
-					distance = distance_two_points(scene->light->ori, intersect.eye);
-//					printf("x:%f y:%f check:%d\n", x, y, angle);
-					mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), color);
-			}
+				mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), light_the_pixel(scene, intersect));
 		}
-		else
-		{
-			//no light
-			color = add_shade(0.9, data->color);
-			mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), color);
-		}
+		else //light is INSIDE plane
+			mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), add_shade(0.9, data->color));
 	}
 }
 

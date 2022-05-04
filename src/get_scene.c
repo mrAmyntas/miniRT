@@ -315,12 +315,12 @@ void	read_sp(t_scene *scene, char **line)
 
 void	read_cy2(t_scene *scene, char **line, int i, char **coords)
 {
-	scene->cy[i].x[1] = ft_atod(coords[0]);
-	scene->cy[i].y[1] = ft_atod(coords[1]);
-	scene->cy[i].z[1] = ft_atod(coords[2]);
-	if (scene->cy[i].x[1] < -1 || scene->cy[i].x[1] > 1
-		|| scene->cy[i].y[1] < -1 || scene->cy[i].y[1] > 1
-		|| scene->cy[i].z[1] < -1 || scene->cy[i].z[1] > 1)
+	scene->cy->dir.x = ft_atod(coords[0]);
+	scene->cy->dir.y = ft_atod(coords[1]);
+	scene->cy->dir.z = ft_atod(coords[2]);
+	if (scene->cy->dir.x < -1 || scene->cy->dir.x > 1
+		|| scene->cy->dir.y < -1 || scene->cy->dir.y > 1
+		|| scene->cy->dir.z < -1 || scene->cy->dir.z > 1)
 		ft_error(1, "One of the vectors for a cylinder is out of range\n");
 	free_strstr(coords);
 	scene->cy[i].diameter = ft_atod(line[3]);
@@ -342,9 +342,9 @@ void	read_cy(t_scene *scene, char **line)
 	coords = ft_split(line[1], ',');
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of coordinates for a cylinder\n");
-	scene->cy[i].x[0] = ft_atod(coords[0]);
-	scene->cy[i].y[0] = ft_atod(coords[1]);
-	scene->cy[i].z[0] = ft_atod(coords[2]);
+	scene->cy->eye.x = ft_atod(coords[0]);
+	scene->cy->eye.y = ft_atod(coords[1]);
+	scene->cy->eye.z = ft_atod(coords[2]);
 	free_strstr(coords);
 	coords = ft_split(line[2], ',');
 	if (strstr_len(coords) != 3)
