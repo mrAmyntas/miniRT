@@ -25,22 +25,23 @@ int	get_b(int rgbt)
 	return ((rgbt & (0xFF << 8)) >> 8);
 }
 
-int add_shade(double distance, int color)
+int add_shade(double factor, int color)
 {
     int r;
     int b;
     int g;
     int t;
 
-    distance = 1 - distance;
+//	printf("test\n");
+//  factor = 1 - factor;
     r = get_r(color);
-    r = r * distance;
+    r = r * factor;
     b = get_b(color);
-    b = b * distance;
+    b = b * factor;
     g = get_g(color);
-    g = g * distance;
+    g = g * factor;
     t = get_t(color);
-    color = create_rgbt(t, r, g, b);
+    color = create_rgbt(r, g, b, t);
     return (color);
 }
 

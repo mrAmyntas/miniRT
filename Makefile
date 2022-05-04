@@ -14,7 +14,8 @@ SRC =	src/main.c\
 		src/get_scene.c\
 		src/plane.c\
 		src/sphere.c\
-		src/vectorstuff.c
+		src/vectorstuff.c\
+		src/cylinder.c
 
 INC = 	inc/miniRT.h\
 		libft/libft.h\

@@ -1,6 +1,15 @@
 #include "../inc/miniRT.h"
 
 
+//distance between points
+double	distance_two_points(t_vect3d P1, t_vect3d P2)
+{
+	double	d;
+
+	d = pow((pow((P2.x - P1.x), 2) + pow((P2.y - P1.y), 2) + pow((P2.z - P1.z), 2)), 0.5);
+	return (d);
+}
+
 //divide vector by scalar
 t_vect3d	divide_vec_scalar(t_vect3d vec1, double s)
 {
@@ -85,21 +94,24 @@ bool	is_P_on_plane(t_scene *scene, t_vect3d P, int num)
 }
 
 //check if in the current direction the camera ray will intersect with the plane[num]
-bool	cast_ray_cam_to_space_check_if_hit_pl(t_scene *scene, t_ray ray, int num)
+bool	cast_ray_to_space_check_if_hit_pl(t_scene *scene, t_ray *ray, int num)
 {
 	double		t;
 	t_vect3d	tmp;	
 
-	tmp = subtract_vectors(scene->pl[num].coord, ray.eye);
-	if (dot_product(scene->pl[num].orth_vec, ray.dir) == 0)
+	tmp = subtract_vectors(scene->pl[num].coord, ray->eye);
+	if (dot_product(scene->pl[num].orth_vec, ray->dir) == 0)
 	{
 		//then the ray is parallel to the plane, and there is no intersection point
 		//printf("parralel\n");
 		return (false);
 	}
-	t = (dot_product(scene->pl[num].orth_vec, tmp)) / (dot_product(scene->pl[num].orth_vec, ray.dir));
+	t = (dot_product(scene->pl[num].orth_vec, tmp)) / (dot_product(scene->pl[num].orth_vec, ray->dir));
 	if (t > 0)
+	{
+		ray->eye = add_vectors(ray->eye, multiply_vector(ray->dir, t));
 		return (true);
+	}
 	return (false);
 }
 
@@ -282,3 +294,53 @@ t_matrix44d	set_camera_to_world(t_vect3d from, t_vect3d to)
 
 // If t<0 then the plane is behind the eye point and there is no intersection. If t>=0 then the intersection point
 // is E + tD. If N*D = 0 then the ray is parallel to the plane, and there is no intersection point.
+
+//returns a ray with its eye same as the camera and direction towards the coords x and y
+t_ray	get_ray(t_scene *scene, t_data *data, double x, double y)
+{
+	t_vect3d LookAtPoint;
+	t_vect3d viewDir;
+	t_vect3d up;
+	t_vect3d V;		
+	t_vect3d U;
+
+	up.x = 0;
+	up.y = 1;
+	up.z = 0;
+	// pPOINT SHOULD BE ONE IN 'FRONT'  OF CAMERA, WHICH ISNT ALWAyS z + 1
+
+	LookAtPoint = add_vectors(scene->cam->eye, scene->cam->dir);
+	//LookAtPoint = scene->cam->eye;
+	//LookAtPoint.z = LookAtPoint.z + 1;// NOW IT ALWAYS LOOKS IN FRONT !!!!
+	viewDir = normalize_vector(subtract_vectors(LookAtPoint, scene->cam->eye));
+	//viewDir = scene->cam->dir;
+	U = cross_product(viewDir, up);
+	V = cross_product(U, viewDir);
+
+	U = normalize_vector(U);
+	V = normalize_vector(V);
+
+	double viewPlaneHalfWidth= tan(scene->c_fov * M_PI / 180 / 2);
+	double aspectRatio = data->height/data->width;
+	double viewPlaneHalfHeight = aspectRatio * viewPlaneHalfWidth;
+//	t_vect3d viewPlaneBottomLeftPoint = LookAtPoint - V * viewPlaneHalfHeight - U * viewPlaneHalfWidth;
+	t_vect3d tmp = subtract_vectors(LookAtPoint, multiply_vector(V, viewPlaneHalfHeight));
+	t_vect3d viewPlaneBottomLeftPoint = subtract_vectors(tmp, multiply_vector(U, viewPlaneHalfWidth));
+	// xIncVector = (U*2*halfWidth)/xResolution;
+	// yIncVector = (V*2*halfHeight)/yResolution;
+
+	tmp = multiply_vector(U, (2 * viewPlaneHalfWidth));
+	t_vect3d xIncVector = divide_vec_scalar(tmp, data->width);
+	tmp = multiply_vector(V, (2 * viewPlaneHalfHeight));
+	t_vect3d yIncVector = divide_vec_scalar(tmp, data->height);
+
+	tmp = add_vectors(viewPlaneBottomLeftPoint, multiply_vector(xIncVector, x));
+	t_vect3d ViewPlanePoint = add_vectors(tmp, multiply_vector(yIncVector, y));
+
+	t_ray	ray;
+	// CP  -> C - P
+	ray.eye = scene->cam->eye;
+	ray.dir = normalize_vector(subtract_vectors(ViewPlanePoint, scene->cam->eye));
+
+	return (ray);
+}
