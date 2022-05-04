@@ -15,6 +15,11 @@
 void calc_hit(t_data *data, t_scene *scene, double x, double y, int num)
 {
 	t_ray		ray;
+	t_ray		intersect;
+	t_vect3d	tmp;
+	int			color;
+	int			angle;
+	int			distance;
 	//t_matrix44d	camToWorld;
 
 	//ray = calc_ray(data, scene, x, y); //ray with eye as a pixel point and direction as origin->pixelpoint
@@ -25,11 +30,58 @@ void calc_hit(t_data *data, t_scene *scene, double x, double y, int num)
 	//ray.dir = camera_to_world(scene, ray); //camera-to-world translation, sets new direction
 	//ray.dir = normalize_vector(ray.dir); //normalize
 
+	color = data->color;
 	ray = get_ray(scene, data, x, y);
 	//FIRE MY LASERS
-	if (cast_ray_cam_to_space_check_if_hit_pl(scene, ray, num)) // = hit
+	// cos a = N . L (dot product normal and light vector)
+	// a = arccos (n . l)
+
+
+
+	if (cast_ray_to_space_check_if_hit_pl(scene, &ray, num)) // = hit -> ray now has intersec coords
 	{
-		mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), data->color);
+		//printf("ray.eye: %f %f %f\n", ray.eye.x, ray.eye.y, ray.eye.z);
+		ray.dir = normalize_vector(subtract_vectors(ray.eye, scene->light->ori));
+		ray.eye = scene->light->ori;
+		if (cast_ray_to_space_check_if_hit_pl(scene, &ray, num)) // light hits plane as well
+		{
+			intersect = ray;
+			//cast ray from camera to light, if this hits plane, check if it was BEFORE light
+			ray.eye = scene->cam->eye;
+			ray.dir = normalize_vector(subtract_vectors(scene->light->ori, ray.eye));
+			if (cast_ray_to_space_check_if_hit_pl(scene, &ray, num)) // light hits plane
+			{
+				if (distance_two_points(scene->cam->eye, ray.eye) < distance_two_points(scene->cam->eye, scene->light->ori))
+				{	//from cam -> obj hits first, so light is behind plane
+					color = add_shade(0.9, data->color);
+					mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), color);
+				}
+				else
+				{
+//					printf("eye: %f %f %f  ", ray.eye.x, ray.eye.y, ray.eye.z);
+					tmp = normalize_vector(subtract_vectors(scene->light->ori, intersect.eye));
+					angle = acos(dot_product(scene->pl->orth_vec, tmp)) / ( M_PI / 180);
+					distance = distance_two_points(scene->light->ori, intersect.eye);
+					printf("x:%f y:%f angle:%d\n", x, y, angle);
+					mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), color);
+				}
+			}
+			else
+			{
+//					printf("eye: %f %f %f  ", ray.eye.x, ray.eye.y, ray.eye.z);
+					tmp = normalize_vector(subtract_vectors(scene->light->ori, intersect.eye));
+					angle = acos(dot_product(scene->pl->orth_vec, tmp)) / ( M_PI / 180);
+					distance = distance_two_points(scene->light->ori, intersect.eye);
+//					printf("x:%f y:%f check:%d\n", x, y, angle);
+					mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), color);
+			}
+		}
+		else
+		{
+			//no light
+			color = add_shade(0.9, data->color);
+			mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), color);
+		}
 	}
 }
 
@@ -202,52 +254,3 @@ int i = 0;
 	mlx_terminate(data->mlx);*/
 
 
-//returns a ray with its eye same as the camera and direction towards the coords x and y
-t_ray	get_ray(t_scene *scene, t_data *data, double x, double y)
-{
-	t_vect3d LookAtPoint;
-	t_vect3d viewDir;
-	t_vect3d up;
-	t_vect3d V;		
-	t_vect3d U;		
-
-
-	up.x = 0;
-	up.y = 1;
-	up.z = 0;
-	// pPOINT SHOULD BE ONE IN 'FRONT'  OF CAMERA, WHICH ISNT ALWAyS z + 1
-
-	LookAtPoint = add_vectors(scene->cam->eye, scene->cam->dir);
-	//LookAtPoint = scene->cam->eye;
-	//LookAtPoint.z = LookAtPoint.z + 1;// NOW IT ALWAYS LOOKS IN FRONT !!!!
-	viewDir = normalize_vector(subtract_vectors(LookAtPoint, scene->cam->eye));
-	//viewDir = scene->cam->dir;
-	U = cross_product(viewDir, up);
-	V = cross_product(U, viewDir);
-
-	U = normalize_vector(U);
-	V = normalize_vector(V);
-
-	double viewPlaneHalfWidth= tan(scene->c_fov * M_PI / 180 / 2);
-	double aspectRatio = data->height/data->width;
-	double viewPlaneHalfHeight = aspectRatio * viewPlaneHalfWidth;
-//	t_vect3d viewPlaneBottomLeftPoint = LookAtPoint - V * viewPlaneHalfHeight - U * viewPlaneHalfWidth;
-	t_vect3d tmp = subtract_vectors(LookAtPoint, multiply_vector(V, viewPlaneHalfHeight));
-	t_vect3d viewPlaneBottomLeftPoint = subtract_vectors(tmp, multiply_vector(U, viewPlaneHalfWidth));
-	// xIncVector = (U*2*halfWidth)/xResolution;
-	// yIncVector = (V*2*halfHeight)/yResolution;
-
-	tmp = multiply_vector(U, (2 * viewPlaneHalfWidth));
-	t_vect3d xIncVector = divide_vec_scalar(tmp, data->width);
-	tmp = multiply_vector(V, (2 * viewPlaneHalfHeight));
-	t_vect3d yIncVector = divide_vec_scalar(tmp, data->height);
-
-	tmp = add_vectors(viewPlaneBottomLeftPoint, multiply_vector(xIncVector, x));
-	t_vect3d ViewPlanePoint = add_vectors(tmp, multiply_vector(yIncVector, y));
-
-	t_ray	ray;
-
-	ray.eye = scene->cam->eye;
-	ray.dir = subtract_vectors(ViewPlanePoint, scene->cam->eye);
-	return (ray);
-}

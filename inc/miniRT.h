@@ -91,7 +91,7 @@ typedef struct s_light
 {
 	double		brightness;
 	t_vect3d	ori;
-	int			color;
+	double		color;
 }				t_light;
 
 
@@ -128,7 +128,7 @@ void		draw_plane(t_data *data, t_scene *scene, int num);
 int			plane(t_data *data, t_scene *scene);
 bool		intersect_eye_plane(t_scene *scene, t_vect3d *vec1, int num);
 bool		is_P_on_plane(t_scene *scene, t_vect3d P, int num);
-bool		cast_ray_cam_to_space_check_if_hit_pl(t_scene *scene, t_ray ray, int num);
+bool		cast_ray_to_space_check_if_hit_pl(t_scene *scene, t_ray *ray, int num);
 
 // *** VECTOR STUFF *** \\
 
@@ -143,14 +143,20 @@ t_vect3d	cross_product(t_vect3d vec1, t_vect3d vec2);
 t_matrix44d	set_camera_to_world(t_vect3d from, t_vect3d to);
 t_vect3d	divide_vec_scalar(t_vect3d vec1, double s);
 t_ray		get_ray(t_scene *scene, t_data *data, double x, double y);
+double		distance_two_points(t_vect3d P1, t_vect3d P2);
 
 // *** COLOUR STUFF *** \\
+
 int			create_rgbt(int r, int g, int b, int t);
 int			get_t(int rgbt);
 int			get_r(int rgbt);
 int			get_g(int rgbt);
 int			get_b(int rgbt);
-int 		add_shade(double distance, int color);
+int 		add_shade(double factor, int color);
 int 		get_opposite(int color);
+
+// *** CYLINDER STUFF *** \\\
+
+int			cylinder(t_data *data, t_scene *scene);
 
 #endif
