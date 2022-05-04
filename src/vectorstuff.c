@@ -1,5 +1,12 @@
 #include "../inc/miniRT.h"
 
+//compare vectors
+bool	compare_vectors(t_vect3d vec1, t_vect3d vec2)
+{
+	if (vec1.x == vec2.x && vec1.y == vec2.y && vec1.z == vec2.z)
+		return (true);
+	return (false);
+}
 
 //distance between points
 double	distance_two_points(t_vect3d P1, t_vect3d P2)
@@ -314,11 +321,8 @@ t_ray	get_ray(t_scene *scene, t_data *data, double x, double y)
 	//LookAtPoint.z = LookAtPoint.z + 1;// NOW IT ALWAYS LOOKS IN FRONT !!!!
 	viewDir = normalize_vector(subtract_vectors(LookAtPoint, scene->cam->eye));
 	//viewDir = scene->cam->dir;
-	U = cross_product(viewDir, up);
-	V = cross_product(U, viewDir);
-
-	U = normalize_vector(U);
-	V = normalize_vector(V);
+	U = normalize_vector(cross_product(viewDir, up));
+	V = normalize_vector(cross_product(U, viewDir));
 
 	double viewPlaneHalfWidth= tan(scene->c_fov * M_PI / 180 / 2);
 	double aspectRatio = data->height/data->width;
@@ -341,6 +345,5 @@ t_ray	get_ray(t_scene *scene, t_data *data, double x, double y)
 	// CP  -> C - P
 	ray.eye = scene->cam->eye;
 	ray.dir = normalize_vector(subtract_vectors(ViewPlanePoint, scene->cam->eye));
-
 	return (ray);
 }

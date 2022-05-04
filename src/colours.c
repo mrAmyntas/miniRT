@@ -59,3 +59,50 @@ int get_opposite(int color)
     color = create_rgbt(t, r, g, b);
     return (color);
 }
+
+
+// if (cast_ray_to_space_check_if_hit_pl(scene, &ray, num)) // = hit -> ray now has intersec coords
+// 	{
+// 		intersect = ray;
+// 		//printf("ray.eye: %f %f %f\n", ray.eye.x, ray.eye.y, ray.eye.z);
+// 		//cast ray from camera to light, if this hits plane, check if it was BEFORE light
+// 		ray.eye = scene->cam->eye;
+// 		ray.dir = normalize_vector(subtract_vectors(scene->light->ori, ray.eye));
+// 		if (cast_ray_to_space_check_if_hit_pl(scene, &ray, num)) // light hits plane
+// 		{
+// 			if (distance_two_points(scene->cam->eye, ray.eye) < distance_two_points(scene->cam->eye, scene->light->ori))
+// 			{	//from cam -> obj hits first, so light is behind plane
+// 				color = add_shade(0.9, data->color);
+// 				mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), color);
+// 			}
+// 			else
+// 			{
+// //				printf("eye: %f %f %f  ", ray.eye.x, ray.eye.y, ray.eye.z);
+// 				tmp = normalize_vector(subtract_vectors(scene->light->ori, intersect.eye));
+// 				angle = acos(dot_product(scene->pl->orth_vec, tmp)) / ( M_PI / 180);
+// 				distance = distance_two_points(scene->light->ori, intersect.eye);
+//         		bright = angle / distance * scene->light->brightness / 40;
+// 				if (angle == 0 || bright > 1)
+//            			bright = 1;
+//        			scene->sp->hsl[2] = bright;
+//         		rgb = hsl_to_rgb(scene->sp->hsl);
+// //				printf("x:%f y:%f angle:%d\n", x, y, angle);
+// 				mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), rgb);
+// 			}
+// 		}
+// 		else
+// 		{
+// 			printf("eye: %f %f %f  ", ray.eye.x, ray.eye.y, ray.eye.z);
+// 			tmp = normalize_vector(subtract_vectors(scene->light->ori, intersect.eye));
+// 			angle = acos(dot_product(scene->pl->orth_vec, tmp)) / ( M_PI / 180);
+// 			distance = distance_two_points(scene->light->ori, intersect.eye);
+//         	bright = angle / distance * scene->light->brightness / 40;
+// 			if (angle == 0 || bright > 1)
+//         		bright = 1;
+//        		scene->sp->hsl[2] = bright;
+//         	rgb = hsl_to_rgb(scene->sp->hsl);
+// //			printf("x:%f y:%f check:%d\n", x, y, angle);
+// 			mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), rgb);
+// 		}
+// 	}
+// }
