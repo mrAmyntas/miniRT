@@ -106,12 +106,13 @@ void    sphere2(t_data *data, t_scene *scene, int i, int j, int count)
         ray.dir = multiply_vector(ray.dir, -1);
         angle = acos(dot_product(N, ray.dir)) / (M_PI / 180);
         t[1] = calc_t0(bc[0], bc[1]);
-
-        bright = ((t[1] / (angle / 20)) * scene->light->brightness) / 40;
+      	bright = ((t[1] / (angle / 20)) * scene->light->brightness) / 40;
         if (angle == 0)
             bright = 1;
         if (bright > 1)
             bright = 1;
+		if (bright < 0)
+            bright = 0;
         //printf("%f %f %f\n", angle, t[1], bright);
         //printf("%f %f %f\n", scene->sp->hsl[0], scene->sp->hsl[1], scene->sp->hsl[2] * bright);
         //printf("%f %f %f\n", scene->sp->hsl[0], scene->sp->hsl[1], scene->sp->hsl[2]);
@@ -123,7 +124,7 @@ void    sphere2(t_data *data, t_scene *scene, int i, int j, int count)
         //printf("%f %f %f\n", Phit.x, Phit.y, Phit.z);
         //printf("ray.dir: %f %f %f\n", ray.dir.x, ray.dir.y, ray.dir.z);
         //printf("cos: %f %f\nPixel: %i, %i\nPhit: %f %f %f\nNormal: %f\n", dot_product(N, ray.dir), angle, i, j, Phit.x, Phit.y, Phit.z, N.z);
-        mlx_put_pixel(data->mlx_img2, i, j, rgb);
+        mlx_put_pixel(data->mlx_img2, data->width - i, data->height - j, rgb);
     }
 }
 
