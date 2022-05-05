@@ -63,6 +63,7 @@ typedef struct s_pl
 	t_vect3d	orth_vec;
 	t_vect3d	coord;
     int			rgb;
+	double		hsl[3];
 }				t_pl;
 
 typedef struct s_sp
@@ -125,11 +126,11 @@ void		sphere(t_data *data, t_scene *scene);
 
 // *** PLANE STUFF *** \\
 
-void		draw_plane(t_data *data, t_scene *scene, int num);
+void		draw_plane(t_data *data, t_scene *scene);
 int			plane(t_data *data, t_scene *scene);
 bool		intersect_eye_plane(t_scene *scene, t_vect3d *vec1, int num);
 bool		is_P_on_plane(t_scene *scene, t_vect3d P, int num);
-bool		cast_ray_to_space_check_if_hit_pl(t_scene *scene, t_ray *ray, int num);
+bool		cast_ray_to_space_check_if_hit_pl(t_scene *scene, t_ray *ray, int *num);
 
 // *** VECTOR STUFF *** \\
 
@@ -158,7 +159,8 @@ int 		add_shade(double factor, int color);
 int 		get_opposite(int color);
 int			create_rgb(int r, int g, int b);
 int    		hsl_to_rgb(double hsl[3]);
-int			light_the_pixel(t_scene *scene, t_ray intersect);
+int			light_the_pixel_pl(t_scene *scene, t_ray intersect, int num);
+int			light_the_pixel_cy(t_scene *scene, t_ray intersect, int num);
 
 // *** CYLINDER STUFF *** \\\
 

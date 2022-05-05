@@ -41,7 +41,7 @@ t_vect3d add_vectors(t_vect3d vec1, t_vect3d vec2)
 	return (new);
 }
 
-//Substract vec2 from vec1
+//Substract vec2 from vec1 (if 2 points, returns direcional vector from vec2 to vec1)
 t_vect3d subtract_vectors(t_vect3d vec1, t_vect3d vec2)
 {
 	t_vect3d new;
@@ -97,28 +97,6 @@ bool	is_P_on_plane(t_scene *scene, t_vect3d P, int num)
 	t = dot_product(scene->pl[num].orth_vec, vec);
 	if (t == 0)
 		return (true);
-	return (false);
-}
-
-//check if in the current direction the camera ray will intersect with the plane[num]
-bool	cast_ray_to_space_check_if_hit_pl(t_scene *scene, t_ray *ray, int num)
-{
-	double		t;
-	t_vect3d	tmp;	
-
-	tmp = subtract_vectors(scene->pl[num].coord, ray->eye);
-	if (dot_product(scene->pl[num].orth_vec, ray->dir) == 0)
-	{
-		//then the ray is parallel to the plane, and there is no intersection point
-		//printf("parralel\n");
-		return (false);
-	}
-	t = (dot_product(scene->pl[num].orth_vec, tmp)) / (dot_product(scene->pl[num].orth_vec, ray->dir));
-	if (t > 0)
-	{
-		ray->eye = add_vectors(ray->eye, multiply_vector(ray->dir, t));
-		return (true);
-	}
 	return (false);
 }
 
