@@ -48,7 +48,9 @@ int     hsl_to_rgb(double hsl[3])
     double  hue;
 
     if (!hsl[1])
+	{
         return(create_rgb(hsl[2] * 255, hsl[2] * 255, hsl[2] * 255));
+	}
     temp[0] = hsl[2] + hsl[1] - (hsl[2] * hsl[1]);
     if (hsl[2] < 0.5)
         temp[0] = hsl[2] * (1 + hsl[1]);

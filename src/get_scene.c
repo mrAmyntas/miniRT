@@ -101,6 +101,23 @@ void	create_hsl(t_scene *scene, int r, int g, int b)
 		scene->sp->hsl[0] += 360;
 }
 
+void	create_hsl_pl(t_scene *scene, int r, int g, int b, int i)
+{
+	double	minmax[2];
+
+	minmax[0] = get_min(r, g, b);
+	minmax[1] = get_max(r, g, b);
+	scene->pl[i].hsl[2] = (minmax[0] + minmax[1]) / 2;
+	scene->pl[i].hsl[1] = 0;
+	scene->pl[i].hsl[0] = 0;
+	if (minmax[0] == minmax[1])
+		return;
+	scene->pl[i].hsl[1] = get_saturation(scene->pl[i].hsl[2], minmax);
+	scene->pl[i].hsl[0] = get_hue(minmax, r , g , b );
+	if (scene->pl[i].hsl[0] < 0)
+		scene->pl[i].hsl[0] += 360;
+}
+
 int	create_rgb(int r, int g, int b)
 {
 	if (r < 0 || r > 255)
@@ -263,13 +280,14 @@ void	read_pl2(t_scene *scene, char **line, int i, char **coords)
 		ft_error(1, "Wrong number of colours for a plane\n");
 	scene->pl[i].rgb = create_rgb(ft_atoi(coords[0]),
 			ft_atoi(coords[1]), ft_atoi(coords[2]));
+	create_hsl_pl(scene, ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]), i);
 	free_strstr(coords);
 }
 
 void	read_pl(t_scene *scene, char **line)
 {
 	char		**coords;
-	static int	i;
+	static int	i = 0;
 
 	if (strstr_len(line) != 4)
 		ft_error(1, "Wrong number of arguments for a plane\n");
@@ -399,9 +417,9 @@ int	set_scene(t_scene *scene, char *name)
 	str = get_next_line(fd);
 	count_objects(scene, str, fd);
 	fd = open(name, O_RDONLY);
-	scene->pl = malloc(sizeof(t_pl) * (scene->state[0] + 2));
-	scene->sp = malloc(sizeof(t_sp) * (scene->state[1] + 3));
-	scene->cy = malloc(sizeof(t_cy) * (scene->state[2] + 2));
+	scene->pl = malloc(sizeof(t_pl) * (scene->amount[0] + 2));
+	scene->sp = malloc(sizeof(t_sp) * (scene->amount[1] + 3));
+	scene->cy = malloc(sizeof(t_cy) * (scene->amount[2] + 2));
 	scene->cam = malloc(sizeof(t_ray));
 	scene->light = malloc(sizeof(t_light));
 	if (!scene->pl || !scene->sp || !scene->cy)
