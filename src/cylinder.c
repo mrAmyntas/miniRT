@@ -3,6 +3,29 @@
 // Specular Component (phong)
 //	Ambient Term 
 
+t_matrix44d	matrix_to_translate_to_xyx(t_vect3d C)
+{
+	t_matrix44d model;
+
+	model.row1.x = 1;
+	model.row1.y = 0;
+	model.row1.z = 0;
+	model.row1.t = C.x;
+	model.row2.x = 0;
+	model.row2.y = 1;
+	model.row2.z = 0;
+	model.row2.t = C.y;
+	model.row3.x = 0;
+	model.row3.y = 0;
+	model.row3.z = 1;
+	model.row3.t = C.z;
+	model.row4.x = 0;
+	model.row4.y = 0;
+	model.row4.z = 0;
+	model.row4.t = 1;
+	return (model);
+}
+
 double	cast_ray_to_space_check_if_hit_cy(t_scene *scene, t_ray *ray, int num)
 {
 	double	a;
@@ -14,22 +37,17 @@ double	cast_ray_to_space_check_if_hit_cy(t_scene *scene, t_ray *ray, int num)
 	double zz[2];
 	double z_min;
 	double z_max;
-	// t_vect3d x;
-	// t_vect3d z;
-	// t_vect3d y;
-	// t_vect3d d;
+	static int i = 0;
 
-	// x = normalize_vector(cross_product(scene->cy->dir, ray->dir));
-	// z = scene->cy->dir;
-	// y = normalize_vector(cross_product(z, x));
-	// d = multiply_vector(x, dot_product(subtract_vectors(scene->cam->eye, scene->cy->eye), x));
-
-
-// r = sqrt ( x ^2 + y ^2 )
-// r ^2 = x^2 + y^2
-// r = diameter/2
-// (d/2)^2 = x^2 + y^2
-// z1 = zE + t1zD and z2 = zE + t2zD
+	if (i == 0)
+	{
+		t_matrix44d Translation_Matrix = matrix_to_translate_to_xyx(scene->cy[num].eye);
+		t_vec4d		origin_p = {0, 0, 0, 1};
+		t_vec4d		transform_p = matrix44d_x_vert4d(Translation_Matrix, origin_p);
+		printf_vect4d(transform_p);
+		t_matrix44d Inverted_Translation_Matrix = invert_matrix(Translation_Matrix);
+		i++;
+	}
 
 	r = pow((scene->cy[num].diameter / 2), 2);
 	a = (pow(ray->dir.x, 2) + pow(ray->dir.y, 2));
@@ -45,6 +63,7 @@ double	cast_ray_to_space_check_if_hit_cy(t_scene *scene, t_ray *ray, int num)
 	z_min = 0;
 	z_max = scene->cy[num].height;
 
+	
 
 	//if ((z_min < zz[0] && zz[0] < z_max) || (z_min < zz[1] && zz[1] < z_max))
 	//	printf("t0:%f t1:%f zz0:%f zz1:%f\n", t[0], t[1], zz[0], zz[1]);
@@ -98,7 +117,6 @@ double	cast_ray_to_space_check_if_hit_cy(t_scene *scene, t_ray *ray, int num)
 }
 
 
-//
 // Cylindrical polar to rectangular
 //
 //	x^2 + y^2 = 1, z_min < z < z_max  (r = 1, z_min < z < z_max)
