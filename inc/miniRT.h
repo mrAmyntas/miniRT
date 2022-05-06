@@ -85,6 +85,7 @@ typedef struct s_cy
 	t_vect3d	dir;
     double  diameter;
     double  height;
+	double		hsl[3];
     int     rgb;
 }				t_cy;
 
@@ -161,6 +162,10 @@ int			create_rgb(int r, int g, int b);
 int    		hsl_to_rgb(double hsl[3]);
 int			light_the_pixel_pl(t_scene *scene, t_ray intersect, int num);
 int			light_the_pixel_cy(t_scene *scene, t_ray intersect, int num);
+double		get_saturation(double l, double minmax[2]);
+double 		get_hue(double minmax[2], double r, double g, double b);
+double		get_min(int r, int g, int b);
+double		get_max(int r, int g, int b);
 
 // *** CYLINDER STUFF *** \\\
 
