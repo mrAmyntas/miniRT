@@ -77,9 +77,6 @@ typedef struct s_sp
 
 typedef struct s_cy
 {
-	double  	x[2];
-    double  	y[2];
-    double  	z[2];
 	t_vect3d	eye;
 	t_vect3d	dir;
     double  	diameter;
