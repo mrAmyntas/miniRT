@@ -99,6 +99,7 @@ typedef struct s_scene
     int    		state[3];
 	double 		a_ratio;
     int    		a_rgb;
+	t_vect3d	a_hsl;
     double  	c_fov;
 	t_vect3d	current_dir;
 	t_ray		*cam;
