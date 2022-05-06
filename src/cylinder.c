@@ -178,29 +178,6 @@ int	cylinder(t_data *data, t_scene *scene)
 }
 
 
-
-void	create_hsl_cy(t_scene *scene, int i)
-{
-	double	minmax[2];
-
-	int r = get_r(scene->cy[i].rgb);
-	int g = get_g(scene->cy[i].rgb);
-	int b = get_b(scene->cy[i].rgb);
-
-	minmax[0] = get_min(r, g, b);
-	minmax[1] = get_max(r, g, b);
-	scene->cy[i].hsl[2] = (minmax[0] + minmax[1]) / 2;
-	scene->cy[i].hsl[1] = 0;
-	scene->cy[i].hsl[0] = 0;
-	if (minmax[0] == minmax[1])
-		return;
-	scene->cy[i].hsl[1] = get_saturation(scene->pl[i].hsl[2], minmax);
-	scene->cy[i].hsl[0] = get_hue(minmax, r , g , b );
-	if (scene->cy[i].hsl[0] < 0)
-		scene->cy[i].hsl[0] += 360;
-}
-
-
 int	light_the_pixel_cy(t_scene *scene, t_ray intersect, int num)
 {
 	t_vect3d	tmp;
@@ -208,14 +185,12 @@ int	light_the_pixel_cy(t_scene *scene, t_ray intersect, int num)
 	double		distance;
 	double		bright;
 	int			rgb;
-	create_hsl_cy(scene, num);
-
 
 	distance = distance_two_points(scene->light->ori, intersect.eye);
 	bright = (scene->light->brightness) - (distance / 20);
     bright = scene->light->brightness + scene->a_ratio;
 	if (bright > 1)
 		bright = 1;
-	scene->cy[num].hsl[2] = bright;
+	scene->cy[num].hsl.z = bright;
 	return (hsl_to_rgb(scene->cy[num].hsl));
 }
