@@ -327,6 +327,7 @@ void	read_cy2(t_scene *scene, char **line, int i, char **coords)
 	coords = ft_split(line[5], ',');
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of colours for a cylinder\n");
+	create_hsl(&scene->cy->hsl, ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
 	scene->cy[i].rgb = create_rgb(ft_atoi(coords[0]),
 			ft_atoi(coords[1]), ft_atoi(coords[2]));
 }
