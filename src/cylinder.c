@@ -1,12 +1,14 @@
 #include "../inc/miniRT.h"
-
+// diffuse component (Lambert’s Law)
+// Specular Component (phong)
+//	Ambient Term 
 
 double	cast_ray_to_space_check_if_hit_cy(t_scene *scene, t_ray *ray, int num)
 {
 	double	a;
 	double	b;
 	double	c;
-	double	t[2];
+	double	t[4] = {0, 0, 0 ,0};
 	double	D;
 	double r;
 	double zz[2];
@@ -43,22 +45,52 @@ double	cast_ray_to_space_check_if_hit_cy(t_scene *scene, t_ray *ray, int num)
 	z_min = 0;
 	z_max = scene->cy[num].height;
 
-	if ((z_min < zz[0] && zz[0] < z_max) || (z_min < zz[1] && zz[1] < z_max))
-		printf("t0:%f t1:%f zz0:%f zz1:%f\n", t[0], t[1], zz[0], zz[1]);
-	// if (t[0] < t[1])
-	// {
-	// 	ray->eye = add_vectors(ray->eye, multiply_vector(ray->dir, t[0]));
-	// 	return (t[0]);
-	// }
-	// ray->eye = add_vectors(ray->eye, multiply_vector(ray->dir, t[1]));
-	// return (t[1]);
+
+	//if ((z_min < zz[0] && zz[0] < z_max) || (z_min < zz[1] && zz[1] < z_max))
+	//	printf("t0:%f t1:%f zz0:%f zz1:%f\n", t[0], t[1], zz[0], zz[1]);
 	if (t[0] < t[1] && z_min < zz[0] && zz[0] < z_max && t[0] >= 0)
 	{
+		if ((zz[0] < z_min && zz[1] > z_min) || (zz[1] < z_min && zz[0] > z_min)) // hits cap
+		{
+			t[2] = (z_min - ray->eye.z) / ray->dir.z;
+			if (t[2] < t[0] && t[2] > 0)
+			{
+				ray->eye = add_vectors(ray->eye, multiply_vector(ray->dir, t[2]));
+				return t[2];
+			}
+		}
+		if ((zz[0] < z_max && zz[1] > z_max) || (zz[1] < z_max && zz[0] > z_max)) // hits cap
+		{
+			t[3] = (z_max - ray->eye.z) / ray->dir.z;
+			if (t[3] < t[0] && t[3] > 0)
+			{
+				ray->eye = add_vectors(ray->eye, multiply_vector(ray->dir, t[3]));
+				return t[3];
+			}
+		}
 		ray->eye = add_vectors(ray->eye, multiply_vector(ray->dir, t[0]));
 		return (t[0]);
 	}
 	else if (z_min < zz[1] && zz[1] < z_max && t[1] >= 0)
 	{
+		if ((zz[0] < z_min && zz[1] > z_min) || (zz[1] < z_min && zz[0] > z_min)) // hits cap
+		{
+			t[2] = (z_min - ray->eye.z) / ray->dir.z;
+			if (t[2] < t[1] && t[2] > 0)
+			{
+				ray->eye = add_vectors(ray->eye, multiply_vector(ray->dir, t[2]));
+				return t[2];
+			}
+		}
+		if ((zz[0] < z_max && zz[1] > z_max) || (zz[1] < z_max && zz[0] > z_max)) // hits cap
+		{
+			t[3] = (z_max - ray->eye.z) / ray->dir.z;
+			if (t[3] < t[1] && t[3] > 0)
+			{
+				ray->eye = add_vectors(ray->eye, multiply_vector(ray->dir, t[3]));
+				return t[3];
+			}
+		}
 		ray->eye = add_vectors(ray->eye, multiply_vector(ray->dir, t[1]));
 		return (t[1]);
 	}
@@ -87,10 +119,8 @@ void calc_hit2(t_data *data, t_scene *scene, double x, double y, int num)
 	double		tmp;
 	double		tmp2;
 
-	ray = get_ray(scene, data, x, y);
-	//printf("ray: e: %f %f %f  d: (%f,%f,%f)\n", ray.eye.x, ray.eye.y, ray.eye.z, ray.dir.x, ray.dir.y, ray.dir.z);
+	ray = get_ray(scene, data, x, y); //camera pov ray to pixel
 	tmp = cast_ray_to_space_check_if_hit_cy(scene, &ray, num);
-	//printf("tmp:%f\n", tmp);
 	if (tmp != -1) // = hit  (ray is now intersect point)
 	{
 		intersect.eye = ray.eye;
@@ -98,8 +128,12 @@ void calc_hit2(t_data *data, t_scene *scene, double x, double y, int num)
 		ray.eye = scene->light->ori;
 		ray.dir = normalize_vector(subtract_vectors(intersect.eye, scene->light->ori));
 		tmp2 = cast_ray_to_space_check_if_hit_cy(scene, &ray, num); // ray.eye is new intersect
-		if (compare_vectors(ray.eye, intersect.eye)) // is lit
-			mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), light_the_pixel_cy(scene, intersect, num));
+	//	printf("ray: %f %f %f    intersect: %f %f %f\n", ray.eye.x, ray.eye.y, ray.eye.z, intersect.eye.x, intersect.eye.y, intersect.eye.z);
+		if (tmp2 != -1 && compare_vectors(ray.eye, intersect.eye) == true) // is lit
+		{
+			//printf("ray: %f %f %f    intersect: %f %f %f\n", ray.eye.x, ray.eye.y, ray.eye.z, intersect.eye.x, intersect.eye.y, intersect.eye.z);
+			mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), light_the_pixel_cy(scene, intersect, num)); //light_the_pixel_cy(scene, intersect, num)
+		}
 		else
 			mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), add_shade(0.8, data->color));
 		return ;
@@ -144,6 +178,29 @@ int	cylinder(t_data *data, t_scene *scene)
 }
 
 
+
+void	create_hsl_cy(t_scene *scene, int i)
+{
+	double	minmax[2];
+
+	int r = get_r(scene->cy[i].rgb);
+	int g = get_g(scene->cy[i].rgb);
+	int b = get_b(scene->cy[i].rgb);
+
+	minmax[0] = get_min(r, g, b);
+	minmax[1] = get_max(r, g, b);
+	scene->cy[i].hsl[2] = (minmax[0] + minmax[1]) / 2;
+	scene->cy[i].hsl[1] = 0;
+	scene->cy[i].hsl[0] = 0;
+	if (minmax[0] == minmax[1])
+		return;
+	scene->cy[i].hsl[1] = get_saturation(scene->pl[i].hsl[2], minmax);
+	scene->cy[i].hsl[0] = get_hue(minmax, r , g , b );
+	if (scene->cy[i].hsl[0] < 0)
+		scene->cy[i].hsl[0] += 360;
+}
+
+
 int	light_the_pixel_cy(t_scene *scene, t_ray intersect, int num)
 {
 	t_vect3d	tmp;
@@ -151,9 +208,14 @@ int	light_the_pixel_cy(t_scene *scene, t_ray intersect, int num)
 	double		distance;
 	double		bright;
 	int			rgb;
+	create_hsl_cy(scene, num);
 
-    bright = scene->light->brightness + 0.2;
+
+	distance = distance_two_points(scene->light->ori, intersect.eye);
+	bright = (scene->light->brightness) - (distance / 20);
+    bright = scene->light->brightness + scene->a_ratio;
 	if (bright > 1)
 		bright = 1;
-	return (hsl_to_rgb(scene->sp->hsl));
+	scene->cy[num].hsl[2] = bright;
+	return (hsl_to_rgb(scene->cy[num].hsl));
 }
