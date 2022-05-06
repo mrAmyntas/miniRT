@@ -107,7 +107,7 @@ int	light_the_pixel_pl(t_scene *scene, t_ray intersect, int num)
 		bright = 1.0;
 	if (bright <= 0.0)
 		bright = 0.01;
-	scene->pl[num].hsl[2] = bright;
+	scene->pl[num].hsl.z = bright;
 	return (hsl_to_rgb(scene->pl[num].hsl));
 }
 

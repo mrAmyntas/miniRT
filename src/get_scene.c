@@ -84,38 +84,21 @@ double get_hue(double minmax[2], double r, double g, double b)
 	return(num * 60);	
 }
 
-void	create_hsl(t_scene *scene, int r, int g, int b)
+void	create_hsl(t_vect3d *hsl, int r, int g, int b)
 {
 	double	minmax[2];
 
 	minmax[0] = get_min(r, g, b);
 	minmax[1] = get_max(r, g, b);
-	scene->sp->hsl[2] = (minmax[0] + minmax[1]) / 2;
-	scene->sp->hsl[1] = 0;
-	scene->sp->hsl[0] = 0;
+	hsl->z = (minmax[0] + minmax[1]) / 2;
+	hsl->y = 0;
+	hsl->x = 0;
 	if (minmax[0] == minmax[1])
 		return;
-	scene->sp->hsl[1] = get_saturation(scene->sp->hsl[2], minmax);
-	scene->sp->hsl[0] = get_hue(minmax, r , g , b );
-	if (scene->sp->hsl[0] < 0)
-		scene->sp->hsl[0] += 360;
-}
-
-void	create_hsl_pl(t_scene *scene, int r, int g, int b, int i)
-{
-	double	minmax[2];
-
-	minmax[0] = get_min(r, g, b);
-	minmax[1] = get_max(r, g, b);
-	scene->pl[i].hsl[2] = (minmax[0] + minmax[1]) / 2;
-	scene->pl[i].hsl[1] = 0;
-	scene->pl[i].hsl[0] = 0;
-	if (minmax[0] == minmax[1])
-		return;
-	scene->pl[i].hsl[1] = get_saturation(scene->pl[i].hsl[2], minmax);
-	scene->pl[i].hsl[0] = get_hue(minmax, r , g , b );
-	if (scene->pl[i].hsl[0] < 0)
-		scene->pl[i].hsl[0] += 360;
+	hsl->y = get_saturation(hsl->z, minmax);
+	hsl->x = get_hue(minmax, r , g , b );
+	if (hsl->x < 0)
+		hsl->x += 360;
 }
 
 int	create_rgb(int r, int g, int b)
@@ -278,9 +261,9 @@ void	read_pl2(t_scene *scene, char **line, int i, char **coords)
 	coords = ft_split(line[3], ',');
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of colours for a plane\n");
+	create_hsl(&scene->pl->hsl, ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
 	scene->pl[i].rgb = create_rgb(ft_atoi(coords[0]),
 			ft_atoi(coords[1]), ft_atoi(coords[2]));
-	create_hsl_pl(scene, ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]), i);
 	free_strstr(coords);
 }
 
@@ -323,9 +306,7 @@ void	read_sp(t_scene *scene, char **line)
 	coords = ft_split(line[3], ',');
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of vectors for a sphere\n");
-
-	create_hsl(scene, ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
-
+	create_hsl(&scene->sp->hsl, ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
 	scene->sp[i].rgb = create_rgb(ft_atoi(coords[0]),
 			ft_atoi(coords[1]), ft_atoi(coords[2]));
 	i++;
