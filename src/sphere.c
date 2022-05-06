@@ -99,8 +99,8 @@ void    sphere2(t_data *data, t_scene *scene, int i, int j, int count)
     {
         Phit[0] = add_vectors(ray.eye, multiply_vector(ray.dir, t[0]));
         printf("%f %f %f\n", Phit[0].x, Phit[0].y, Phit[0].z);
-        N = normalize_vector(subtract_vectors(Phit, scene->sp[count].C));
-        ray.dir = normalize_vector(subtract_vectors(Phit, scene->light->ori)); // light direction
+        N = normalize_vector(subtract_vectors(Phit[0], scene->sp[count].C));
+        ray.dir = normalize_vector(subtract_vectors(Phit[0], scene->light->ori)); // light direction
         ray.eye = scene->light->ori;
         calc_b_c(scene, ray, bc, count);
         Phit[1] = add_vectors(ray.eye, multiply_vector(ray.dir, t[1]));
