@@ -45,6 +45,7 @@ double	cast_ray_to_space_check_if_hit_cy(t_scene *scene, t_ray *ray, int num)
 		t_vec4d		origin_p = {0, 0, 0, 1};
 		t_vec4d		transform_p = matrix44d_x_vert4d(Translation_Matrix, origin_p);
 		printf_vect4d(transform_p);
+		t_matrix44d Inverted_Translation_Matrix = invert_matrix(Translation_Matrix);
 		i++;
 	}
 

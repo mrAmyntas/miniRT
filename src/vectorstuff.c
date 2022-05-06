@@ -125,6 +125,115 @@ t_vect3d	mult_vect3d_matrix4x4(t_vect3d vec, t_matrix33d matrix)
 	return (new);
 }
 
+//swaps two rows of 4x8 matrix
+void	swap_row(t_vec8d *row1, t_vec8d *row2)
+{
+	double	tmp;
+
+	tmp = row1->x1;
+	row1->x1 = row2->x1;
+	row2->x1 = tmp;
+
+	tmp = row1->y1;
+	row1->y1 = row2->y1;
+	row2->y1 = tmp;
+
+	tmp = row1->z1;
+	row1->z1 = row2->z1;
+	row2->z1 = tmp;
+
+	tmp = row1->t1;
+	row1->t1 = row2->t1;
+	row2->t1 = tmp;
+
+	tmp = row1->x2;
+	row1->x2 = row2->x2;
+	row2->x2 = tmp;
+
+	tmp = row1->y2;
+	row1->y2 = row2->y2;
+	row2->y2 = tmp;
+
+	tmp = row1->z2;
+	row1->z2 = row2->z2;
+	row2->z2 = tmp;
+
+	tmp = row1->t2;
+	row1->t2 = row2->t2;
+	row2->t2 = tmp;
+
+}
+//inverts a matrix if possible
+t_matrix44d invert_matrix(t_matrix44d M)
+{
+	t_matrix48d	I;
+	t_matrix44d	New;
+	int			ret;
+
+	//fill in
+	I.row1.x1 = M.row1.x;
+	I.row1.y1 = M.row1.y;
+	I.row1.z1 = M.row1.z;
+	I.row1.t1 = M.row1.t;
+
+	I.row2.x1 = M.row2.x;
+	I.row2.y1 = M.row2.y;
+	I.row2.z1 = M.row2.z;
+	I.row2.t1 = M.row2.t;
+
+	I.row3.x1 = M.row3.x;
+	I.row3.y1 = M.row3.y;
+	I.row3.z1 = M.row3.z;
+	I.row3.t1 = M.row3.t;
+
+	I.row4.x1 = M.row4.x;
+	I.row4.y1 = M.row4.y;
+	I.row4.z1 = M.row4.z;
+	I.row4.t1 = M.row4.t;
+
+	I.row1.x2 = 1;
+	I.row1.y2 = 0;
+	I.row1.z2 = 0;
+	I.row1.t2 = 0;
+
+	I.row2.x2 = 0;
+	I.row2.y2 = 1; 
+	I.row2.z2 = 0;
+	I.row2.t2 = 0;
+
+	I.row3.x2 = 0;
+	I.row3.y2 = 0;
+	I.row3.z2 = 1;
+	I.row3.t2 = 0;
+
+	I.row4.x2 = 0;
+	I.row4.y2 = 0;
+	I.row4.z2 = 0;
+	I.row4.t2 = 1;
+
+	printf_matrix48d(I);
+//The first thing we will do is to examine the value for the pivot coefficient for the current column 
+//(the column being processed). In order for our technique to work, this value has to be different than zero.
+// If it is different than zero then we can directly move to step two. If it is equal to zero, we will need
+// to find another row in the matrix for this column which value is different than zero, and swap these two 
+//rows (operation 1). However more than one row may have values different than zero ? So which one should 
+//we select ? We will pickup the row which absolute value is the highest.
+
+	if (I.row1.x1 == 0)
+	{
+		if ((I.row2.x1 != 0) && ((I.row3.x1 == 0) || fabs(I.row3.x1) < fabs(I.row2.x1)) && ((I.row4.x1 == 0) || fabs(I.row4.x1) < fabs(I.row2.x1)))
+			swap_row(&I.row1, &I.row2);
+		else if ((I.row3.x1 != 0) && ((I.row4.x1 == 0) || fabs(I.row4.x1) < fabs(I.row3.x1)))
+			swap_row(&I.row1, &I.row3);
+		else if (I.row4.x1 != 0)
+			swap_row(&I.row1, &I.row4);
+		else
+			printf("cant inverse this matrix, all 0's in column\n");
+	}
+	printf_matrix48d(I);
+	return (New);
+}
+
 //printfs a 4x4 matrix
 void	printf_matrix44d(t_matrix44d matrix)
 {
@@ -133,6 +242,17 @@ void	printf_matrix44d(t_matrix44d matrix)
 	printf("|%f %f %f %f|\n", matrix.row2.x, matrix.row2.y, matrix.row2.z, matrix.row2.t);
 	printf("|%f %f %f %f|\n", matrix.row3.x, matrix.row3.y, matrix.row3.z, matrix.row3.t);
 	printf("|%f %f %f %f|\n", matrix.row4.x, matrix.row4.y, matrix.row4.z, matrix.row4.t);
+	printf("----------------------\n");
+}
+
+//printfs a 4x8 matrix
+void	printf_matrix48d(t_matrix48d matrix)
+{
+	printf("----------------------\n");
+	printf("|%f %f %f %f| %f %f %f %f\n", matrix.row1.x1, matrix.row1.y1, matrix.row1.z1, matrix.row1.t1, matrix.row1.x2, matrix.row1.y2, matrix.row1.z2, matrix.row1.t2);
+	printf("|%f %f %f %f| %f %f %f %f\n", matrix.row2.x1, matrix.row2.y1, matrix.row2.z1, matrix.row2.t1, matrix.row2.x2, matrix.row2.y2, matrix.row2.z2, matrix.row2.t2);
+	printf("|%f %f %f %f| %f %f %f %f\n", matrix.row3.x1, matrix.row3.y1, matrix.row3.z1, matrix.row3.t1, matrix.row3.x2, matrix.row3.y2, matrix.row3.z2, matrix.row3.t2);
+	printf("|%f %f %f %f| %f %f %f %f\n", matrix.row4.x1, matrix.row4.y1, matrix.row4.z1, matrix.row4.t1, matrix.row4.x2, matrix.row4.y2, matrix.row4.z2, matrix.row4.t2);
 	printf("----------------------\n");
 }
 

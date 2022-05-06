@@ -37,12 +37,30 @@ typedef struct 	s_vec4d {
 	double		t;
 }				t_vec4d;
 
+typedef struct 	s_vec8d {
+	double		x1;
+	double		y1;
+	double		z1;
+	double		t1;
+	double		x2;
+	double		y2;
+	double		z2;
+	double		t2;
+}				t_vec8d;
+
 typedef struct 	s_matrix44d {
 	t_vec4d		row1;
 	t_vec4d		row2;
 	t_vec4d		row3;
 	t_vec4d		row4;
 }				t_matrix44d;
+
+typedef struct 	s_matrix48d {
+	t_vec8d		row1;
+	t_vec8d		row2;
+	t_vec8d		row3;
+	t_vec8d		row4;
+}				t_matrix48d;
 
 typedef struct 	s_data {
 	mlx_image_t	*mlx_img;
@@ -146,6 +164,8 @@ bool		compare_vectors(t_vect3d vec1, t_vect3d vec2);
 t_vec4d 	matrix44d_x_vert4d(t_matrix44d matrix, t_vec4d vec);
 void		printf_matrix44d(t_matrix44d matrix);
 void		printf_vect4d(t_vec4d vec);
+t_matrix44d invert_matrix(t_matrix44d M);
+void		printf_matrix48d(t_matrix48d matrix);
 
 // *** COLOUR STUFF *** \\
 
