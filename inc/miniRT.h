@@ -38,10 +38,10 @@ typedef struct 	s_vec4d {
 }				t_vec4d;
 
 typedef struct 	s_matrix44d {
-	t_vec4d		x;
-	t_vec4d		y;
-	t_vec4d		z;
-	t_vec4d		t;
+	t_vec4d		row1;
+	t_vec4d		row2;
+	t_vec4d		row3;
+	t_vec4d		row4;
 }				t_matrix44d;
 
 typedef struct 	s_data {
@@ -143,6 +143,9 @@ t_vect3d	divide_vec_scalar(t_vect3d vec1, double s);
 t_ray		get_ray(t_scene *scene, t_data *data, double x, double y);
 double		distance_two_points(t_vect3d P1, t_vect3d P2);
 bool		compare_vectors(t_vect3d vec1, t_vect3d vec2);
+t_vec4d 	matrix44d_x_vert4d(t_matrix44d matrix, t_vec4d vec);
+void		printf_matrix44d(t_matrix44d matrix);
+void		printf_vect4d(t_vec4d vec);
 
 // *** COLOUR STUFF *** \\
 

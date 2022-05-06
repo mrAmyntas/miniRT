@@ -7,9 +7,6 @@ bool	compare_vectors(t_vect3d vec1, t_vect3d vec2)
 	if (vec1.x - vec2.x < 0.000001 && vec1.y - vec2.y < 0.000001 && vec1.z - vec2.z < 0.000001)
 		return (true);
 	return (false);
-	if (!(vec1.x - vec2.x) && !(vec1.y - vec2.y) && !(vec1.z - vec2.z)             ) 
-		return (true);
-	return (false);
 }
 
 //distance between points
@@ -128,6 +125,35 @@ t_vect3d	mult_vect3d_matrix4x4(t_vect3d vec, t_matrix33d matrix)
 	return (new);
 }
 
+//printfs a 4x4 matrix
+void	printf_matrix44d(t_matrix44d matrix)
+{
+	printf("----------------------\n");
+	printf("|%f %f %f %f|\n", matrix.row1.x, matrix.row1.y, matrix.row1.z, matrix.row1.t);
+	printf("|%f %f %f %f|\n", matrix.row2.x, matrix.row2.y, matrix.row2.z, matrix.row2.t);
+	printf("|%f %f %f %f|\n", matrix.row3.x, matrix.row3.y, matrix.row3.z, matrix.row3.t);
+	printf("|%f %f %f %f|\n", matrix.row4.x, matrix.row4.y, matrix.row4.z, matrix.row4.t);
+	printf("----------------------\n");
+}
+
+//printfs a vec4d
+void	printf_vect4d(t_vec4d vec)
+{
+	printf("{%f %f %f %f}\n", vec.x, vec.y, vec.z, vec.t);
+}
+
+//Matrix x Vertex = TransformedVertex
+t_vec4d matrix44d_x_vert4d(t_matrix44d matrix, t_vec4d vec)
+{
+	t_vec4d T;
+
+	T.x = matrix.row1.x * vec.x + matrix.row1.y * vec.y + matrix.row1.z * vec.z + matrix.row1.t * vec.t;
+	T.y = matrix.row2.x * vec.x + matrix.row2.y * vec.y + matrix.row2.z * vec.z + matrix.row2.t * vec.t;
+	T.z = matrix.row3.x * vec.x + matrix.row3.y * vec.y + matrix.row3.z * vec.z + matrix.row3.t * vec.t;
+	T.t = matrix.row4.x * vec.x + matrix.row4.y * vec.y + matrix.row4.z * vec.z + matrix.row4.t * vec.t;
+	return (T);
+}
+
 double		magnitude(t_vect3d vec1)
 {
 	double	result;
@@ -223,22 +249,22 @@ t_matrix44d	set_camera_to_world(t_vect3d from, t_vect3d to)
 	matrix.x = normalize_vector(subtract_vectors(to, from));
 	matrix.y = cross_product(new, matrix.x);
 	matrix.z = cross_product(matrix.x, matrix.y);
-	camToWorld.x.x = matrix.x.x;
-	camToWorld.x.y = matrix.x.y;
-	camToWorld.x.z = matrix.x.z;
-	camToWorld.y.x = matrix.y.x;
-	camToWorld.y.y = matrix.y.y;
-	camToWorld.y.z = matrix.y.z;
-	camToWorld.z.x = matrix.z.x;
-	camToWorld.z.y = matrix.z.y;
-	camToWorld.z.z = matrix.z.z;
-	camToWorld.t.x = from.x;
-	camToWorld.t.y = from.y;
-	camToWorld.t.z = from.z;
-	camToWorld.x.t = 0;
-	camToWorld.y.t = 0;
-	camToWorld.z.t = 0;
-	camToWorld.t.t = 1;
+	camToWorld.row1.x = matrix.x.x;
+	camToWorld.row1.y = matrix.x.y;
+	camToWorld.row1.z = matrix.x.z;
+	camToWorld.row2.x = matrix.y.x;
+	camToWorld.row2.y = matrix.y.y;
+	camToWorld.row2.z = matrix.y.z;
+	camToWorld.row3.x = matrix.z.x;
+	camToWorld.row3.y = matrix.z.y;
+	camToWorld.row3.z = matrix.z.z;
+	camToWorld.row4.x = from.x;
+	camToWorld.row4.y = from.y;
+	camToWorld.row4.z = from.z;
+	camToWorld.row1.t = 0;
+	camToWorld.row2.t = 0;
+	camToWorld.row3.t = 0;
+	camToWorld.row4.t = 1;
 	return (camToWorld);
 }
 
