@@ -3,7 +3,11 @@
 //compare vectors
 bool	compare_vectors(t_vect3d vec1, t_vect3d vec2)
 {
-	if (vec1.x == vec2.x && vec1.y == vec2.y && vec1.z == vec2.z)
+
+	if (vec1.x - vec2.x < 0.000001 && vec1.y - vec2.y < 0.000001 && vec1.z - vec2.z < 0.000001)
+		return (true);
+	return (false);
+	if (!(vec1.x - vec2.x) && !(vec1.y - vec2.y) && !(vec1.z - vec2.z)             ) 
 		return (true);
 	return (false);
 }
