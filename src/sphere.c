@@ -48,9 +48,7 @@ int     hsl_to_rgb(t_vect3d hsl)
     double  hue;
 
     if (!hsl.y)
-    {
         return(create_rgb(hsl.z * 255, hsl.z * 255, hsl.z * 255));
-    }
     temp[0] = hsl.z + hsl.y - (hsl.z * hsl.y);
     if (hsl.z < 0.5)
         temp[0] = hsl.z * (1 + hsl.y);
@@ -69,85 +67,102 @@ int     hsl_to_rgb(t_vect3d hsl)
     t_rgb[2] = hue - 0.333;
     if (t_rgb[2] > 1)
         t_rgb[2] -= 1;
-    else if (t_rgb[0] < 0)
-        t_rgb[2] += 1;    
+    else if (t_rgb[2] < 0)
+        t_rgb[2] += 1;
     rgb[0] = test_t_rgb(temp, t_rgb[0]) * 255;
     rgb[1] = test_t_rgb(temp, t_rgb[1]) * 255;
     rgb[2] = test_t_rgb(temp, t_rgb[2]) * 255;
     return (create_rgb(rgb[0], rgb[1], rgb[2]));
 }
 
-void    sphere2(t_data *data, t_scene *scene, int i, int j, int count)
+int    calculate_light(double angle, t_vect3d Phit, int count, t_scene *scene, double t)
+{
+    double  bright[3];
+
+    bright[1] = (1000000 - (t * t)) / 1000000;
+    bright[2] = (90 - angle) / 90;
+    if (bright[2] < 0)
+        bright[2] = 0;
+    bright[0] = (bright[1] + bright[2]) / 2 * scene->light->brightness;
+    printf("%f %f %f %f\n", bright[0], bright[1], bright[2], t);
+    if (compare_vectors(Phit, Phit) == false)
+        bright[0] = 0;
+    bright[0] = bright[0] + scene->a_ratio;
+    if (bright[0] > 1)
+        bright[0] = 1;
+    scene->sp[count].hsl.z = bright[0];
+    return(hsl_to_rgb(scene->sp[count].hsl));
+}
+
+void    light_to_sp(t_data *data, double  cam_t, t_scene *scene, t_ray ray, int count, int i, int j)
 {
     t_vect3d    Phit[2];
     t_vect3d    N;
-	t_ray		ray;
-    double      bc[2];
-    double      t[2];
     double      angle;
-
-    double      bright;
+    double      bright[3];
     int         rgb;
+    double      bc[2];
+    double      t;
 
-    ray = get_ray(scene, data, i, j); //deze toegevoegd als het goed is pakt hij de juiste ray voor de camera afhankelijk van i en j
-    ray.dir = normalize_vector(ray.dir);
-	// dus dan is ray.eye de positie van de camera en ray.dir de direction naar de pixil i,j.
+    Phit[0] = add_vectors(ray.eye, multiply_vector(ray.dir, cam_t));
+    N = normalize_vector(subtract_vectors(Phit[0], scene->sp[count].C));
+    ray.dir = normalize_vector(subtract_vectors(Phit[0], scene->light->ori)); // light direction
+    ray.eye = scene->light->ori;
     calc_b_c(scene, ray, bc, count);
-    // calculate t
-    t[0] = calc_t0(bc[0], bc[1]);
-    if (t[0] != -1)
-    {
-        Phit[0] = add_vectors(ray.eye, multiply_vector(ray.dir, t[0]));
-        printf("%f %f %f\n", Phit[0].x, Phit[0].y, Phit[0].z);
-        N = normalize_vector(subtract_vectors(Phit[0], scene->sp[count].C));
-        ray.dir = normalize_vector(subtract_vectors(Phit[0], scene->light->ori)); // light direction
-        ray.eye = scene->light->ori;
-        calc_b_c(scene, ray, bc, count);
-        Phit[1] = add_vectors(ray.eye, multiply_vector(ray.dir, t[1]));
-        ray.dir = multiply_vector(ray.dir, -1);
-        angle = acos(dot_product(N, ray.dir)) / (M_PI / 180);
-        t[1] = calc_t0(bc[0], bc[1]);
-      	bright = ((t[1] / (angle / 20)) * scene->light->brightness) / 25;
-        if (compare_vectors(Phit[0], Phit[1]) == false)
-            bright = 0;
-        printf("%f %f, %f %f %f\n\n", (1000000 - (t[1] * t[1])) / 1000000, (90 - angle) / 90, Phit[1].x, Phit[1].y, Phit[1].z);
-        if (angle == 0)
-            bright = 1;
-        if (bright > 1)
-            bright = 1;
-		if (bright < 0)
-            bright = 0;
-        scene->sp->hsl.z = bright;
-        rgb = hsl_to_rgb(scene->sp->hsl);
+    t = calc_t0(bc[0], bc[1]);
+    Phit[1] = add_vectors(ray.eye, multiply_vector(ray.dir, t));
+    ray.dir = multiply_vector(ray.dir, -1);
+    angle = acos(dot_product(N, ray.dir)) / (M_PI / 180);
+    mlx_put_pixel(data->mlx_img2, data->width - i, data->height - j, calculate_light(angle, Phit[1], count, scene, t));
+}
 
-        mlx_put_pixel(data->mlx_img2, data->width - i, data->height - j, rgb);
+int find_hit_sphere(t_scene *scene, t_ray ray, int count, double *close_t)
+{
+    double      bc[2];
+    double      t;
+    int         i;
+    int         save_i;
+
+    i = 0;
+    *close_t = -1;
+    while (i < count)
+    {    
+        calc_b_c(scene, ray, bc, i);
+        t = calc_t0(bc[0], bc[1]);
+        if ((t < *close_t && t != -1) || (*close_t < 0 && t != -1))
+        {
+            *close_t = t;
+            save_i = i;
+        }
+        i++;
     }
+    return (save_i);
 }
 
 void    sphere(t_data *data, t_scene *scene)
 {
-    int i;
-    int j;
-    int count;
+    int     i;
+    int     j;
+    int     count;
+    double  t;
+    t_ray   ray;
 
-    count = 0;
     data->mlx_img2 = mlx_new_image(data->mlx, data->width, data->height);
-	memset(data->mlx_img2->pixels, 0, data->mlx_img2->width * data->mlx_img2->height * sizeof(int));
-    while (count < scene->amount[1])
-    {    
-        i = 0;
-        while (i < data->width)
+	memset(data->mlx_img2->pixels, 0, data->mlx_img2->width * data->mlx_img2->height * sizeof(int));   
+    i = 0;
+    while (i < data->width)
+    {
+        j = 0;
+        while (j < data->height)
         {
-            j = 0;
-            while (j < data->height)
-            {
-                mlx_put_pixel(data->mlx_img2, data->width - i - 1, data->height - j - 1, 0x000000FF);
-                sphere2(data, scene, i, j, count);
-                j++;
-            }
-            i++;
+            ray = get_ray(scene, data, i, j);
+            ray.dir = normalize_vector(ray.dir);
+            count = find_hit_sphere(scene, ray, scene->amount[1], &t);
+            if (t > -1)
+                light_to_sp(data, t, scene, ray, count, i, j);
+            j++;
         }
-        count++;
+        i++;
     }
     mlx_image_to_window(data->mlx, data->mlx_img2, 0, 0);
 }
@@ -160,5 +175,3 @@ void    sphere(t_data *data, t_scene *scene)
 // b = 2 * D * (O - C)
 // c = |O - C| ^ 2 - R ^ 2
 // a = 1
-
-// voor B: tussen | | subtract_vectors, daarna dot_product, - R ^ 2

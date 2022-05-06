@@ -2,18 +2,19 @@
 
 static void	background(t_data *data, t_scene *scene)
 {
-	int	i;
-	int	j;
+	int			i;
+	int			j;
 
 	data->mlx_img = mlx_new_image(data->mlx, data->width + 10, data->height + 10);
-	data->color = create_rgbt(0, 0, 0, 255);
 	i = 0;
+	scene->a_hsl.z = scene->a_ratio;
+	scene->a_rgb = hsl_to_rgb(scene->a_hsl);
 	while (i < data->width + 1)
 	{
 		j = 0;
 		while (j < data->height + 1)
 		{
-			mlx_put_pixel(data->mlx_img, i, j, data->color);
+			mlx_put_pixel(data->mlx_img, i, j, scene->a_rgb);
 			j++;
 		}
 		i++;
@@ -43,11 +44,11 @@ int	main(int argc, char **argv)
 	data.mlx = mlx_init(data.width, data.height, "MLX42", true);
 	if (!data.mlx)
 		exit(EXIT_FAILURE);
-	//background(&data, &scene);	
-	//plane(&data, &scene);
-	//mlx_image_to_window(data.mlx, data.mlx_img, -1, -1);
-	//sphere(&data, &scene);
-	cylinder(&data, &scene);
+	background(&data, &scene);	
+	plane(&data, &scene);
+	mlx_image_to_window(data.mlx, data.mlx_img, -1, -1);
+	sphere(&data, &scene);
+	//cylinder(&data, &scene);
 	mlx_loop_hook(data.mlx, &hook, data.mlx);
 	mlx_loop(data.mlx);
 	mlx_terminate(data.mlx);

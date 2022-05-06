@@ -24,11 +24,11 @@ double	get_max(int r, int g, int b)
 	num[2] = b;
 	num[2] /= 255;
 
-	if (num[0] > num[1] && num[0] > num[2])
+	if ((num[0] > num[1] && num[0] > num[2]) || (num[0] == num[1] && num[0] > num[2]) || (num[0] == num[2] && num[0] > num[1]))
 		return(num[0]);
-	else if (num[1] > num[0] && num[1] > num[2])
+	else if ((num[1] > num[0] && num[1] > num[2]) || (num[1] == num[0] && num[1] > num[2]) || (num[1] == num[2] && num[1] > num[0]))
 		return(num[1]);
-	else if (num[2] > num[0] && num[2] > num[1])
+	else if ((num[2] > num[0] && num[2] > num[1]) || (num[2] == num[0] && num[2] > num[1]) || (num[2] == num[1] && num[2] > num[0]))
 		return(num[2]);
 	return(num[0]);
 }
@@ -44,11 +44,11 @@ double	get_min(int r, int g, int b)
 	num[2] = b;
 	num[2] /= 255;
 
-	if (num[0] < num[1] && num[0] < num[2])
+	if ((num[0] < num[1] && num[0] < num[2]) || (num[0] == num[1] && num[0] < num[2]) || (num[0] == num[2] && num[0] < num[1]))
 		return(num[0]);
-	else if (num[1] < num[0] && num[1] < num[2])
+	else if ((num[1] < num[0] && num[1] < num[2]) || (num[1] == num[0] && num[1] < num[2]) || (num[1] == num[2] && num[1] < num[0]))
 		return(num[1]);
-	else if (num[2] < num[0] && num[2] < num[1])
+	else if ((num[2] < num[0] && num[2] < num[1]) || (num[2] == num[0] && num[2] < num[1]) || (num[2] == num[1] && num[2] < num[0]))
 		return(num[2]);
 	return(num[0]);
 }
@@ -191,6 +191,7 @@ void	read_a(t_scene *scene, char **line)
 	colours = ft_split(line[2], ',');
 	if (strstr_len(colours) != 3)
 		ft_error(1, "Wrong number of colours for ambient lighting\n");
+	create_hsl(&scene->a_hsl, ft_atoi(colours[0]), ft_atoi(colours[1]), ft_atoi(colours[2]));
 	scene->a_rgb = create_rgb(ft_atoi(colours[0]),
 			ft_atoi(colours[1]), ft_atoi(colours[2]));
 	free_strstr(colours);
@@ -261,7 +262,7 @@ void	read_pl2(t_scene *scene, char **line, int i, char **coords)
 	coords = ft_split(line[3], ',');
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of colours for a plane\n");
-	create_hsl(&scene->pl->hsl, ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
+	create_hsl(&scene->pl[i].hsl, ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
 	scene->pl[i].rgb = create_rgb(ft_atoi(coords[0]),
 			ft_atoi(coords[1]), ft_atoi(coords[2]));
 	free_strstr(coords);
@@ -306,7 +307,7 @@ void	read_sp(t_scene *scene, char **line)
 	coords = ft_split(line[3], ',');
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of vectors for a sphere\n");
-	create_hsl(&scene->sp->hsl, ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
+	create_hsl(&scene->sp[i].hsl, ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
 	scene->sp[i].rgb = create_rgb(ft_atoi(coords[0]),
 			ft_atoi(coords[1]), ft_atoi(coords[2]));
 	i++;
