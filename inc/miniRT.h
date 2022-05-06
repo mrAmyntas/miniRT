@@ -63,29 +63,29 @@ typedef struct s_pl
 	t_vect3d	orth_vec;
 	t_vect3d	coord;
     int			rgb;
-	double		hsl[3];
+	t_vect3d	hsl;
 }				t_pl;
 
 typedef struct s_sp
 {
 	t_vect3d	C;
     int     	rgb;
-	//VECTOR iPV 3 DOUBLES! :))))
 	t_vect3d	coord;
 	double		size;
-	double		hsl[3];
+	t_vect3d	hsl;
 }				t_sp;
 
 typedef struct s_cy
 {
-	double  x[2];
-    double  y[2];
-    double  z[2];
+	double  	x[2];
+    double  	y[2];
+    double  	z[2];
 	t_vect3d	eye;
 	t_vect3d	dir;
-    double  diameter;
-    double  height;
-    int     rgb;
+    double  	diameter;
+    double  	height;
+    int     	rgb;
+	t_vect3d	hsl; // h = x = 0, s = y = 1, l = z = 2
 }				t_cy;
 
 typedef struct s_light
@@ -93,7 +93,6 @@ typedef struct s_light
 	double		brightness;
 	t_vect3d	ori;
 	int			color;
-	double		hsl[3];
 }				t_light;
 
 
@@ -158,7 +157,7 @@ int			get_b(int rgbt);
 int 		add_shade(double factor, int color);
 int 		get_opposite(int color);
 int			create_rgb(int r, int g, int b);
-int    		hsl_to_rgb(double hsl[3]);
+int    		hsl_to_rgb(t_vect3d hsl);
 int			light_the_pixel_pl(t_scene *scene, t_ray intersect, int num);
 int			light_the_pixel_cy(t_scene *scene, t_ray intersect, int num);
 

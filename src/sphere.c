@@ -40,22 +40,22 @@ double  test_t_rgb(double temp[3], double t)
         return(temp[1]);
 }
 
-int     hsl_to_rgb(double hsl[3])
+int     hsl_to_rgb(t_vect3d hsl)
 {
     double  temp[2];
     double  t_rgb[3];
     int     rgb[3];
     double  hue;
 
-    if (!hsl[1])
-	{
-        return(create_rgb(hsl[2] * 255, hsl[2] * 255, hsl[2] * 255));
-	}
-    temp[0] = hsl[2] + hsl[1] - (hsl[2] * hsl[1]);
-    if (hsl[2] < 0.5)
-        temp[0] = hsl[2] * (1 + hsl[1]);
-    temp[1] = (2 * hsl[2]) - temp[0];
-    hue = hsl[0] / 360;
+    if (!hsl.y)
+    {
+        return(create_rgb(hsl.z * 255, hsl.z * 255, hsl.z * 255));
+    }
+    temp[0] = hsl.z + hsl.y - (hsl.z * hsl.y);
+    if (hsl.z < 0.5)
+        temp[0] = hsl.z * (1 + hsl.y);
+    temp[1] = (2 * hsl.z) - temp[0];
+    hue = hsl.x / 360;
     t_rgb[0] = hue + 0.333;
     if (t_rgb[0] > 1)
         t_rgb[0] -= 1;
@@ -74,13 +74,12 @@ int     hsl_to_rgb(double hsl[3])
     rgb[0] = test_t_rgb(temp, t_rgb[0]) * 255;
     rgb[1] = test_t_rgb(temp, t_rgb[1]) * 255;
     rgb[2] = test_t_rgb(temp, t_rgb[2]) * 255;
-    //printf("%i %i %i\n", rgb[0], rgb[1], rgb[2]);
     return (create_rgb(rgb[0], rgb[1], rgb[2]));
 }
 
 void    sphere2(t_data *data, t_scene *scene, int i, int j, int count)
 {
-    t_vect3d    Phit;
+    t_vect3d    Phit[2];
     t_vect3d    N;
 	t_ray		ray;
     double      bc[2];
@@ -98,32 +97,27 @@ void    sphere2(t_data *data, t_scene *scene, int i, int j, int count)
     t[0] = calc_t0(bc[0], bc[1]);
     if (t[0] != -1)
     {
-        Phit = add_vectors(ray.eye, multiply_vector(ray.dir, t[0]));
+        Phit[0] = add_vectors(ray.eye, multiply_vector(ray.dir, t[0]));
+        printf("%f %f %f\n", Phit[0].x, Phit[0].y, Phit[0].z);
         N = normalize_vector(subtract_vectors(Phit, scene->sp[count].C));
         ray.dir = normalize_vector(subtract_vectors(Phit, scene->light->ori)); // light direction
         ray.eye = scene->light->ori;
         calc_b_c(scene, ray, bc, count);
+        Phit[1] = add_vectors(ray.eye, multiply_vector(ray.dir, t[1]));
         ray.dir = multiply_vector(ray.dir, -1);
         angle = acos(dot_product(N, ray.dir)) / (M_PI / 180);
         t[1] = calc_t0(bc[0], bc[1]);
-      	bright = ((t[1] / (angle / 20)) * scene->light->brightness) / 40;
+      	bright = ((t[1] / (angle / 20)) * scene->light->brightness) / 25;
+        printf("%f %f, %f %f %f\n\n", (1000000 - (t[1] * t[1])) / 1000000, (90 - angle) / 90, Phit[1].x, Phit[1].y, Phit[1].z);
         if (angle == 0)
             bright = 1;
         if (bright > 1)
             bright = 1;
 		if (bright < 0)
             bright = 0;
-        //printf("%f %f %f\n", angle, t[1], bright);
-        //printf("%f %f %f\n", scene->sp->hsl[0], scene->sp->hsl[1], scene->sp->hsl[2] * bright);
-        //printf("%f %f %f\n", scene->sp->hsl[0], scene->sp->hsl[1], scene->sp->hsl[2]);
-        
-        //printf("%f %f\n", scene->sp->hsl[2], bright);
-        scene->sp->hsl[2] = bright;
+        scene->sp->hsl.z = bright;
         rgb = hsl_to_rgb(scene->sp->hsl);
 
-        //printf("%f %f %f\n", Phit.x, Phit.y, Phit.z);
-        //printf("ray.dir: %f %f %f\n", ray.dir.x, ray.dir.y, ray.dir.z);
-        //printf("cos: %f %f\nPixel: %i, %i\nPhit: %f %f %f\nNormal: %f\n", dot_product(N, ray.dir), angle, i, j, Phit.x, Phit.y, Phit.z, N.z);
         mlx_put_pixel(data->mlx_img2, data->width - i, data->height - j, rgb);
     }
 }
@@ -145,6 +139,7 @@ void    sphere(t_data *data, t_scene *scene)
             j = 0;
             while (j < data->height)
             {
+                mlx_put_pixel(data->mlx_img2, data->width - i - 1, data->height - j - 1, 0x000000FF);
                 sphere2(data, scene, i, j, count);
                 j++;
             }
