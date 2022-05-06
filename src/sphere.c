@@ -108,6 +108,8 @@ void    sphere2(t_data *data, t_scene *scene, int i, int j, int count)
         angle = acos(dot_product(N, ray.dir)) / (M_PI / 180);
         t[1] = calc_t0(bc[0], bc[1]);
       	bright = ((t[1] / (angle / 20)) * scene->light->brightness) / 25;
+        if (compare_vectors(Phit[0], Phit[1]) == false)
+            bright = 0;
         printf("%f %f, %f %f %f\n\n", (1000000 - (t[1] * t[1])) / 1000000, (90 - angle) / 90, Phit[1].x, Phit[1].y, Phit[1].z);
         if (angle == 0)
             bright = 1;
