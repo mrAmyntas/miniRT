@@ -7,8 +7,9 @@ static void	background(t_data *data, t_scene *scene)
 
 	data->mlx_img = mlx_new_image(data->mlx, data->width + 10, data->height + 10);
 	i = 0;
-	scene->a_hsl.z = scene->a_ratio;
-	scene->a_rgb = hsl_to_rgb(scene->a_hsl);
+	//scene->a_hsl.z = scene->a_ratio;
+	//scene->a_rgb = hsl_to_rgb(scene->a_hsl);
+	scene->a_rgb = 0x000000FF;
 	while (i < data->width + 1)
 	{
 		j = 0;
@@ -41,7 +42,7 @@ int	main(int argc, char **argv)
 	if (argc != 2)
 		ft_error(1, "Invalid amount of arguments\n");
 	read_scene(&scene, argv[1]);
-	data.mlx = mlx_init(data.width, data.height, "MLX42", true);
+	data.mlx = mlx_init(data.width, data.height, "MiniRT", true);
 	if (!data.mlx)
 		exit(EXIT_FAILURE);
 	background(&data, &scene);	
