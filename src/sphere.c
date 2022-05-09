@@ -84,10 +84,13 @@ int    calculate_light(double angle, t_vect3d Phit, int count, t_scene *scene, d
     if (bright[2] < 0)
         bright[2] = 0;
     bright[0] = (bright[1] + bright[2]) / 2 * scene->light->brightness;
-    //printf("%f %f %f %f\n", bright[0], bright[1], bright[2], t);
     if (compare_vectors(Phit, Phit) == false)
         bright[0] = 0;
-    bright[0] = (bright[0] * shadow + scene->a_ratio) / 2; // of bright[0] * shadow + scene->a_ratio
+    bright[0] = (bright[0] * shadow + scene->a_ratio) / 2;
+    // OF    bright[0] * shadow + scene->a_ratio
+    // OF    bright[0] = bright[0] * shadow;
+    //       if (scene->a_ratio > bright[0])
+    //    bright[0] = scene->a_ratio;
     if (bright[0] > 1)
         bright[0] = 1;
     scene->sp[count].hsl.z = bright[0];
@@ -105,8 +108,6 @@ int     check_shadow(t_ray ray, t_scene *scene, int start)
     {
         calc_b_c(scene, ray, bc, i);
         t = calc_t0(bc[0], bc[1]);
-        //if (start == 1)
-        //    printf("%f %i, %f %f\n", t, i, bc[0], bc[1]);
         if (t >= 0)
             return (0);
         i++;
@@ -133,7 +134,7 @@ void    light_to_sp(t_data *data, double  cam_t, t_scene *scene, t_ray ray, int 
     t = calc_t0(bc[0], bc[1]);
     Phit[1] = add_vectors(ray.eye, multiply_vector(ray.dir, t));
     ray.dir = multiply_vector(ray.dir, -1);
-    ray.eye = add_vectors(Phit[0], multiply_vector(N, 0.000001)); // 0.001 = bias
+    ray.eye = add_vectors(Phit[0], multiply_vector(N, 0.000001)); // 0.000001 = bias
     shadow = check_shadow(ray, scene, count);
     angle = acos(dot_product(N, ray.dir)) / (M_PI / 180);
     mlx_put_pixel(data->mlx_img2, data->width - i, data->height - j, calculate_light(angle, Phit[1], count, scene, t, shadow));
