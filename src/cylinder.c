@@ -3,27 +3,41 @@
 // Specular Component (phong)
 //	Ambient Term 
 
-t_matrix44d	matrix_to_translate_to_xyx(t_vect3d C)
+void	rotate_ray(t_ray *ray, t_matrix44d I_R)
 {
-	t_matrix44d model;
+	t_vec4d	new_ray_eye;
+	t_vec4d	new_ray_dir;
 
-	model.row1.x = 1;
-	model.row1.y = 0;
-	model.row1.z = 0;
-	model.row1.t = C.x;
-	model.row2.x = 0;
-	model.row2.y = 1;
-	model.row2.z = 0;
-	model.row2.t = C.y;
-	model.row3.x = 0;
-	model.row3.y = 0;
-	model.row3.z = 1;
-	model.row3.t = C.z;
-	model.row4.x = 0;
-	model.row4.y = 0;
-	model.row4.z = 0;
-	model.row4.t = 1;
-	return (model);
+	new_ray_eye.x = ray->eye.x;
+	new_ray_eye.y = ray->eye.y;
+	new_ray_eye.z = ray->eye.z;
+	new_ray_eye.t = 1;
+	new_ray_eye = matrix44d_x_vert4d(I_R, new_ray_eye);
+	ray->eye.x = new_ray_eye.x;
+	ray->eye.y = new_ray_eye.y;
+	ray->eye.z = new_ray_eye.z;
+	new_ray_dir.x = ray->dir.x;
+	new_ray_dir.y = ray->dir.y;
+	new_ray_dir.z = ray->dir.z;
+	new_ray_dir.t = 0;
+	new_ray_dir = matrix44d_x_vert4d(I_R, new_ray_dir);
+	ray->dir.x = new_ray_dir.x;
+	ray->dir.y = new_ray_dir.y;
+	ray->dir.z = new_ray_dir.z;
+}
+
+void	translate_ray(t_vect3d *eye, t_matrix44d I_T)
+{
+	t_vec4d	new_ray;
+
+	new_ray.x = eye->x;
+	new_ray.y = eye->y;
+	new_ray.z = eye->z;
+	new_ray.t = 1;
+	new_ray = matrix44d_x_vert4d(I_T, new_ray);
+	eye->x = new_ray.x;
+	eye->y = new_ray.y;
+	eye->z = new_ray.z;
 }
 
 double	cast_ray_to_space_check_if_hit_cy(t_scene *scene, t_ray *ray, int num)
@@ -38,16 +52,6 @@ double	cast_ray_to_space_check_if_hit_cy(t_scene *scene, t_ray *ray, int num)
 	double z_min;
 	double z_max;
 	static int i = 0;
-
-	if (i == 0)
-	{
-		t_matrix44d Translation_Matrix = matrix_to_translate_to_xyx(scene->cy[num].eye);
-		t_vec4d		origin_p = {0, 0, 0, 1};
-		t_vec4d		transform_p = matrix44d_x_vert4d(Translation_Matrix, origin_p);
-		printf_vect4d(transform_p);
-		t_matrix44d Inverted_Translation_Matrix = invert_matrix(Translation_Matrix);
-		i++;
-	}
 
 	r = pow((scene->cy[num].diameter / 2), 2);
 	a = (pow(ray->dir.x, 2) + pow(ray->dir.y, 2));
@@ -136,8 +140,24 @@ void calc_hit2(t_data *data, t_scene *scene, double x, double y, int num)
 	t_ray		intersect;
 	double		tmp;
 	double		tmp2;
+	static int	i = 0;
 
 	ray = get_ray(scene, data, x, y); //camera pov ray to pixel
+
+
+	t_matrix44d I_T;
+	t_matrix44d I_R;
+
+	I_R = get_inverted_R(scene, num);
+	I_T = get_inverted_T(scene, num);
+	translate_ray(&ray.eye, I_T);
+	if (!(scene->cy[num].dir.x < 0.000001 && scene->cy[num].dir.y < 0.000001 && scene->cy[num].dir.z > 0.999999))
+	{
+		//if (i == 0)
+		//	printf("HITHERE\n");
+		rotate_ray(&ray, I_R);
+	}
+	i++;
 	tmp = cast_ray_to_space_check_if_hit_cy(scene, &ray, num);
 	if (tmp != -1) // = hit  (ray is now intersect point)
 	{
