@@ -9,14 +9,23 @@ bool	incr(int *num)
 int main(void)
 {
 
-	int num;
-	int num2;
+	t_vect3d vec2 = {1, 1, 1};
+	t_vect3d vec1 = {0, 0, 0.1};
 
-	num = 0;
-	num2 = 0;
-	if (incr(&num) && num == num2)
-		printf("1\n");
+	printf("%f %f %f\n", vec1.x, vec1.y, vec1.z);
 
+	vec1 = normalize_vector(vec1);
+	//vec2 = normalize_vector(vec2);
+	printf("%f %f %f\n", vec1.x, vec1.y, vec1.z);
+
+	double dot = dot_product(vec1, vec2);
+	double magf = magnitude(vec1) * magnitude(vec2);
+
+
+//	double angle = acos(dot / magf);
+	double angle = acos(dot_product(vec1, vec2) / (magnitude(vec1) * magnitude(vec2)));
+
+	printf(":%f\n", angle);
 	return 0;
 }
 

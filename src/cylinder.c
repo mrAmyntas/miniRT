@@ -58,17 +58,15 @@ double	cast_ray_to_space_check_if_hit_cy(t_scene *scene, t_ray *ray, int num)
 	b = (2 * ray->eye.x * ray->dir.x) + (2 * ray->eye.y * ray->dir.y);
 	c = pow(ray->eye.x, 2) + pow(ray->eye.y, 2) - r;
 	D = pow(b, 2) - (4 * a * c);
-	if (D < 0)
-		return (-1);
+//	if (D < 0)
+//		return (-1);
 	t[0] = (-b - sqrt(D)) / (2 * a);
 	t[1] = (-b + sqrt(D)) / (2 * a);
 	zz[0] = ray->eye.z + ray->dir.z * t[0]; 
 	zz[1] = ray->eye.z + ray->dir.z * t[1];
 	z_min = 0;
 	z_max = scene->cy[num].height;
-
 	
-
 	//if ((z_min < zz[0] && zz[0] < z_max) || (z_min < zz[1] && zz[1] < z_max))
 	//	printf("t0:%f t1:%f zz0:%f zz1:%f\n", t[0], t[1], zz[0], zz[1]);
 	if (t[0] < t[1] && z_min < zz[0] && zz[0] < z_max && t[0] >= 0)
@@ -117,6 +115,21 @@ double	cast_ray_to_space_check_if_hit_cy(t_scene *scene, t_ray *ray, int num)
 		ray->eye = add_vectors(ray->eye, multiply_vector(ray->dir, t[1]));
 		return (t[1]);
 	}
+	if (t[1] < 0 && t[0] < 0)
+	{
+		printf("???\n");
+		t[2] = -1;
+		t[3] = -1;
+		if ((zz[0] < z_min && zz[1] > z_min) || (zz[1] < z_min && zz[0] > z_min)) // hits cap
+			t[2] = (z_min - ray->eye.z) / ray->dir.z;
+		if ((zz[0] < z_max && zz[1] > z_max) || (zz[1] < z_max && zz[0] > z_max)) // hits cap
+			t[3] = (z_max - ray->eye.z) / ray->dir.z;
+		if (t[2] > 0 && (t[2] < t[3] || t[3] < 0))
+			return t[2];
+		if (t[3] > 0 && (t[3] < t[2] || t[2] < 0))
+			return t[3];
+	}
+	//printf("!!!\n");
 	return (-1);
 }
 
