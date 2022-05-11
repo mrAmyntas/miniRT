@@ -83,7 +83,7 @@ bool	cast_ray_to_space_check_if_hit_pl(t_scene *scene, t_ray *ray, int *num)
 // }
 
 //lights the point
-int	light_the_pixel_pl(t_scene *scene, t_ray intersect, int num)
+int	light_the_pixel_pl(t_scene *scene, t_ray intersect, int num, int shadow)
 {
 	t_vect3d	tmp;
 	double		angle;
@@ -107,6 +107,7 @@ int	light_the_pixel_pl(t_scene *scene, t_ray intersect, int num)
 		bright = 1.0;
 	if (bright <= 0.0)
 		bright = 0.01;
+	return (calculate_light(angle, intersect.eye, scene->pl[num].hsl, scene, distance, shadow));
 	scene->pl[num].hsl.z = bright;
 	return (hsl_to_rgb(scene->pl[num].hsl));
 }
@@ -117,6 +118,7 @@ void calc_hit(t_data *data, t_scene *scene, double x, double y)
 	t_ray		intersect;
 	int			num;
 	int			num2;
+	int			shadow;
 	//t_matrix44d	camToWorld;
 
 	//ray = calc_ray(data, scene, x, y); //ray with eye as a pixel point and direction as origin->pixelpoint
@@ -141,20 +143,21 @@ void calc_hit(t_data *data, t_scene *scene, double x, double y)
 		if (cast_ray_to_space_check_if_hit_pl(scene, &ray, &num2) && num2 == num) // light hits SAME plane as well
 		{
 			//cast ray from camera to light, if this hits plane, check if it was BEFORE light
-			ray.eye = scene->cam->eye;
 			ray.dir = normalize_vector(subtract_vectors(scene->light->ori, ray.eye));
+			shadow = check_shadow(ray, scene);
+			ray.eye = scene->cam->eye;
 			if (cast_ray_to_space_check_if_hit_pl(scene, &ray, &num2) && num2 == num) // camera -> light hits plane 
 			{
 				if (distance_two_points(scene->cam->eye, ray.eye) < distance_two_points(scene->cam->eye, scene->light->ori))//from cam -> obj hits first, so light is behind plane
 					mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), add_shade(0.9, scene->pl[num].rgb));
 				else
 				{
-					mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), light_the_pixel_pl(scene, intersect, num));
+					mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), light_the_pixel_pl(scene, intersect, num, shadow));
 				}
 			}
 			else
 			{
-				mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), light_the_pixel_pl(scene, intersect, num));
+				mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), light_the_pixel_pl(scene, intersect, num, shadow));
 			}
 		}
 		else //light is INSIDE plane or it hits ANOTHER PLANE
