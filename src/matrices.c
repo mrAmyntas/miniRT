@@ -335,6 +335,15 @@ t_matrix44d invert_matrix(t_matrix44d *Mat)
 	set_to_zero(M, IM);
 	scale_pivots(M, IM);
 	set_mat_to_IM(Mat, IM);
+	i = 0;
+	while (i < 4)
+	{
+		free(M[i]);
+		free(IM[i]);
+		i++;
+	}
+	free(M);
+	free(IM);
 	return (*Mat);
 }
 
@@ -390,21 +399,7 @@ t_matrix44d	get_inverted_T(t_scene *scene, int num)
 // float y_angle = acos( dot( u.xz, v.xz ) );
 // float z_angle = acos( dot( u.xy, v.xy ) );
 
-
-void	get_R(double a, t_vect3d axis, t_matrix33d	*R)
-{
-	R->x.x = cos(a) + pow(axis.x, 2) * (1 - cos(a));
-	R->x.y = axis.x * axis.y * (1 - cos(a)) - axis.z * sin(a);
-	R->x.z = axis.x * axis.z * (1 - cos(a)) + axis.y * sin(a);
-	R->y.x = axis.y * axis.x * (1 - cos(a)) + axis.z * sin(a);
-	R->y.y = cos(a) + pow(axis.y, 2) * (1 - cos(a));
-	R->y.z = axis.y * axis.z * (1 - cos(a)) - axis.x * sin(a);
-	R->z.x = axis.z * axis.x * (1 - cos(a)) - axis.y * sin(a);
-	R->z.y = axis.z * axis.y * (1 - cos (a)) + axis.x * sin(a);
-	R->z.z = cos(a) + pow(axis.z, 2) * (1 - cos (a)); 
-}
-
-void	get_R2(double a, t_vect3d axis, t_matrix44d	*R)
+void	get_R(double a, t_vect3d axis, t_matrix44d	*R)
 {
 	R->row1.x = cos(a) + pow(axis.x, 2) * (1 - cos(a));
 	R->row1.y = axis.x * axis.y * (1 - cos(a)) - axis.z * sin(a);
@@ -429,25 +424,13 @@ t_matrix44d	get_inverted_R(t_scene *scene, int num)
 	t_vect3d	axis;
 	t_vect3d	o;
 	double		a;
-	t_matrix33d	R;
-	t_matrix44d	R2;
-	static int i = 0;
+	t_matrix44d	R;
 
 	o = scene->origin;
 	o.z = 1;
-	//if (i == 0)
-	//	printf("dir:%f %f %f\n", scene->cy[num].dir.x, scene->cy[num].dir.y, scene->cy[num].dir.z);
-	a = acos(dot_product(o, scene->cy[num].dir) * (M_PI / 180)) / (magnitude(o) * magnitude(scene->cy[num].dir));
-	//if (i == 0)
-	//	printf("a:%f\n", a);
+	a = acos(dot_product(o, scene->cy[num].dir) / (magnitude(o) * magnitude(scene->cy[num].dir)));
 	axis = normalize_vector(cross_product(o, scene->cy[num].dir));
 	get_R(a, axis, &R);
-	get_R2(a, axis, &R2);
-	if (i == 0)
-		printf_matrix44d(R2);
-	R2 = invert_matrix(&R2);
-	if (i == 0)
-		printf_matrix44d(R2);
-	i++;
-	return (R2);
+	R = invert_matrix(&R);
+	return (R);
 }
