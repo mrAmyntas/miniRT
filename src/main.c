@@ -98,7 +98,6 @@ void	hook(void *param)
 
 int	main(int argc, char **argv)
 {
-
 	t_data	data;
 	t_scene	scene;
 
@@ -113,9 +112,9 @@ int	main(int argc, char **argv)
 	background(&data, &scene);
 	//positions_my_lasers(&data, &scene);
 	//plane(&data, &scene);
+	mlx_image_to_window(data.mlx, data.mlx_img, -1, -1);
 	sphere(&data, &scene);
 	//cylinder(&data, &scene);
-	//mlx_image_to_window(data.mlx, data.mlx_img, -1, -1);
 	mlx_loop_hook(data.mlx, &hook, data.mlx);
 	mlx_loop(data.mlx);
 	mlx_terminate(data.mlx);

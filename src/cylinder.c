@@ -90,7 +90,6 @@ double find_closest_cy(t_scene *scene, t_ray *ray, int *num)
 			t[2] = (z_min - ray->eye.z) / ray->dir.z;
 			if (t[2] < t[0] && t[2] > 0)
 			{
-				//ray->eye = add_vectors(ray->eye, multiply_vector(ray->dir, t[2]));
 				//printf("hit t2 (t0>0)\n");
 				return t[2];
 			}
@@ -100,12 +99,10 @@ double find_closest_cy(t_scene *scene, t_ray *ray, int *num)
 			t[3] = (z_max - ray->eye.z) / ray->dir.z;
 			if (t[3] < t[0] && t[3] > 0)
 			{
-				//ray->eye = add_vectors(ray->eye, multiply_vector(ray->dir, t[3]));
 				//printf("hit t3(t0>0\n");
 				return t[3];
 			}
 		}
-		//ray->eye = add_vectors(ray->eye, multiply_vector(ray->dir, t[0]));
 		return (t[0]);
 	}
 	else if (z_min < zz[1] && zz[1] < z_max && t[1] > 0)
@@ -115,7 +112,6 @@ double find_closest_cy(t_scene *scene, t_ray *ray, int *num)
 			t[2] = (z_min - ray->eye.z) / ray->dir.z;
 			if (t[2] < t[1] && t[2] > 0)
 			{
-				//ray->eye = add_vectors(ray->eye, multiply_vector(ray->dir, t[2]));
 				//printf("hit t2 (t1>0): %f %f %f\n", ray->eye.x, ray->eye.y, ray->eye.z);
 				return t[2];
 			}
@@ -125,12 +121,10 @@ double find_closest_cy(t_scene *scene, t_ray *ray, int *num)
 			t[3] = (z_max - ray->eye.z) / ray->dir.z;
 			if (t[3] < t[1] && t[3] > 0)
 			{
-				//ray->eye = add_vectors(ray->eye, multiply_vector(ray->dir, t[3]));
 				//printf("hit t3 (t1>0)\n");
 				return t[3];
 			}
 		}
-		//ray->eye = add_vectors(ray->eye, multiply_vector(ray->dir, t[1]));
 		return (t[1]);
 	}
 	else //outside of z-values
@@ -141,12 +135,10 @@ double find_closest_cy(t_scene *scene, t_ray *ray, int *num)
 			t[3] = (z_max - ray->eye.z) / ray->dir.z;
 		if (t[2] > 0 && (t[2] < t[3] || t[3] < 0))
 		{
-			//ray->eye = add_vectors(ray->eye, multiply_vector(ray->dir, t[2]));
 			return t[2];
 		}
 		if (t[3] > 0 && (t[3] < t[2] || t[2] < 0))
 		{
-			//ray->eye = add_vectors(ray->eye, multiply_vector(ray->dir, t[3]));
 			return t[3];
 		}
 	}
@@ -180,18 +172,18 @@ double find_smallest2(t_scene *scene, double t[scene->amount[2]])
 
 double	cast_ray_to_space_check_if_hit_cy(t_scene *scene, t_ray *ray, int *num)
 {
-	double 	intersect[scene->amount[2]];
+	double 	t[scene->amount[2]];
 
 	*num = 0;
 	while (*num < scene->amount[2])
 	{
-		intersect[*num] = find_closest_cy(scene, ray, num);
+		t[*num] = find_closest_cy(scene, ray, num);
 		*num = *num + 1;
 	}
 	if (*num == 0)
 		return (-1);
-	*num = find_smallest2(scene, intersect);
-	return (intersect[*num]);
+	*num = find_smallest2(scene, t);
+	return (t[*num]);
 }
 
 
@@ -211,7 +203,7 @@ double	cast_ray_to_space_check_if_hit_cy(t_scene *scene, t_ray *ray, int *num)
 void calc_hit2(t_data *data, t_scene *scene, double x, double y)
 {
 	t_ray		ray;
-	t_ray		intersect;
+	t_vect3d	intersect;
 	double		tmp;
 	double		tmp2;
 	static int	i = 0;
@@ -230,19 +222,19 @@ void calc_hit2(t_data *data, t_scene *scene, double x, double y)
 	// 	rotate_ray(&ray, I_R);
 	// i++;
 	tmp = cast_ray_to_space_check_if_hit_cy(scene, &ray, &num);
-	if (tmp != -1) // = hit  (ray is now intersect point)
+	if (tmp != -1) // = hit  
 	{
-		intersect.eye = ray.eye;
+		intersect = add_vectors(ray.eye, multiply_vector(ray.dir, tmp));
 		//check if light -> intersect point hits the same intersect
-		translate_ray(&intersect.eye, T);
+		translate_ray(&intersect, T);
 		ray.eye = scene->light->ori;
-		ray.dir = normalize_vector(subtract_vectors(intersect.eye, scene->light->ori));
+		ray.dir = normalize_vector(subtract_vectors(intersect, scene->light->ori));
 		// translate_ray(&ray.eye, I_T);
 		// if (!(scene->cy[num].dir.x < 0.000001 && scene->cy[num].dir.y < 0.000001 && scene->cy[num].dir.z > 0.999999))
 		// 	rotate_ray(&ray, I_R);
 		tmp2 = cast_ray_to_space_check_if_hit_cy(scene, &ray, &num); // ray.eye is new intersect
-		translate_ray(&intersect.eye, I_T);
-		if (tmp2 != -1 && compare_vectors(ray.eye, intersect.eye) == true) // is lit
+		translate_ray(&intersect, I_T);
+		if (tmp2 != -1 && compare_vectors(ray.eye, intersect) == true) // is lit
 			mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), light_the_pixel_cy(scene, intersect, num)); //light_the_pixel_cy(scene, intersect, num)
 		else
 			mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), add_shade(0.8, data->color));
@@ -278,7 +270,7 @@ int	cylinder(t_data *data, t_scene *scene)
 }
 
 
-int	light_the_pixel_cy(t_scene *scene, t_ray intersect, int num)
+int	light_the_pixel_cy(t_scene *scene, t_vect3d intersect, int num)
 {
 	t_vect3d	tmp;
 	double		angle;
@@ -286,7 +278,7 @@ int	light_the_pixel_cy(t_scene *scene, t_ray intersect, int num)
 	double		bright;
 	int			rgb;
 
-	distance = distance_two_points(scene->light->ori, intersect.eye);
+	distance = distance_two_points(scene->light->ori, intersect);
 	bright = (scene->light->brightness) - (distance / 20);
     bright = scene->light->brightness + scene->a_ratio;
 	if (bright > 1)

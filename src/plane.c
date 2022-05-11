@@ -48,10 +48,7 @@ double	cast_ray_to_space_check_if_hit_pl(t_scene *scene, t_ray *ray, int *num)
 	}
 	*num = find_smallest(scene, t);
 	if (*num != -1)
-	{
-		//ray->eye = add_vectors(ray->eye, multiply_vector(ray->dir, t[*num]));
 		return (t[*num]);
-	}
 	return (-1);
 }
 
@@ -69,7 +66,7 @@ double	cast_ray_to_space_check_if_hit_pl(t_scene *scene, t_ray *ray, int *num)
 // }
 
 //lights the point
-int	light_the_pixel_pl(t_scene *scene, t_ray intersect, int num)
+int	light_the_pixel_pl(t_scene *scene, t_vect3d intersect, int num)
 {
 	t_vect3d	tmp;
 	double		angle;
@@ -77,13 +74,13 @@ int	light_the_pixel_pl(t_scene *scene, t_ray intersect, int num)
 	double		bright;
 	int			rgb;
 
-	tmp = normalize_vector(subtract_vectors(scene->light->ori, intersect.eye));
+	tmp = normalize_vector(subtract_vectors(scene->light->ori, intersect));
 	angle = acos(dot_product(scene->pl[num].orth_vec, tmp)) / (M_PI / 180);
 	if (angle > 90)
 	{
 		angle = 180 - angle;
 	}
-	distance = distance_two_points(scene->light->ori, intersect.eye);
+	distance = distance_two_points(scene->light->ori, intersect);
 //	bright = 1 / (angle / 1.1) / (distance / 100) * scene->light->brightness / 2;
 //	bright = (scene->light->brightness) / (4 * M_PI * (sqrt(distance)));
 	bright = (scene->light->brightness) - (distance / 20);
@@ -100,17 +97,20 @@ int	light_the_pixel_pl(t_scene *scene, t_ray intersect, int num)
 void calc_hit(t_data *data, t_scene *scene, double x, double y)
 {
 	t_ray		ray;
-	t_ray		intersect;
+	t_vect3d	intersect;
 	int			num;
 	int			num2;
+	double		t;
 
 	ray = get_ray(scene, data, x, y);
-	if (cast_ray_to_space_check_if_hit_pl(scene, &ray, &num) > 0) // = hit -> ray now has intersec coords , num is which plane
+	t = cast_ray_to_space_check_if_hit_pl(scene, &ray, &num);
+	if (t > 0) // = hit -> t is distance
 	{
-		intersect = ray;
-		ray.dir = normalize_vector(subtract_vectors(ray.eye, scene->light->ori));
+		intersect = add_vectors(ray.eye, multiply_vector(ray.dir, t));
+		ray.dir = normalize_vector(subtract_vectors(intersect, scene->light->ori));
 		ray.eye = scene->light->ori;
-		if (cast_ray_to_space_check_if_hit_pl(scene, &ray, &num2) > 0 && num2 == num) // light hits SAME plane as well
+		t = cast_ray_to_space_check_if_hit_pl(scene, &ray, &num2);
+		if (t > 0 && num2 == num) // light hits SAME plane as well
 		{
 			//cast ray from camera to light, if this hits plane, check if it was BEFORE light
 			ray.eye = scene->cam->eye;
