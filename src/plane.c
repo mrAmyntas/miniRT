@@ -23,50 +23,36 @@ double find_smallest(t_scene *scene, double t[scene->amount[0]])
 }
 
 //check if in the current direction the camera ray will intersect with the plane[num]
-bool	cast_ray_to_space_check_if_hit_pl(t_scene *scene, t_ray *ray, int *num)
+double	cast_ray_to_space_check_if_hit_pl(t_scene *scene, t_ray *ray, int *num)
 {
-//	double		t;
 	t_vect3d	tmp;	
 	double		t[scene->amount[0]];
-	int			i;
 
-	//printf("i:%d am:%d\n", i, scene->amount[0]);
-	i = 0;
-	while (i < scene->amount[0])
+	*num = 0;
+	while (*num < scene->amount[0])
 	{
-		tmp = subtract_vectors(scene->pl[i].coord, ray->eye);
-		if (dot_product(scene->pl[i].orth_vec, ray->dir) == 0)
+		tmp = subtract_vectors(scene->pl[*num].coord, ray->eye);
+		if (dot_product(scene->pl[*num].orth_vec, ray->dir) == 0)
 		{ 	//then the ray is parallel to the plane, and there is no intersection point
-			t[i] = -1;
-			i++;
+			t[*num] = -1;
+			*num = *num + 1;
 			continue ;
 		}
-		t[i] = (dot_product(scene->pl[i].orth_vec, tmp)) / (dot_product(scene->pl[i].orth_vec, ray->dir));
-		i++;
+		t[*num] = (dot_product(scene->pl[*num].orth_vec, tmp)) / (dot_product(scene->pl[*num].orth_vec, ray->dir));
+		*num = *num + 1;
 	}
-	i = find_smallest(scene, t);
-	if (i != -1)
+	if (*num == 0)
 	{
-		*num = i;
-		ray->eye = add_vectors(ray->eye, multiply_vector(ray->dir, t[i]));
-		return (true);
+		*num = -1;
+		return (-1);
 	}
-	*num = -1;
-	return (false);
-	// tmp = subtract_vectors(scene->pl[num].coord, ray->eye);
-	// if (dot_product(scene->pl[num].orth_vec, ray->dir) == 0)
-	// {
-	// 	//then the ray is parallel to the plane, and there is no intersection point
-	// 	//printf("parralel\n");
-	// 	return (false);
-	// }
-	// t = (dot_product(scene->pl[num].orth_vec, tmp)) / (dot_product(scene->pl[num].orth_vec, ray->dir));
-	// if (t > 0)
-	// {
-	// 	ray->eye = add_vectors(ray->eye, multiply_vector(ray->dir, t));
-	// 	return (true);
-	// }
-	// return (false);
+	*num = find_smallest(scene, t);
+	if (*num != -1)
+	{
+		//ray->eye = add_vectors(ray->eye, multiply_vector(ray->dir, t[*num]));
+		return (t[*num]);
+	}
+	return (-1);
 }
 
 // t_ray	calc_ray(t_data *data, t_scene *scene, double x, double y)
@@ -117,33 +103,19 @@ void calc_hit(t_data *data, t_scene *scene, double x, double y)
 	t_ray		intersect;
 	int			num;
 	int			num2;
-	//t_matrix44d	camToWorld;
-
-	//ray = calc_ray(data, scene, x, y); //ray with eye as a pixel point and direction as origin->pixelpoint
-	//printf("ray.dir: %f %f %f   ray.eye: %f %f %f     ", ray.dir.x, ray.dir.y, ray.dir.z, ray.eye.x, ray.eye.y, ray.eye.z);
-	
-	//ray.eye = scene->cam->eye; //sets ray.eye to camera eye, its now 
-	//camToWorld = set_camera_to_world(scene->cam->eye, ray.eye);
-	//ray.dir = camera_to_world(scene, ray); //camera-to-world translation, sets new direction
-	//ray.dir = normalize_vector(ray.dir); //normalize
 
 	ray = get_ray(scene, data, x, y);
-	//FIRE MY LASERS
-	// cos a = N . L (dot product normal and light vector)
-	// a = arccos (n . l)
-
-	if (cast_ray_to_space_check_if_hit_pl(scene, &ray, &num)) // = hit -> ray now has intersec coords , num is which plane
+	if (cast_ray_to_space_check_if_hit_pl(scene, &ray, &num) > 0) // = hit -> ray now has intersec coords , num is which plane
 	{
 		intersect = ray;
-		//printf("ray.eye: %f %f %f\n", ray.eye.x, ray.eye.y, ray.eye.z);
 		ray.dir = normalize_vector(subtract_vectors(ray.eye, scene->light->ori));
 		ray.eye = scene->light->ori;
-		if (cast_ray_to_space_check_if_hit_pl(scene, &ray, &num2) && num2 == num) // light hits SAME plane as well
+		if (cast_ray_to_space_check_if_hit_pl(scene, &ray, &num2) > 0 && num2 == num) // light hits SAME plane as well
 		{
 			//cast ray from camera to light, if this hits plane, check if it was BEFORE light
 			ray.eye = scene->cam->eye;
 			ray.dir = normalize_vector(subtract_vectors(scene->light->ori, ray.eye));
-			if (cast_ray_to_space_check_if_hit_pl(scene, &ray, &num2) && num2 == num) // camera -> light hits plane 
+			if (cast_ray_to_space_check_if_hit_pl(scene, &ray, &num2) > 0 && num2 == num) // camera -> light hits plane 
 			{
 				if (distance_two_points(scene->cam->eye, ray.eye) < distance_two_points(scene->cam->eye, scene->light->ori))//from cam -> obj hits first, so light is behind plane
 					mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), add_shade(0.9, scene->pl[num].rgb));
@@ -158,10 +130,7 @@ void calc_hit(t_data *data, t_scene *scene, double x, double y)
 			}
 		}
 		else //light is INSIDE plane or it hits ANOTHER PLANE
-		{
-			//printf("1\n");
 			mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), add_shade(0.9, scene->pl[num].rgb));
-		}
 	}
 }
 
@@ -179,18 +148,13 @@ void	draw_plane(t_data *data, t_scene *scene)
 			calc_hit(data, scene, i, j);
 			j++;
 		}
-//		printf("\\\\\\\\\\ LOOP FOR X COMPLETE ///////\n");
 		i++;
 	}
 }
 
 int	plane(t_data *data, t_scene *scene)
 {
-	int	i;
-
-	//data->mlx_img = mlx_new_image(data->mlx, data->width + 10, data->height + 10);
 	draw_plane(data, scene);
-	//mlx_image_to_window(data->mlx, data->mlx_img, -1, -1);
 	return 0;
 }
 

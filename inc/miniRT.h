@@ -146,9 +146,11 @@ void		read_scene(t_scene *scene, char *name);
 void		ft_error(int num, char *msg);
 t_ray		calc_ray(t_data *data, t_scene *scene, double x, double y);
 
-// *** GLOBE STUFF \\
+// *** SPHERE STUFF \\
 
 void		sphere(t_data *data, t_scene *scene);
+int 		find_hit_sphere(t_scene *scene, t_ray ray, int count, double *close_t);
+double 		find_hit_sphere2(t_scene *scene, t_ray ray, int count, int *num);
 
 
 // *** PLANE STUFF *** \\
@@ -157,7 +159,7 @@ void		draw_plane(t_data *data, t_scene *scene);
 int			plane(t_data *data, t_scene *scene);
 bool		intersect_eye_plane(t_scene *scene, t_vect3d *vec1, int num);
 bool		is_P_on_plane(t_scene *scene, t_vect3d P, int num);
-bool		cast_ray_to_space_check_if_hit_pl(t_scene *scene, t_ray *ray, int *num);
+double		cast_ray_to_space_check_if_hit_pl(t_scene *scene, t_ray *ray, int *num);
 
 // *** VECTOR STUFF *** \\
 
@@ -182,6 +184,8 @@ void		printf_matrix48d(t_matrix48d matrix);
 t_matrix44d	get_inverted_T(t_scene *scene, int num);
 void		printf_vect3d(t_vect3d vec);
 t_matrix44d	get_inverted_R(t_scene *scene, int num);
+t_matrix44d	matrix_to_translate_to_xyx(t_vect3d C);
+bool		comp_d(double x, double y);
 
 // *** COLOUR STUFF *** \\
 
@@ -204,5 +208,6 @@ double		get_max(int r, int g, int b);
 // *** CYLINDER STUFF *** \\\
 
 int			cylinder(t_data *data, t_scene *scene);
+double		cast_ray_to_space_check_if_hit_cy(t_scene *scene, t_ray *ray, int *num);
 
 #endif
