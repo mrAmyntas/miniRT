@@ -50,7 +50,7 @@ void	set_mat_to_IM(t_matrix44d *Mat, double **IM)
 	Mat->row4.t = IM[3][3];
 }
 
-//model matrix with new xyz
+//model matrix with new xyz for C
 t_matrix44d	matrix_to_translate_to_xyx(t_vect3d C)
 {
 	t_matrix44d	model;

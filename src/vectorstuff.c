@@ -21,6 +21,20 @@ bool	compare_vectors(t_vect3d vec1, t_vect3d vec2)
 	return (false);
 }
 
+//compare doubles
+bool	comp_d(double x, double y)
+{
+	if (x > y)
+		x = x - y;
+	else
+		x = y - x;
+	if (x < 0.000001)
+		return (true);
+	return (false);
+}
+
+
+
 //distance between points
 double	distance_two_points(t_vect3d P1, t_vect3d P2)
 {
@@ -333,21 +347,15 @@ t_ray	get_ray(t_scene *scene, t_data *data, double x, double y)
 	// pPOINT SHOULD BE ONE IN 'FRONT'  OF CAMERA, WHICH ISNT ALWAyS z + 1
 
 	LookAtPoint = add_vectors(scene->cam->eye, scene->cam->dir);
-	//LookAtPoint = scene->cam->eye;
-	//LookAtPoint.z = LookAtPoint.z + 1;// NOW IT ALWAYS LOOKS IN FRONT !!!!
 	viewDir = normalize_vector(subtract_vectors(LookAtPoint, scene->cam->eye));
-	//viewDir = scene->cam->dir;
 	U = normalize_vector(cross_product(viewDir, up));
 	V = normalize_vector(cross_product(U, viewDir));
 
 	double viewPlaneHalfWidth= tan(scene->c_fov * M_PI / 180 / 2);
 	double aspectRatio = data->height/data->width;
 	double viewPlaneHalfHeight = aspectRatio * viewPlaneHalfWidth;
-//	t_vect3d viewPlaneBottomLeftPoint = LookAtPoint - V * viewPlaneHalfHeight - U * viewPlaneHalfWidth;
 	t_vect3d tmp = subtract_vectors(LookAtPoint, multiply_vector(V, viewPlaneHalfHeight));
 	t_vect3d viewPlaneBottomLeftPoint = subtract_vectors(tmp, multiply_vector(U, viewPlaneHalfWidth));
-	// xIncVector = (U*2*halfWidth)/xResolution;
-	// yIncVector = (V*2*halfHeight)/yResolution;
 
 	tmp = multiply_vector(U, (2 * viewPlaneHalfWidth));
 	t_vect3d xIncVector = divide_vec_scalar(tmp, data->width);
