@@ -104,8 +104,8 @@ int	get_color(t_scene *scene, int num[2], double t, t_vect3d Phit)
 
 	angle = get_angle(scene, num, Phit);
 	ray.eye = Phit;
-	ray.dir = normalize_vector(subtract_vectors(scene->light->ori, ray.eye));
-	shadow = check_shadows(ray, scene, t);
+	ray.dir = normalize_vector(subtract_vectors(scene->light->ori, ray.eye)); 
+	shadow = check_shadows(ray, scene, t); //casting ray from the object to the light!
 	if (num[0] == PLANE)
 		return (calculate_light(angle, Phit, scene->pl[num[1]].hsl, scene, t, shadow));
 	else if (num[0] == SPHERE)
@@ -115,24 +115,6 @@ int	get_color(t_scene *scene, int num[2], double t, t_vect3d Phit)
 	else if (num[0] == CYLINDER)
 		return (scene->cy[num[1]].rgb);
 	return (-1);
-}
-
-bool check_if_plane_between_light_and_cam(t_scene *scene, int num[2])
-{
-	t_ray	ray;
-	int		t;
-	int		num2;
-
-	ray.eye = scene->cam->eye;
-	ray.dir = normalize_vector(subtract_vectors(scene->light->ori, ray.eye));
-	t = cast_ray_to_space_check_if_hit_pl(scene, &ray, &num2);
-	if (t > 0 && num[1] == num2) // camera -> light hits same plane 
-	{
-		ray.eye = add_vectors(ray.eye, multiply_vector(ray.dir, t)); //intersect point
-		if (distance_two_points(scene->cam->eye, ray.eye) < distance_two_points(scene->cam->eye, scene->light->ori))//from cam -> obj hits first, so light is behind plane
-			return (true);
-	}
-	return (false);
 }
 
 int	find_pixel_color(t_scene *scene, double t, int num[2], t_vect3d Phit)
@@ -146,19 +128,8 @@ int	find_pixel_color(t_scene *scene, double t, int num[2], t_vect3d Phit)
 	ray.dir = normalize_vector(subtract_vectors(Phit, ray.eye));
 	t2 = find_closest_object(scene, &ray, num2);
 	Phit2 = add_vectors(ray.eye, multiply_vector(ray.dir, t2));
-	if (t2 != -1 && num[0] == num2[0] && num[1] == num2[1] && compare_vectors(Phit, Phit2)) //light hits same obj as the camera ray at the same point
-	{
-		//cast ray from camera to light, if this hits obj, check if it was BEFORE light, if it isnt, the light is hitting the BACK of the obj (only really matters for plane)
-		if (num[0] == 0 && check_if_plane_between_light_and_cam(scene, num)) // true means plane blocks light of itself
-			return (-1);
-		else
-		{
- 			//calculate_light(double angle, t_vect3d Phit, t_vect3d hsl, t_scene *scene, double t, int shadow)
-			//use the type+type_num (num[0] num[1] and distance (t2) to determine angle and calc color)
-			return (get_color(scene, num2, t2, Phit));
-		}
-	}
-	// not lit
+	if (t2 > 0 && num[0] == num2[0] && num[1] == num2[1] && compare_vectors(Phit, Phit2)) //light hits same obj as the camera ray at the same point
+		return (get_color(scene, num2, t2, Phit));
 	return (-1);
 }
 
@@ -172,7 +143,7 @@ void	charge_my_lasers(t_data *data, t_scene *scene, int x, int y)
 
 	ray = get_ray(scene, data, x, y);
 	t = find_closest_object(scene, &ray, num);
-	if (t != -1)
+	if (t > 0)
 	{
 		Phit = add_vectors(ray.eye, multiply_vector(ray.dir, t));
 		color = find_pixel_color(scene, t, num, Phit);
@@ -198,3 +169,23 @@ void	positions_my_lasers(t_data *data, t_scene *scene)
 		x++;
 	}
 }
+
+
+
+// bool check_if_plane_between_light_and_cam(t_scene *scene, int num[2])
+// {
+// 	t_ray	ray;
+// 	int		t;
+// 	int		num2;
+
+// 	ray.eye = scene->cam->eye;
+// 	ray.dir = normalize_vector(subtract_vectors(scene->light->ori, ray.eye));
+// 	t = cast_ray_to_space_check_if_hit_pl(scene, &ray, &num2);
+// 	if (t > 0 && num[1] == num2) // camera -> light hits same plane 
+// 	{
+// 		ray.eye = add_vectors(ray.eye, multiply_vector(ray.dir, t)); //intersect point
+// 		if (distance_two_points(scene->cam->eye, ray.eye) < distance_two_points(scene->cam->eye, scene->light->ori))//from cam -> obj hits first, so light is behind plane
+// 			return (true);
+// 	}
+// 	return (false);
+// }
