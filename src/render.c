@@ -172,8 +172,6 @@ void	charge_my_lasers(t_data *data, t_scene *scene, int x, int y)
 
 	ray = get_ray(scene, data, x, y);
 	t = find_closest_object(scene, &ray, num);
-	if (num[0] != PLANE)
-		printf("num:%d %d    t:%f\n", num[0], num[1], t);
 	if (t != -1)
 	{
 		Phit = add_vectors(ray.eye, multiply_vector(ray.dir, t));
