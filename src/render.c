@@ -105,6 +105,13 @@ int	get_color(t_scene *scene, int num[2], double t, t_vect3d Phit)
 	angle = get_angle(scene, num, Phit);
 	ray.eye = Phit;
 	ray.dir = normalize_vector(subtract_vectors(scene->light->ori, ray.eye)); 
+	//hier moet dan die bias, weet niet precies hoe dat werkt en of dat voor plane ook met de Normal moet, doe 
+	//nu voor sphere maar hetzelfde als jij
+	if (num[0] == SPHERE)
+	{
+		t_vect3d N = normalize_vector(subtract_vectors(Phit, scene->sp[num[1]].C));
+		ray.eye = add_vectors(ray.eye, multiply_vector(N, 0.1)); // 0.000001 = bias
+	}
 	shadow = check_shadows(ray, scene, t); //casting ray from the object to the light!
 	if (num[0] == PLANE)
 		return (calculate_light(angle, Phit, scene->pl[num[1]].hsl, scene, t, shadow));
