@@ -59,38 +59,41 @@ int	check_shadows(t_ray ray, t_scene *scene, double t)
 	return (1);
 }
 
-double	get_sp_angle(t_scene *scene, int num[2], t_vect3d Phit)
+double	get_sp_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 {
 	double		angle;
 	t_ray		ray;
-	t_vect3d	N;
 
-    N = normalize_vector(subtract_vectors(Phit, scene->sp[num[1]].C));
+    *N = normalize_vector(subtract_vectors(Phit, scene->sp[num[1]].C));
 	ray.dir = normalize_vector(subtract_vectors(scene->light->ori, Phit));
-    angle = acos(dot_product(N, ray.dir)) / (M_PI / 180);
+    angle = acos(dot_product(*N, ray.dir)) / (M_PI / 180);
 	return (angle);
 }
 
-double	get_pl_angle(t_scene *scene, int num[2], t_vect3d Phit)
+double	get_pl_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 {
 	double		angle;
 	t_vect3d	tmp;
 
 	tmp = normalize_vector(subtract_vectors(scene->light->ori, Phit));
 	angle = acos(dot_product(scene->pl[num[1]].orth_vec, tmp)) / (M_PI / 180);
+	*N = scene->pl[num[1]].orth_vec;
 	if (angle > 90)
+	{
 		angle = 180 - angle;
+		*N = multiply_vector(*N, -1);
+	}
 	return (angle);
 }
 
-double	get_angle(t_scene *scene, int num[2], t_vect3d Phit)
+double	get_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 {
 	double	angle;
 
 	if (num[0] == PLANE)
-		angle = get_pl_angle(scene, num, Phit);
+		angle = get_pl_angle(scene, num, Phit, N);
 	else if (num[0] == SPHERE)
-		angle = get_sp_angle(scene, num, Phit);
+		angle = get_sp_angle(scene, num, Phit, N);
 	else
 		angle = 45;
 	return (angle);
@@ -98,27 +101,21 @@ double	get_angle(t_scene *scene, int num[2], t_vect3d Phit)
 
 int	get_color(t_scene *scene, int num[2], double t, t_vect3d Phit)
 {
-	double	angle;
-	int		shadow;
-	t_ray	ray;
+	double		angle;
+	int			shadow;
+	t_ray		ray;
+	t_vect3d	N;
 
-	angle = get_angle(scene, num, Phit);
+	angle = get_angle(scene, num, Phit, &N);
 	ray.eye = Phit;
 	ray.dir = normalize_vector(subtract_vectors(scene->light->ori, ray.eye)); 
-	//hier moet dan die bias, weet niet precies hoe dat werkt en of dat voor plane ook met de Normal moet, doe 
-	//nu voor sphere maar hetzelfde als jij
-	if (num[0] == SPHERE)
-	{
-		t_vect3d N = normalize_vector(subtract_vectors(Phit, scene->sp[num[1]].C));
+	if (num[0] == SPHERE || num[0] == PLANE)
 		ray.eye = add_vectors(ray.eye, multiply_vector(N, 0.1)); // 0.000001 = bias
-	}
 	shadow = check_shadows(ray, scene, t); //casting ray from the object to the light!
 	if (num[0] == PLANE)
 		return (calculate_light(angle, Phit, scene->pl[num[1]].hsl, scene, t, shadow));
 	else if (num[0] == SPHERE)
-	{
 		return (calculate_light(angle, Phit, scene->sp[num[1]].hsl, scene, t, shadow));
-	}
 	else if (num[0] == CYLINDER)
 		return (scene->cy[num[1]].rgb);
 	return (-1);
