@@ -159,31 +159,6 @@ int find_hit_sphere(t_scene *scene, t_ray ray, int count, double *close_t)
     return (save_i);
 }
 
-double find_hit_sphere2(t_scene *scene, t_ray ray, int count, int *num)
-{
-    double      bc[2];
-    double      t;
-    int         i;
-    double     	closest;
-
-    i = 0;
-	*num = -1;
-    closest = -1;
-    while (i < count)
-    {    
-        calc_b_c(scene, ray, bc, i);
-        t = calc_t0(bc[0], bc[1]);
-        if ((t < closest && t != -1) || (closest < 0 && t != -1))
-		{
-            closest = t;
-			*num = i;
-		}
-        i++;
-    }
-    return (closest);
-}
-
-
 void    sphere(t_data *data, t_scene *scene)
 {
     int     i;
