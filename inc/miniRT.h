@@ -122,6 +122,13 @@ typedef struct s_light
 	int			color;
 }				t_light;
 
+enum	e_object_type
+{
+	PLANE,
+	CYLINDER,
+	SPHERE
+};
+
 
 typedef struct s_scene
 {
@@ -145,6 +152,7 @@ void		hook(void *param);
 void		read_scene(t_scene *scene, char *name);
 void		ft_error(int num, char *msg);
 t_ray		calc_ray(t_data *data, t_scene *scene, double x, double y);
+void		positions_my_lasers(t_data *data, t_scene *scene);
 
 // *** SPHERE STUFF \\
 
@@ -204,6 +212,8 @@ double		get_saturation(double l, double minmax[2]);
 double 		get_hue(double minmax[2], double r, double g, double b);
 double		get_min(int r, int g, int b);
 double		get_max(int r, int g, int b);
+int     	check_shadow(t_ray ray, t_scene *scene);
+int    		calculate_light(double angle, t_vect3d Phit, t_vect3d hsl, t_scene *scene, double t, int shadow);
 
 // *** CYLINDER STUFF *** \\\
 
