@@ -19,7 +19,7 @@ double	find_closest_object(t_scene *scene, t_ray *ray, int num[2])
 	int		numb[3];
 
 	t[0] = cast_ray_to_space_check_if_hit_pl(scene, ray, &numb[0]);
-	t[1] = -1;//cast_ray_to_space_check_if_hit_cy(scene, ray, &numb[1]);
+	t[1] = cast_ray_to_space_check_if_hit_cy(scene, ray, &numb[1]);
 	numb[2] = find_hit_sphere(scene, *ray, scene->amount[1], &t[2]);
 	t[3] = smallest(t);
 	if (comp_d(t[0], t[3]))

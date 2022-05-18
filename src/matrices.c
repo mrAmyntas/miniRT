@@ -426,7 +426,8 @@ t_matrix44d	get_inverted_R(t_scene *scene, int num)
 	double		a;
 	t_matrix44d	R;
 
-	o = scene->origin;
+	o.x = 0;
+	o.y = 0;
 	o.z = 1;
 	a = acos(dot_product(o, scene->cy[num].dir) / (magnitude(o) * magnitude(scene->cy[num].dir)));
 	axis = normalize_vector(cross_product(o, scene->cy[num].dir));

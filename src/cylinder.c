@@ -24,6 +24,7 @@ void	rotate_ray(t_ray *ray, t_matrix44d I_R)
 	ray->dir.x = new_ray_dir.x;
 	ray->dir.y = new_ray_dir.y;
 	ray->dir.z = new_ray_dir.z;
+	normalize_vector(ray->dir);
 }
 
 void	translate_ray(t_vect3d *eye, t_matrix44d I_T)
@@ -46,7 +47,7 @@ double find_closest_cy(t_scene *scene, t_ray *ray, int *num)
 	double	a;
 	double	b;
 	double	c;
-	double	t[4] = {0, 0, 0 ,0};
+	double	t[4] = {-1, -1, -1 ,-1};
 	double	D;
 	double 	r;
 	double 	zz[2];
@@ -59,12 +60,23 @@ double find_closest_cy(t_scene *scene, t_ray *ray, int *num)
 	t_matrix44d I_R;
 	t_matrix44d T; 
 
-	// T = matrix_to_translate_to_xyx(scene->cy[*num].eye);
-	// I_R = get_inverted_R(scene, *num);
-	// I_T = get_inverted_T(scene, *num);
-	// translate_ray(&ray->eye, I_T);
-	// if (!(scene->cy[*num].dir.x < 0.000001 && scene->cy[*num].dir.y < 0.000001 && scene->cy[*num].dir.z > 0.999999))
-	// 	rotate_ray(ray, I_R);
+	T = matrix_to_translate_to_xyx(scene->cy[*num].eye);
+	I_R = get_inverted_R(scene, *num);
+	I_T = get_inverted_T(scene, *num);
+	
+	printf_vect3d(ray->dir);
+	printf_vect3d(ray->eye);
+	printf("translation\n");
+	translate_ray(&ray->eye, I_T);
+	printf_vect3d(ray->dir);
+	printf_vect3d(ray->eye);
+	printf("rotation\n");
+	if (!(scene->cy[*num].dir.x < 0.000001 && scene->cy[*num].dir.y < 0.000001 && scene->cy[*num].dir.z > 0.999999))
+		rotate_ray(ray, I_R);
+	printf_vect3d(ray->dir);
+	printf_vect3d(ray->eye);
+	// printf("\n");
+
 	r = pow((scene->cy[*num].diameter / 2), 2);
 	a = (pow(ray->dir.x, 2) + pow(ray->dir.y, 2));
 	b = (2 * ray->eye.x * ray->dir.x) + (2 * ray->eye.y * ray->dir.y);
@@ -83,8 +95,9 @@ double find_closest_cy(t_scene *scene, t_ray *ray, int *num)
 	z_max = scene->cy[*num].height;
 	//if ((t[0] < t[1] && t[1] - t[0] < 0.001) || (t[1] < t[0] && t[0] - t[1] < 0.001))
 	//printf("t0:%f               t1:%f\n", t[0], t[1]);
-	if (t[0] < t[1] && z_min < zz[0] && zz[0] < z_max && t[0] > 0)
+	if (t[0] > 0 && (t[0] < t[1] || t[1] < 0) && z_min < zz[0] && zz[0] < z_max)
 	{
+		//printf("t[0]:%f   z0:%f     camera rot: %f %f %f\n", t[0], zz[0], scene->cam->dir.x, scene->cam->dir.y, scene->cam->dir.z);
 		if ((zz[0] < z_min && zz[1] > z_min) || (zz[1] < z_min && zz[0] > z_min)) // hits cap
 		{
 			t[2] = (z_min - ray->eye.z) / ray->dir.z;
@@ -107,6 +120,7 @@ double find_closest_cy(t_scene *scene, t_ray *ray, int *num)
 	}
 	else if (z_min < zz[1] && zz[1] < z_max && t[1] > 0)
 	{
+		//printf("1\n");
 		if ((zz[0] < z_min && zz[1] > z_min) || (zz[1] < z_min && zz[0] > z_min)) // hits cap
 		{
 			t[2] = (z_min - ray->eye.z) / ray->dir.z;
@@ -129,20 +143,23 @@ double find_closest_cy(t_scene *scene, t_ray *ray, int *num)
 	}
 	else //outside of z-values
 	{
+		t[2] = -1;
+		t[3] = -1;
 		if ((zz[0] < z_min && zz[1] > z_min) || (zz[1] < z_min && zz[0] > z_min)) // hits cap
 			t[2] = (z_min - ray->eye.z) / ray->dir.z;
 		if ((zz[0] < z_max && zz[1] > z_max) || (zz[1] < z_max && zz[0] > z_max)) // hits cap
 			t[3] = (z_max - ray->eye.z) / ray->dir.z;
 		if (t[2] > 0 && (t[2] < t[3] || t[3] < 0))
 		{
+			printf("2\n");
 			return t[2];
 		}
-		if (t[3] > 0 && (t[3] < t[2] || t[2] < 0))
+		else if (t[3] > 0)
 		{
+			printf("3\n");
 			return t[3];
 		}
 	}
-//	printf("???\n");
 	return (-1);
 
 }
@@ -173,11 +190,13 @@ double find_smallest2(t_scene *scene, double t[scene->amount[2]])
 double	cast_ray_to_space_check_if_hit_cy(t_scene *scene, t_ray *ray, int *num)
 {
 	double 	t[scene->amount[2]];
+	t_ray	new_ray;
 
+	new_ray = *ray;
 	*num = 0;
 	while (*num < scene->amount[2])
 	{
-		t[*num] = find_closest_cy(scene, ray, num);
+		t[*num] = find_closest_cy(scene, &new_ray, num);
 		*num = *num + 1;
 	}
 	if (*num == 0)
@@ -220,26 +239,27 @@ void calc_hit2(t_data *data, t_scene *scene, double x, double y)
 	I_R = get_inverted_R(scene, num);
 	I_T = get_inverted_T(scene, num);
 	translate_ray(&ray.eye, I_T);
-	if (!(scene->cy[num].dir.x < 0.000001 && scene->cy[num].dir.y < 0.000001 && scene->cy[num].dir.z > 0.999999))
-	 	rotate_ray(&ray, I_R);
+	//if (!(scene->cy[num].dir.x < 0.000001 && scene->cy[num].dir.y < 0.000001 && scene->cy[num].dir.z > 0.999999))
+	rotate_ray(&ray, I_R);
 	tmp = cast_ray_to_space_check_if_hit_cy(scene, &ray, &num);
+//	printf("tmp:%f\n", tmp);
 	if (tmp != -1) // = hit  
 	{
 		intersect = add_vectors(ray.eye, multiply_vector(ray.dir, tmp));
 		//check if light -> intersect point hits the same intersect
-		translate_ray(&intersect, T);
+		//translate_ray(&intersect, T);
 		ray.eye = scene->light->ori;
 		ray.dir = normalize_vector(subtract_vectors(intersect, scene->light->ori));
-		translate_ray(&ray.eye, I_T);
+		//translate_ray(&ray.eye, I_T);
 		if (!(scene->cy[num].dir.x < 0.000001 && scene->cy[num].dir.y < 0.000001 && scene->cy[num].dir.z > 0.999999))
 			rotate_ray(&ray, I_R);
-		tmp2 = cast_ray_to_space_check_if_hit_cy(scene, &ray, &num);
+		//tmp2 = cast_ray_to_space_check_if_hit_cy(scene, &ray, &num);
 		ray.eye = add_vectors(ray.eye, multiply_vector(ray.dir, tmp2));
-		translate_ray(&ray.eye, T);
+		//translate_ray(&ray.eye, T);
 		if (tmp2 != -1 && compare_vectors(ray.eye, intersect) == true) // is lit
-			mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), 0x0000FFFF); //light_the_pixel_cy(scene, intersect, num)
+			mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), scene->cy[num].rgb); //light_the_pixel_cy(scene, intersect, num)
 		else if (tmp2)
-			mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), 0x0000FFFF);
+			mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), scene->cy[num].rgb);
 		return ;
 	}
 }
