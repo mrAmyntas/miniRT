@@ -267,6 +267,7 @@ void	read_pl2(t_scene *scene, char **line, int i, char **coords)
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of colours for a plane\n");
 	create_hsl(&scene->pl[i].hsl, ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
+	printf("%i %i %i, %f\n", ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]), scene->pl[i].hsl.y);
 	scene->pl[i].rgb = create_rgb(ft_atoi(coords[0]),
 			ft_atoi(coords[1]), ft_atoi(coords[2]));
 	free_strstr(coords);

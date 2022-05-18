@@ -135,7 +135,9 @@ int	cast_shadow(t_scene *scene, int num[2], double t, t_vect3d Phit)
 	if (num[0] == SPHERE || num[0] == PLANE)
 		ray.eye = add_vectors(ray.eye, multiply_vector(N, 0.1)); // 0.000001 = bias
 	if (num[0] == PLANE)
+	{
 		return (calculate_light(angle, Phit, scene->pl[num[1]].hsl, scene, t, 0));
+	}
 	else if (num[0] == SPHERE)
 		return (calculate_light(angle, Phit, scene->sp[num[1]].hsl, scene, t, 0));
 	else if (num[0] == CYLINDER)
