@@ -9,13 +9,12 @@ static void	background(t_data *data, t_scene *scene)
 	i = 0;
 	//scene->a_hsl.z = scene->a_ratio;
 	//scene->a_rgb = hsl_to_rgb(scene->a_hsl);
-	scene->a_rgb = 0x000000FF;
 	while (i < data->width + 1)
 	{
 		j = 0;
 		while (j < data->height + 1)
 		{
-			mlx_put_pixel(data->mlx_img, i, j, scene->a_rgb);
+			mlx_put_pixel(data->mlx_img, i, j, 0x000000FF);
 			j++;
 		}
 		i++;
