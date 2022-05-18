@@ -44,7 +44,7 @@ int	main(int argc, char **argv)
 	if (!data.mlx)
 		exit(EXIT_FAILURE);
 	background(&data, &scene);
-	positions_my_lasers(&data, &scene);
+	loop_pixels(&data, &scene);
 	//plane(&data, &scene);
 	//cylinder(&data, &scene);
 	mlx_image_to_window(data.mlx, data.mlx_img, -1, -1);

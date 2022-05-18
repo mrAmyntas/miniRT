@@ -12,15 +12,21 @@ LIBFT_DIR =	libft/
 SRC =	src/main.c\
 		src/colours.c\
 		src/get_scene.c\
+		src/get_scene_objects.c\
+		src/get_scene_elements.c\
 		src/plane.c\
 		src/sphere.c\
 		src/vectorstuff.c\
 		src/cylinder.c\
 		src/matrices.c\
-		src/render.c
+		src/render.c\
+		src/light.c\
+		src/calculate_hsl.c
 
 INC = 	inc/miniRT.h\
 		libft/libft.h\
+		inc/scenes.h\
+		inc/vectors.h
 
 OBJ = $(SRC:$(SRC_DIR)%.c=$(OBJ_DIR)%.o)
 
