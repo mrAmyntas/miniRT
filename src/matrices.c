@@ -401,15 +401,20 @@ t_matrix44d	get_inverted_T(t_scene *scene, int num)
 
 void	get_R(double a, t_vect3d axis, t_matrix44d	*R)
 {
-	R->row1.x = cos(a) + pow(axis.x, 2) * (1 - cos(a));
-	R->row1.y = axis.x * axis.y * (1 - cos(a)) - axis.z * sin(a);
-	R->row1.z = axis.x * axis.z * (1 - cos(a)) + axis.y * sin(a);
-	R->row2.x = axis.y * axis.x * (1 - cos(a)) + axis.z * sin(a);
-	R->row2.y = cos(a) + pow(axis.y, 2) * (1 - cos(a));
-	R->row2.z = axis.y * axis.z * (1 - cos(a)) - axis.x * sin(a);
-	R->row3.x = axis.z * axis.x * (1 - cos(a)) - axis.y * sin(a);
-	R->row3.y = axis.z * axis.y * (1 - cos(a)) + axis.x * sin(a);
-	R->row3.z = cos(a) + pow(axis.z, 2) * (1 - cos (a)); 
+
+	double c = cos(a);
+	double s = sin(a);
+	double t = 1 - c;
+
+	R->row1.x = c + pow(axis.x, 2) * t;
+	R->row1.y = axis.x * axis.y * t - axis.z * s;
+	R->row1.z = axis.x * axis.z * t + axis.y * s;
+	R->row2.x = axis.y * axis.x * t + axis.z * s;
+	R->row2.y = c + pow(axis.y, 2) * t;
+	R->row2.z = axis.y * axis.z * t - axis.x * s;
+	R->row3.x = axis.z * axis.x * t - axis.y * s;
+	R->row3.y = axis.z * axis.y * t + axis.x * s;
+	R->row3.z = c + pow(axis.z, 2) * t; 
 	R->row4.x = 0;
 	R->row4.y = 0;
 	R->row4.z = 0;
@@ -429,9 +434,10 @@ t_matrix44d	get_inverted_R(t_scene *scene, int num)
 	o.x = 0;
 	o.y = 0;
 	o.z = 1;
-	a = acos(dot_product(o, scene->cy[num].dir) / (magnitude(o) * magnitude(scene->cy[num].dir)));
+	a = acos(dot_product(o, scene->cy[num].dir));// / (magnitude(o) * magnitude(scene->cy[num].dir)));
 	axis = normalize_vector(cross_product(o, scene->cy[num].dir));
 	get_R(a, axis, &R);
+	return (R);
 	R = invert_matrix(&R);
 	return (R);
 }

@@ -55,7 +55,9 @@ double find_closest_cy(t_scene *scene, t_ray *ray, int *num)
 	double 	z_max;
 	int		i;
 	double	intersect[scene->amount[2]];
-
+	
+	z_min = 0;
+	z_max = scene->cy[*num].height;
 	t_matrix44d I_T;
 	t_matrix44d I_R;
 	t_matrix44d T; 
@@ -64,17 +66,23 @@ double find_closest_cy(t_scene *scene, t_ray *ray, int *num)
 	I_R = get_inverted_R(scene, *num);
 	I_T = get_inverted_T(scene, *num);
 	
-	printf_vect3d(ray->dir);
-	printf_vect3d(ray->eye);
-	printf("translation\n");
+	// printf_vect3d(ray->dir);
+	// printf_vect3d(ray->eye);
+	// printf("translation\n");
 	translate_ray(&ray->eye, I_T);
-	printf_vect3d(ray->dir);
-	printf_vect3d(ray->eye);
-	printf("rotation\n");
-	if (!(scene->cy[*num].dir.x < 0.000001 && scene->cy[*num].dir.y < 0.000001 && scene->cy[*num].dir.z > 0.999999))
+	// printf_vect3d(ray->dir);
+	// printf_vect3d(ray->eye);
+	// printf("rotation\n");
+	if (!(scene->cy[*num].dir.x < 0.000001 && scene->cy[*num].dir.y < 0.000001 && fabs(scene->cy[*num].dir.z) > 0.999999))
+	{
 		rotate_ray(ray, I_R);
-	printf_vect3d(ray->dir);
-	printf_vect3d(ray->eye);
+	}
+	else if (scene->cy[*num].dir.x < 0.000001 && scene->cy[*num].dir.y < 0.000001 && scene->cy[*num].dir.z < -0.999999)
+	{
+		z_max = scene->cy[*num].height * -1;
+	}
+	// printf_vect3d(ray->dir);
+	// printf_vect3d(ray->eye);
 	// printf("\n");
 
 	r = pow((scene->cy[*num].diameter / 2), 2);
@@ -91,8 +99,6 @@ double find_closest_cy(t_scene *scene, t_ray *ray, int *num)
 	t[1] = (-b + sqrt(D)) / (2 * a);
 	zz[0] = ray->eye.z + ray->dir.z * t[0]; 
 	zz[1] = ray->eye.z + ray->dir.z * t[1];
-	z_min = 0;
-	z_max = scene->cy[*num].height;
 	//if ((t[0] < t[1] && t[1] - t[0] < 0.001) || (t[1] < t[0] && t[0] - t[1] < 0.001))
 	//printf("t0:%f               t1:%f\n", t[0], t[1]);
 	if (t[0] > 0 && (t[0] < t[1] || t[1] < 0) && z_min < zz[0] && zz[0] < z_max)
@@ -238,9 +244,9 @@ void calc_hit2(t_data *data, t_scene *scene, double x, double y)
 
 	I_R = get_inverted_R(scene, num);
 	I_T = get_inverted_T(scene, num);
-	translate_ray(&ray.eye, I_T);
-	//if (!(scene->cy[num].dir.x < 0.000001 && scene->cy[num].dir.y < 0.000001 && scene->cy[num].dir.z > 0.999999))
-	rotate_ray(&ray, I_R);
+	// translate_ray(&ray.eye, I_T);
+	// if (!(scene->cy[num].dir.x < 0.000001 && scene->cy[num].dir.y < 0.000001 && scene->cy[num].dir.z > 0.999999))
+	// 	rotate_ray(&ray, I_R);
 	tmp = cast_ray_to_space_check_if_hit_cy(scene, &ray, &num);
 //	printf("tmp:%f\n", tmp);
 	if (tmp != -1) // = hit  

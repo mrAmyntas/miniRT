@@ -1,17 +1,24 @@
-void	draw_cylinder(t_data *data, t_scene *scene, int num)
+void	get_R(double a, t_vect3d axis, t_matrix44d	*R)
 {
-	int	i;
-	int	j;
 
-	i = 0;
-	while (i < data->width + 1)
-	{
-		j = 0;
-		while (j < data->height + 1)
-		{
-			calc_hit2(data, scene, i, j, num);
-			j++;
-		}
-		i++;
-	}
+	double c = cos(a);
+	double s = sin;
+	double t = 1 - c;
+
+	R->row1.x = c + pow(axis.x, 2) * (1 - c);
+	R->row1.y = axis.x * axis.y * (1 - c) - axis.z * s;
+	R->row1.z = axis.x * axis.z * (1 - c) + axis.y * s;
+	R->row2.x = axis.y * axis.x * (1 - c) + axis.z * s;
+	R->row2.y = c + pow(axis.y, 2) * (1 - c);
+	R->row2.z = axis.y * axis.z * (1 - c) - axis.x * s;
+	R->row3.x = axis.z * axis.x * (1 - c) - axis.y * s;
+	R->row3.y = axis.z * axis.y * (1 - c) + axis.x * s;
+	R->row3.z = c + pow(axis.z, 2) * (1 - cos (a)); 
+	R->row4.x = 0;
+	R->row4.y = 0;
+	R->row4.z = 0;
+	R->row4.t = 1;
+	R->row1.t = 0;
+	R->row2.t = 0;
+	R->row3.t = 0;
 }
