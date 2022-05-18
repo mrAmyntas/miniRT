@@ -80,10 +80,13 @@ int    calculate_light(double angle, t_vect3d Phit, t_vect3d hsl, t_scene *scene
     double  bright[3];
 
     bright[1] = (1000000 - (t * t)) / 1000000;
+    bright[1] = (100 - t) / 100;
+    bright[2] = (8100 - (angle * angle)) / 8100;
     bright[2] = (90 - angle) / 90;
-    if (bright[2] < 0)
-        bright[2] = 0;
     bright[0] = (bright[1] + bright[2]) / 2 * scene->light->brightness;
+    //bright[0] = bright[1] * scene->light->brightness;
+    if (bright[0] < 0)
+        bright[0] = 0;
     //if (compare_vectors(Phit, Phit) == false)
     //    bright[0] = 0;
     bright[0] = (bright[0] * shadow + scene->a_ratio) / 2;
@@ -176,7 +179,6 @@ void    sphere(t_data *data, t_scene *scene)
         while (j < data->height)
         {
             ray = get_ray(scene, data, i, j);
-            ray.dir = normalize_vector(ray.dir);
             count = find_hit_sphere(scene, ray, scene->amount[1], &t);
             if (t > -1)
                 light_to_sp(data, t, scene, ray, count, i, j);

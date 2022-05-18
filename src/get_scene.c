@@ -222,6 +222,8 @@ void	read_c(t_scene *scene, char **line)
 		|| scene->cam->dir.y > 1 || scene->cam->dir.z < -1 || scene->cam->dir.z > 1)
 		ft_error(1, "One of the vectors for camera is out of range\n");
 	scene->cam->dir = normalize_vector(scene->cam->dir);
+	if (scene->cam->dir.x < 0.00001 && fabs(scene->cam->dir.y) > 0.9999 && scene->cam->dir.z < 0.00001)
+			scene->cam->dir.z = 0.0001;
 	free_strstr(coords);
 	scene->c_fov = ft_atoi(line[3]);
 }
