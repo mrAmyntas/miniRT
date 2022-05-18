@@ -55,6 +55,7 @@ double		get_saturation(double l, double minmax[2]);
 double 		get_hue(double minmax[2], double r, double g, double b);
 int     	check_shadow(t_ray ray, t_scene *scene);
 int    		calculate_light(double angle, t_vect3d Phit, t_vect3d hsl, t_scene *scene, double t, int shadow);
+int   		calculate_light2(double angle, t_vect3d Phit, t_vect3d hsl, t_scene *scene, double t, int shadow);
 
 // *** CYLINDER STUFF *** \\\
 

@@ -53,8 +53,6 @@ int	check_shadows(t_ray ray, t_scene *scene, double t)
 	t_vect3d	Phit;
 
 	t2 = find_closest_object(scene, &ray, num);
-	// if (t2 < t && t2 > 0)
-	// 	return (0);
 	if (comp_d(t, t2) && t2 > 0)
 		return (0);
 	return (1);
@@ -103,6 +101,32 @@ double	get_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 	return (angle);
 }
 
+int	check_if_plane_between_cam_and_light(t_scene *scene, t_vect3d Phit[2], double t, int num[2], double angle)
+{
+	t_ray	ray;
+	int		num2;
+	int		num3;
+	double	t2[2];
+
+	ray.eye = scene->light->ori;
+	ray.dir = normalize_vector(subtract_vectors(Phit[0], ray.eye));
+	t2[0] = cast_ray_to_space_check_if_hit_pl(scene, &ray, &num2); //ray from light -> obj
+	ray.eye = scene->cam->eye;
+	ray.dir = normalize_vector(subtract_vectors(scene->light->ori, ray.eye));
+	t2[1] = cast_ray_to_space_check_if_hit_pl(scene, &ray, &num3); //ray from cam -> light
+	if (t2[1] > 0 && num2 == num3 && t2[1] < distance_two_points(scene->cam->eye, scene->light->ori))
+	{
+		if (num[0] == PLANE)
+			return (calculate_light2(angle, Phit[0], scene->pl[num[1]].hsl, scene, t, 1));
+		if (num[0] == SPHERE)
+			return (calculate_light2(angle, Phit[0], scene->sp[num[1]].hsl, scene, t, 1));
+		if (num[0] == CYLINDER)
+			return (calculate_light2(angle, Phit[0], scene->cy[num[1]].hsl, scene, t, 1));
+	}
+	return (-1);
+}
+
+
 // sets the ray from Phit to light and returns the colour of the  pixel with the right lumination
 int	get_color(t_scene *scene, int num[2], double t, t_vect3d Phit[2])
 {
@@ -112,9 +136,11 @@ int	get_color(t_scene *scene, int num[2], double t, t_vect3d Phit[2])
 	t_vect3d	N;
 
 	angle = get_angle(scene, num, Phit[0], &N);
+	shadow = check_if_plane_between_cam_and_light(scene, Phit, t, num, angle);
+	if (shadow != -1)
+		return (shadow);
 	ray.eye = Phit[0];
 	ray.dir = normalize_vector(subtract_vectors(scene->light->ori, ray.eye)); 
-	// if (num[0] == SPHERE || num[0] == PLANE)
 	ray.eye = add_vectors(ray.eye, multiply_vector(N, 0.000001)); // 0.000001 = bias
 	shadow = check_shadows(ray, scene, t); //casting ray from the object to the light!
 	if (!compare_vectors(Phit[0], Phit[1]))
