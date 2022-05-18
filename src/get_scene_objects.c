@@ -68,8 +68,8 @@ void	read_sp(t_scene *scene, char **line)
 
 void	read_cy2(t_scene *scene, char **line, int i, char **coords)
 {
-	scene->cy[i].dir.x = ft_atod(coords[0]);
-	scene->cy[i].dir.y = ft_atod(coords[1]);
+	scene->cy[i].dir.x = ft_atod(coords[0]) * -1;
+	scene->cy[i].dir.y = ft_atod(coords[1]) * -1;
 	scene->cy[i].dir.z = ft_atod(coords[2]);
 	if (scene->cy[i].dir.x < -1 || scene->cy[i].dir.x > 1
 		|| scene->cy[i].dir.y < -1 || scene->cy[i].dir.y > 1
@@ -82,7 +82,7 @@ void	read_cy2(t_scene *scene, char **line, int i, char **coords)
 	coords = ft_split(line[5], ',');
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of colours for a cylinder\n");
-	create_hsl(&scene->cy->hsl, ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
+	create_hsl(&scene->cy[i].hsl, ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
 	scene->cy[i].rgb = create_rgb(ft_atoi(coords[0]),
 			ft_atoi(coords[1]), ft_atoi(coords[2]));
 }
@@ -90,7 +90,7 @@ void	read_cy2(t_scene *scene, char **line, int i, char **coords)
 void	read_cy(t_scene *scene, char **line)
 {
 	char		**coords;
-	static int	i;
+	static int	i = 0;
 
 	if (strstr_len(line) != 6)
 		ft_error(1, "Wrong number of arguments for a cylinder\n");

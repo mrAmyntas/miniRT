@@ -53,7 +53,9 @@ int	check_shadows(t_ray ray, t_scene *scene, double t)
 	t_vect3d	Phit;
 
 	t2 = find_closest_object(scene, &ray, num);
-	if (t2 < t && t2 > 0)
+	// if (t2 < t && t2 > 0)
+	// 	return (0);
+	if (comp_d(t, t2) && t2 > 0)
 		return (0);
 	return (1);
 }
@@ -97,7 +99,7 @@ double	get_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 	else if (num[0] == SPHERE)
 		angle = get_sp_angle(scene, num, Phit, N);
 	else
-		angle = 45;
+		angle = 5;
 	return (angle);
 }
 
@@ -112,8 +114,8 @@ int	get_color(t_scene *scene, int num[2], double t, t_vect3d Phit[2])
 	angle = get_angle(scene, num, Phit[0], &N);
 	ray.eye = Phit[0];
 	ray.dir = normalize_vector(subtract_vectors(scene->light->ori, ray.eye)); 
-	if (num[0] == SPHERE || num[0] == PLANE)
-		ray.eye = add_vectors(ray.eye, multiply_vector(N, 0.000001)); // 0.000001 = bias
+	// if (num[0] == SPHERE || num[0] == PLANE)
+	ray.eye = add_vectors(ray.eye, multiply_vector(N, 0.000001)); // 0.000001 = bias
 	shadow = check_shadows(ray, scene, t); //casting ray from the object to the light!
 	if (!compare_vectors(Phit[0], Phit[1]))
 		shadow = 0;
@@ -122,7 +124,7 @@ int	get_color(t_scene *scene, int num[2], double t, t_vect3d Phit[2])
 	else if (num[0] == SPHERE)
 		return (calculate_light(angle, Phit[0], scene->sp[num[1]].hsl, scene, t, shadow));
 	else if (num[0] == CYLINDER)
-		return (scene->cy[num[1]].rgb);
+		return (calculate_light(angle, Phit[0], scene->cy[num[1]].hsl, scene, t, shadow));
 	return (-1);
 }
 
