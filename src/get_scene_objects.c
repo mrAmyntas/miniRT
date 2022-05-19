@@ -1,4 +1,4 @@
-//#include "../inc/miniRT.h"
+#include "../inc/miniRT.h"
 #include "../inc/scenes.h"
 
 void	read_pl2(t_scene *scene, char **line, int i, char **coords)
@@ -71,13 +71,15 @@ void	read_cy2(t_scene *scene, char **line, int i, char **coords)
 	scene->cy[i].dir.x = ft_atod(coords[0]) * -1;
 	scene->cy[i].dir.y = ft_atod(coords[1]) * -1;
 	scene->cy[i].dir.z = ft_atod(coords[2]);
+	if (scene->cy[i].dir.x < 0.000001 && scene->cy[i].dir.y < 0.000001 && fabs(scene->cy[i].dir.z) > 0.999999)
+		scene->cy[i].dir.y = scene->cy[i].dir.y + 0.000001;
 	if (scene->cy[i].dir.x < -1 || scene->cy[i].dir.x > 1
 		|| scene->cy[i].dir.y < -1 || scene->cy[i].dir.y > 1
 		|| scene->cy[i].dir.z < -1 || scene->cy[i].dir.z > 1)
 		ft_error(1, "One of the vectors for a cylinder is out of range\n");
 	scene->cy[i].dir = normalize_vector(scene->cy[i].dir);
 	free_strstr(coords);
-	scene->cy[i].diameter = ft_atod(line[3]);
+	scene->cy[i].r = ft_atod(line[3]) / 2;
 	scene->cy[i].height = ft_atod(line[4]);
 	coords = ft_split(line[5], ',');
 	if (strstr_len(coords) != 3)
@@ -85,6 +87,8 @@ void	read_cy2(t_scene *scene, char **line, int i, char **coords)
 	create_hsl(&scene->cy[i].hsl, ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
 	scene->cy[i].rgb = create_rgb(ft_atoi(coords[0]),
 			ft_atoi(coords[1]), ft_atoi(coords[2]));
+	set_i_t(scene, i);
+	set_i_r(scene, i);
 }
 
 void	read_cy(t_scene *scene, char **line)

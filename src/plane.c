@@ -1,13 +1,16 @@
 #include "../inc/miniRT.h"
 
-double find_smallest(t_scene *scene, double t[scene->amount[0]])
+//finds smallest non-negative t_value
+double	find_smallest(t_scene *scene, double *t, int *num, int amount)
 {
 	int	i;
 	int	j;
 
+	if (*num == 0)
+		return (-1);
 	i = 0;
 	j = 1;
-	while (i + j < scene->amount[0])
+	while (i + j < amount)
 	{
 		if (t[i + j] > 0 && (t[i + j] < t[i] || t[i] < 0))
 		{
@@ -22,281 +25,44 @@ double find_smallest(t_scene *scene, double t[scene->amount[0]])
 	return (-1);
 }
 
-//check if in the current direction the camera ray will intersect with the plane[num]
-double	cast_ray_to_space_check_if_hit_pl(t_scene *scene, t_ray *ray, int *num)
+//calculates t_value for each plane
+//38: checks if plane/ray are parallel
+static void	calc_t(t_scene *scene, t_ray *ray, int *num, double *t)
 {
-	t_vect3d	tmp;	
-	double		t[scene->amount[0]];
+	t_vect3d	tmp;
 
 	*num = 0;
 	while (*num < scene->amount[0])
 	{
 		tmp = subtract_vectors(scene->pl[*num].coord, ray->eye);
 		if (dot_product(scene->pl[*num].orth_vec, ray->dir) == 0)
-		{ 	//then the ray is parallel to the plane, and there is no intersection point
+		{
 			t[*num] = -1;
 			*num = *num + 1;
 			continue ;
 		}
-		t[*num] = (dot_product(scene->pl[*num].orth_vec, tmp)) / (dot_product(scene->pl[*num].orth_vec, ray->dir));
+		t[*num] = (dot_product(scene->pl[*num].orth_vec, tmp))
+			/ (dot_product(scene->pl[*num].orth_vec, ray->dir));
 		*num = *num + 1;
 	}
-	if (*num == 0)
-	{
-		*num = -1;
-		return (-1);
-	}
-	*num = find_smallest(scene, t);
+}
+
+//check if the camera ray will hit with the plane[num]
+//num is set to closest planes num, distance is returned.
+double	find_hit_pl(t_scene *scene, t_ray *ray, int *num)
+{
+	double		*t;
+	double		ret;
+
+	t = malloc(sizeof(double) * scene->amount[0]);
+	calc_t(scene, ray, num, t);
+	*num = find_smallest(scene, t, num, scene->amount[0]);
 	if (*num != -1)
-		return (t[*num]);
+	{
+		ret = t[*num];
+		free (t);
+		return (ret);
+	}
+	free (t);
 	return (-1);
 }
-
-// t_ray	calc_ray(t_data *data, t_scene *scene, double x, double y)
-// {
-// 	t_ray	ray;
-
-// 	ray.eye.x = (2 * ((x + 0.5) / data->width) - 1) * (data->width / data->height) * tan(scene->c_fov * M_PI / 180 / 2);
-// 	ray.eye.y = (1 - 2 * ((y + 0.5) / data->height)) * tan(scene->c_fov * M_PI / 180 / 2);	
-// 	ray.eye.z = -1;
-
-// 	ray.dir = normalize_vector(subtract_vectors(ray.eye, scene->origin));
-// 	scene->current_dir = normalize_vector(subtract_vectors(ray.eye, scene->origin));
-// 	return (ray);
-// }
-
-//lights the point
-int	light_the_pixel_pl(t_scene *scene, t_vect3d intersect, int num)
-{
-	t_vect3d	tmp;
-	double		angle;
-	double		distance;
-	double		bright;
-	int			rgb;
-
-	tmp = normalize_vector(subtract_vectors(scene->light->ori, intersect));
-	angle = acos(dot_product(scene->pl[num].orth_vec, tmp)) / (M_PI / 180);
-	if (angle > 90)
-	{
-		angle = 180 - angle;
-	}
-	distance = distance_two_points(scene->light->ori, intersect);
-//	bright = 1 / (angle / 1.1) / (distance / 100) * scene->light->brightness / 2;
-//	bright = (scene->light->brightness) / (4 * M_PI * (sqrt(distance)));
-	bright = (scene->light->brightness) - (distance / 20);
-//	bright = bright - (angle/100);
-	bright = bright + scene->a_ratio;
-	if (bright > 1.0)
-		bright = 1.0;
-	if (bright <= 0.0)
-		bright = 0.01;
-	//return (calculate_light(angle, intersect.eye, scene->pl[num].hsl, scene, distance, shadow));
-	scene->pl[num].hsl.z = bright;
-	return (hsl_to_rgb(scene->pl[num].hsl));
-}
-
-void calc_hit(t_data *data, t_scene *scene, double x, double y)
-{
-	t_ray		ray;
-	t_vect3d	intersect;
-	int			num;
-	int			num2;
-	double		t;
-
-	ray = get_ray(scene, data, x, y);
-	t = cast_ray_to_space_check_if_hit_pl(scene, &ray, &num);
-	if (t > 0) // = hit -> t is distance
-	{
-		intersect = add_vectors(ray.eye, multiply_vector(ray.dir, t));
-		ray.dir = normalize_vector(subtract_vectors(intersect, scene->light->ori));
-		ray.eye = scene->light->ori;
-		t = cast_ray_to_space_check_if_hit_pl(scene, &ray, &num2);
-		if (t > 0 && num2 == num) // light hits SAME plane as well
-		{
-			//cast ray from camera to light, if this hits plane, check if it was BEFORE light
-			ray.dir = normalize_vector(subtract_vectors(scene->light->ori, ray.eye));
-			t = cast_ray_to_space_check_if_hit_pl(scene, &ray, &num2);
-			if (t > 0 && num2 == num) // camera -> light hits plane 
-			{
-				ray.eye = add_vectors(ray.eye, multiply_vector(ray.dir, t)); //intersect point
-				if (distance_two_points(scene->cam->eye, ray.eye) < distance_two_points(scene->cam->eye, scene->light->ori))//from cam -> obj hits first, so light is behind plane
-					mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), add_shade(0.9, scene->pl[num].rgb));
-				else
-				{
-					//printf("asd\n");
-					mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), light_the_pixel_pl(scene, intersect, num));
-				}
-			}
-			else
-			{
-				//printf("asd\n");
-				mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), light_the_pixel_pl(scene, intersect, num));
-			}
-		}
-		else //light is INSIDE plane or it hits ANOTHER PLANE
-		{
-			
-			mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), add_shade(0.9, scene->pl[num].rgb));
-		}
-	}
-}
-
-void	draw_plane(t_data *data, t_scene *scene)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	while (i < data->width + 1)
-	{
-		j = 0;
-		while (j < data->height + 1)
-		{
-			calc_hit(data, scene, i, j);
-			j++;
-		}
-		i++;
-	}
-}
-
-int	plane(t_data *data, t_scene *scene)
-{
-	draw_plane(data, scene);
-	return 0;
-}
-
-
-
-// Orthogonal matrices have a few interesting properties but maybe the most useful one in Computer Graphics, 
-// is that the transpose of an orthogonal matrix is equal to its inverse. Assuming Q is an orthogonal matrix, we can write:
-
-// Q^T=Q^-1 which entails that QQ^T=I
-
-	// printf("coords check: cam: [%f,%f,%f]\ncoords check: pl:  [%f,%f,%f]\n", scene->cam->coord.x,scene->cam->coord.y,scene->cam->coord.z, scene->pl[num].coord.x,scene->pl[num].coord.y,scene->pl[num].coord.z);
-	// printf("vec check: cam: [%f,%f,%f]\nvec check: pl:  [%f,%f,%f]\n", scene->cam->eye.x,scene->cam->eye.y,scene->cam->eye.z, scene->pl[0].orth_vec.x,scene->pl[0].orth_vec.y,scene->pl[0].orth_vec.z);
-
-	// t_vect3d tmp = {12310, 760, 2};
-	// if (is_P_on_plane(scene, tmp, num))
-	// 	printf("P is on the plane!\n");
-	// if (intersect_eye_plane(scene, &tmp, num))
-	// {
-	// 	printf("intersect:[%f,%f,%f]\n", tmray.eyep.x, tmray.eye.y, tmp.z);
-	// }
-
-//scan left->right depending on fov?
-//we have a vector for camera direction (scene->cam->dir)
-//with fov of x, what is left most?
-//distance between camera and viewport: 𝑑=1/𝑡𝑎𝑛(𝜃𝑓𝑜𝑣/2)) ??? find source pls
-
-//t_vect3d right_edge_fov;
-//right_edge_pov = cos(scene->pov)
-
-// PixelNDCx= (Pixelx+0.5) / ImageWidth   NDC = normalized device coordinates
-// PixelNDCy= (Pixely+0.5)/ ImageHeight
-
-// PixelScreen x = 2 * PixelNDCx − 1
-// PixelScreen y = 1 - 2 * PixelNDCy
-
-//The value now varies from 1 to -1 as Pixely varies from 0 to ImageWidth.
-//Coordinates expressed in this manner are said to be defined in screen space.
-
-// PixelCamerax = (2 * PixelScreenx − 1) * aspect_ratio
-// PixelCameray = (1 − 2 * PixelScreeny)
-
-// |BC| = tan(α / 2)   BC is line from middle of viewport to top (straight line) alpha is fov.
-// 1 rad = 180°/π 
-// α(degrees) = α(radians) * 180° / π
-
-
-// PixelCamerax = (2 * PixelScreenx − 1) * aspect_ratio * tan (fov/2)
-// PixelCameray = (1 − 2 * PixelScreeny) * tan (fov/2)
-
-/*
-int i = 0;
-	int j = 0;
-
-	data->mlx = mlx_init(data->width, data->height, "MLX42", true);
-	if (!data->mlx)
-		exit(EXIT_FAILURE);
-	data->mlx_img = mlx_new_image(data->mlx, data->width, data->height);
-	memset(data->mlx_img->pixels, 255, data->mlx_img->width * data->mlx_img->height * sizeof(int));
-
-	data->color = create_rgbt(255, 255, 255, 255);//0xFFFFFF;
-
-	memset(data->mlx_img->pixels, 255, data->mlx_img->width * data->mlx_img->height * sizeof(int));
-	while (i < data->width)
-	{
-		j = 0;
-		while (j < data->height)
-		{
-			mlx_put_pixel(data->mlx_img, i, j, data->color);
-			j++;
-		}
-		i++;
-	}
-	mlx_image_to_window(data->mlx, data->mlx_img, 0, 0);
-	data->mlx_img = mlx_new_image(data->mlx, 100, 100);
-	memset(data->mlx_img->pixels, 255, data->mlx_img->width * data->mlx_img->height * sizeof(int));
-	data->color = scene->pl[0].rgb;
-	i = 0;
-	while (i < 100)
-	{
-		j = 0;
-		while (j < 100)
-		{
-			mlx_put_pixel(data->mlx_img, i, j, data->color);
-			j++;
-		}
-		i++;
-	}
-	mlx_image_to_window(data->mlx, data->mlx_img, 10, 10);
-	mlx_loop_hook(data->mlx, &hook, data);
-	mlx_loop(data->mlx);
-	mlx_terminate(data->mlx);*/
-
-
-
-	/*    int i = 0;
-	int j = 0;
-
-	data->mlx = mlx_init(data->width, data->height, "MLX42", true);
-	if (!data->mlx)
-		exit(EXIT_FAILURE);
-	data->mlx_img = mlx_new_image(data->mlx, data->width, data->height);
-	memset(data->mlx_img->pixels, 255, data->mlx_img->width * data->mlx_img->height * sizeof(int));
-
-	data->color = create_rgbt(255, 255, 255, 255);//0xFFFFFF;
-
-	memset(data->mlx_img->pixels, 255, data->mlx_img->width * data->mlx_img->height * sizeof(int));
-	while (i < data->width)
-	{
-		j = 0;
-		while (j < data->height)
-		{
-			mlx_put_pixel(data->mlx_img, i, j, data->color);
-			j++;
-		}
-		i++;
-	}
-	mlx_image_to_window(data->mlx, data->mlx_img, 0, 0);
-	data->mlx_img = mlx_new_image(data->mlx, 100, 100);
-	memset(data->mlx_img->pixels, 255, data->mlx_img->width * data->mlx_img->height * sizeof(int));
-	scene->pl[0].rgb = create_rgbt(255, 0, 0, 255);
-	data->color = scene->pl[0].rgb;
-	i = 0;
-	while (i < 100)
-	{
-		j = 0;
-		while (j < 100)
-		{
-			mlx_put_pixel(data->mlx_img, i, j, data->color);
-			j++;
-		}
-		i++;
-	}
-	mlx_image_to_window(data->mlx, data->mlx_img, 10, 10);
-	mlx_loop_hook(data->mlx, &hook, data);
-	mlx_loop(data->mlx);
-	mlx_terminate(data->mlx);*/
-
-

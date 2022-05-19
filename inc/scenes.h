@@ -14,10 +14,13 @@ typedef struct s_cy
 {
 	t_vect3d	eye;
 	t_vect3d	dir;
-    double  	diameter;
+    double  	r;
     double  	height;
     int     	rgb;
 	t_vect3d	hsl; // h = x = 0, s = y = 1, l = z = 2
+	t_matrix44d	I_T;
+	t_matrix44d	I_R;
+	int			cap;
 }				t_cy;
 
 typedef struct s_pl
@@ -42,6 +45,30 @@ typedef struct 	s_ray {
 	t_vect3d	eye;
 }				t_ray;
 
+typedef struct 	s_ray_data {
+	t_vect3d	LookAtPoint;
+	t_vect3d	viewDir;
+	t_vect3d	up;
+	t_vect3d	V;		
+	t_vect3d	U;
+	t_vect3d	tmp;
+	t_vect3d 	viewPlaneBottomLeftPoint;
+	t_vect3d	xIncVector;
+	t_vect3d	yIncVector;
+	t_vect3d	ViewPlanePoint;
+	double 		viewPlaneHalfWidth;
+	double 		aspectRatio;
+	double 		viewPlaneHalfHeight;
+	t_ray		ray;
+}				t_ray_data;
+
+typedef struct 	s_cy_data {
+	double 		t[4];
+	double 		z[2];
+	double 		z_m[2];
+	int			ret;
+}				t_cy_data;
+
 typedef struct s_scene
 {
     int     	amount[3];
@@ -57,6 +84,7 @@ typedef struct s_scene
     t_cy    	*cy;
 	t_light		*light;
 	t_vect3d	origin;
+	t_ray_data	r;
 }				t_scene;
 
 // read objects
@@ -70,11 +98,13 @@ void	read_c(t_scene *scene, char **line);
 void	read_l(t_scene *scene, char **line);
 
 // Utilities
-double	ft_atod(char *str);
-void	free_strstr(char **str);
-int	    strstr_len(char **str);
-void	create_hsl(t_vect3d *hsl, int r, int g, int b);
-int	    create_rgb(int r, int g, int b);
+double		ft_atod(char *str);
+void		free_strstr(char **str);
+int	   	 	strstr_len(char **str);
+void		create_hsl(t_vect3d *hsl, int r, int g, int b);
+int	    	create_rgb(int r, int g, int b);
 void	    ft_error(int num, char *msg);
+void		set_i_t(t_scene *scene, int num);
+void		set_i_r(t_scene *scene, int num);
 
 #endif

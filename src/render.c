@@ -13,14 +13,14 @@ double	smallest(double t[3])
 }
 
 // finds the closest object and sets num to the id of the object
-double	find_closest_object(t_scene *scene, t_ray *ray, int num[2])
+double	find_closest_object(t_scene *scene, t_ray *ray, int num[2], int cap)
 {
 	double	t[4];
 	int		i;
 	int		numb[3];
 
-	t[0] = cast_ray_to_space_check_if_hit_pl(scene, ray, &numb[0]);
-	t[1] = cast_ray_to_space_check_if_hit_cy(scene, ray, &numb[1]);
+	t[0] = find_hit_pl(scene, ray, &numb[0]);
+	t[1] = find_hit_cy(scene, ray, &numb[1], cap);
 	numb[2] = find_hit_sphere(scene, *ray, scene->amount[1], &t[2]);
 	t[3] = smallest(t);
 	if (comp_d(t[0], t[3]))
@@ -52,7 +52,7 @@ int	check_shadows(t_ray ray, t_scene *scene, double t)
 	int			num[2];
 	t_vect3d	Phit;
 
-	t2 = find_closest_object(scene, &ray, num);
+	t2 = find_closest_object(scene, &ray, num, 0);
 	if (comp_d(t, t2) && t2 > 0)
 		return (0);
 	return (1);
@@ -68,6 +68,38 @@ double	get_sp_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 	ray.dir = normalize_vector(subtract_vectors(scene->light->ori, Phit));
     angle = acos(dot_product(*N, ray.dir)) / (M_PI / 180);
 	return (angle);
+}
+
+// calculates the angle light hits Phit on a cylinder
+double	get_cy_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
+{
+	double		angle;
+	double		t;
+	t_vect3d	tmp;
+
+	if (scene->cy[num[1]].cap == 1)
+	{
+		tmp = normalize_vector(subtract_vectors(scene->light->ori, Phit));
+		angle = acos(dot_product(scene->cy[num[1]].dir, tmp)) / (M_PI / 180);
+		*N = scene->cy[num[1]].dir;
+		if (angle > 90)
+		{
+			angle = 180 - angle;
+			*N = multiply_vector(*N, -1);
+		}
+		//printf("a1:%f\n", angle);
+	}
+	else
+	{
+		t = magnitude(subtract_vectors(Phit, scene->cy[num[1]].eye));
+		t = sqrt(t * t - scene->cy[num[1]].r * scene->cy[num[1]].r);
+   		tmp = add_vectors(scene->cy[num[1]].eye, multiply_vector(scene->cy[num[1]].dir, t));
+   		*N = normalize_vector(subtract_vectors(Phit, tmp));
+		tmp = normalize_vector(subtract_vectors(scene->light->ori, Phit));
+    	angle = acos(dot_product(*N, tmp)) / (M_PI / 180);
+		//printf("a:%f\n", angle);
+	}
+	return (45);
 }
 
 // calculates the angle light hits Phit on a plane
@@ -97,7 +129,7 @@ double	get_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 	else if (num[0] == SPHERE)
 		angle = get_sp_angle(scene, num, Phit, N);
 	else
-		angle = 5;
+		angle = get_cy_angle(scene, num, Phit, N);
 	return (angle);
 }
 
@@ -110,10 +142,10 @@ int	check_if_plane_between_cam_and_light(t_scene *scene, t_vect3d Phit[2], doubl
 
 	ray.eye = scene->light->ori;
 	ray.dir = normalize_vector(subtract_vectors(Phit[0], ray.eye));
-	t2[0] = cast_ray_to_space_check_if_hit_pl(scene, &ray, &num2); //ray from light -> obj
+	t2[0] = find_hit_pl(scene, &ray, &num2); //ray from light -> obj
 	ray.eye = scene->cam->eye;
 	ray.dir = normalize_vector(subtract_vectors(scene->light->ori, ray.eye));
-	t2[1] = cast_ray_to_space_check_if_hit_pl(scene, &ray, &num3); //ray from cam -> light
+	t2[1] = find_hit_pl(scene, &ray, &num3); //ray from cam -> light
 	if (t2[1] > 0 && num2 == num3 && t2[1] < distance_two_points(scene->cam->eye, scene->light->ori))
 	{
 		if (num[0] == PLANE)
@@ -165,7 +197,7 @@ int	find_pixel_color(t_scene *scene, double t, int num[2], t_vect3d Phit)
 	Phit2[0] = Phit;
 	ray.eye = scene->light->ori;
 	ray.dir = normalize_vector(subtract_vectors(Phit, ray.eye));
-	t2 = find_closest_object(scene, &ray, num2);
+	t2 = find_closest_object(scene, &ray, num2, 0);
 	Phit2[1] = add_vectors(ray.eye, multiply_vector(ray.dir, t2));
 	return (get_color(scene, num, t2, Phit2));
 }
@@ -182,7 +214,7 @@ void	set_pixel(t_data *data, t_scene *scene, int x, int y)
 	t_vect3d	Phit;
 
 	ray = get_ray(scene, data, x, y);
-	t = find_closest_object(scene, &ray, num);
+	t = find_closest_object(scene, &ray, num, 1);
 	if (t > 0)
 	{
 		Phit = add_vectors(ray.eye, multiply_vector(ray.dir, t));

@@ -16,12 +16,15 @@ SRC =	src/main.c\
 		src/get_scene_elements.c\
 		src/plane.c\
 		src/sphere.c\
-		src/vectorstuff.c\
+		src/vector_math.c\
+		src/vector_math2.c\
 		src/cylinder.c\
+		src/cylinder_calc.c\
 		src/matrices.c\
 		src/render.c\
 		src/light.c\
-		src/calculate_hsl.c
+		src/calculate_hsl.c\
+		src/ray.c
 
 INC = 	inc/miniRT.h\
 		libft/libft.h\
