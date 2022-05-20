@@ -51,9 +51,7 @@ int    calculate_light(double angle, t_vect3d Phit, t_vect3d hsl, t_scene *scene
 {
     double  bright[3];
 
-   // bright[1] = (1000000 - (t * t)) / 1000000;
     bright[1] = (100 - t) / 100;
-    //bright[2] = (8100 - (angle * angle)) / 8100;
     bright[2] = (90 - angle) / 90;
     bright[0] = (bright[1] + bright[2]) / 2 * scene->light->brightness;
     //bright[0] = bright[1] * scene->light->brightness;
