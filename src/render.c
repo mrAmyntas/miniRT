@@ -51,6 +51,7 @@ int	check_shadows(t_ray ray, t_scene *scene, double t)
 	double		t2;
 	int			num[2];
 
+	check_if_plane_between_cam_and_light(scene, Phit, t, num, angle);
 	t2 = find_closest_object(scene, &ray, num, 0);
 	if (comp_d(t, t2) && t2 > 0)
 		return (0);
@@ -80,13 +81,13 @@ int	get_color(t_scene *scene, int num[2], double t, t_vect3d Phit[2])
 	t_vect3d	N;
 
 	angle = get_angle(scene, num, Phit[0], &N);
-	shadow = check_if_plane_between_cam_and_light(scene, Phit, t, num, angle);
-	if (shadow != -1)
-		return (shadow);
+//	shadow = check_if_plane_between_cam_and_light(scene, Phit, t, num, angle);
+//	if (shadow != -1)
+//		return (shadow);
 	ray.eye = Phit[0];
 	ray.dir = normalize_vector(subtract_vectors(scene->light->ori, ray.eye)); 
 	ray.eye = add_vectors(ray.eye, multiply_vector(N, 0.0000001)); // 0.000001 = bias
-	shadow = check_shadows(ray, scene, t); //casting ray from the object to the light!
+	shadow = check_shadows(ray, scene, t, Phit); //casting ray from the object to the light!
 	if (!compare_vectors(Phit[0], Phit[1]))
 		shadow = 0;
 	if (num[0] == PLANE)
