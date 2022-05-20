@@ -40,16 +40,15 @@ double		get_sp_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N);
 
 double		find_hit_pl(t_scene *scene, t_ray *ray, int *num);
 double		get_pl_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N);
-int			check_if_plane_between_cam_and_light(t_scene *scene, t_vect3d Phit[2], double t, int num[2], double angle);
+int			check_if_plane_between_cam_and_light(t_scene *scene, t_vect3d Phit[2]);
 
 // *** COLOUR STUFF *** \\
 
-int			create_rgb(int r, int g, int b);
 int    		hsl_to_rgb(t_vect3d hsl);
 double		get_saturation(double l, double minmax[2]);
 double 		get_hue(double minmax[2], double r, double g, double b);
 int     	check_shadow(t_ray ray, t_scene *scene);
-int    		calculate_light(double angle, t_vect3d Phit, t_vect3d hsl, t_scene *scene, double t, int shadow);
+int    		calculate_light(double angle, t_vect3d hsl, t_scene *scene, double t, int shadow);
 int   		calculate_light2(double angle, t_vect3d Phit, t_vect3d hsl, t_scene *scene, double t, int shadow);
 
 // *** CYLINDER STUFF *** \\\

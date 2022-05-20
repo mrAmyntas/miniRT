@@ -1,6 +1,6 @@
 #include "../inc/miniRT.h"
 
-int	check_if_plane_between_cam_and_light(t_scene *scene, t_vect3d Phit[2], double t, int num[2], double angle)
+int	check_if_plane_between_cam_and_light(t_scene *scene, t_vect3d Phit[2])
 {
 	t_ray	ray;
 	int		num2;
@@ -15,12 +15,13 @@ int	check_if_plane_between_cam_and_light(t_scene *scene, t_vect3d Phit[2], doubl
 	t2[1] = find_hit_pl(scene, &ray, &num3);
 	if (t2[1] > 0 && num2 == num3 && t2[1] < distance_two_points(scene->cam->eye, scene->light->ori))
 	{
-		if (num[0] == PLANE)
-			return (calculate_light2(angle, Phit[0], scene->pl[num[1]].hsl, scene, t, 1));
-		if (num[0] == SPHERE)
-			return (calculate_light2(angle, Phit[0], scene->sp[num[1]].hsl, scene, t, 1));
-		if (num[0] == CYLINDER)
-			return (calculate_light2(angle, Phit[0], scene->cy[num[1]].hsl, scene, t, 1));
+		return (0);
+		//if (num[0] == PLANE)
+		//	return (calculate_light2(angle, Phit[0], scene->pl[num[1]].hsl, scene, t, 1));
+		//if (num[0] == SPHERE)
+		//	return (calculate_light2(angle, Phit[0], scene->sp[num[1]].hsl, scene, t, 1));
+		//if (num[0] == CYLINDER)
+		//	return (calculate_light2(angle, Phit[0], scene->cy[num[1]].hsl, scene, t, 1));
 	}
 	return (-1);
 }
