@@ -10,7 +10,6 @@ GNL_DIR = gnl/
 
 LIBFT_DIR =	libft/
 SRC =	src/main.c\
-		src/colours.c\
 		src/get_scene.c\
 		src/get_scene_objects.c\
 		src/get_scene_elements.c\

@@ -43,8 +43,6 @@ double		find_hit_pl(t_scene *scene, t_ray *ray, int *num);
 
 // *** COLOUR STUFF *** \\
 
-int 		add_shade(double factor, int color);
-int 		get_opposite(int color);
 int			create_rgb(int r, int g, int b);
 int    		hsl_to_rgb(t_vect3d hsl);
 int			light_the_pixel_pl(t_scene *scene, t_vect3d intersect, int num);
