@@ -1,5 +1,20 @@
 #include "../inc/miniRT.h"
 
+// calculates the angle light hits Phit on a sphere
+double	get_sp_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
+{
+	double		angle;
+	t_ray		ray;
+
+    *N = normalize_vector(subtract_vectors(Phit, scene->sp[num[1]].C));
+	ray.dir = normalize_vector(subtract_vectors(scene->light->ori, Phit));
+    angle = acos(dot_product(*N, ray.dir)) / (M_PI / 180);
+	if (angle > 90)
+		angle = 90;
+	return (angle);
+}
+
+
 double  calc_t0(double b, double c)
 {
     double  t[2];

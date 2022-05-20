@@ -57,74 +57,6 @@ int	check_shadows(t_ray ray, t_scene *scene, double t)
 	return (1);
 }
 
-// calculates the angle light hits Phit on a sphere
-double	get_sp_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
-{
-	double		angle;
-	t_ray		ray;
-
-    *N = normalize_vector(subtract_vectors(Phit, scene->sp[num[1]].C));
-	ray.dir = normalize_vector(subtract_vectors(scene->light->ori, Phit));
-    angle = acos(dot_product(*N, ray.dir)) / (M_PI / 180);
-	if (angle > 90)
-		angle = 90;
-	return (angle);
-}
-
-// calculates the angle light hits Phit on a cylinder
-double	get_cy_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
-{
-	double		angle;
-	double		t;
-	t_vect3d	tmp;
-
-	if (scene->cy[num[1]].cap == 1)
-	{
-		tmp = normalize_vector(subtract_vectors(scene->light->ori, Phit));
-		angle = acos(dot_product(scene->cy[num[1]].dir, tmp)) / (M_PI / 180);
-		*N = scene->cy[num[1]].dir;
-		if (angle > 90)
-		{
-			angle = 180 - angle;
-			*N = multiply_vector(*N, -1);
-		}
-		//printf("a1:%f\n", angle);
-	}
-	else
-	{
-		t = magnitude(subtract_vectors(Phit, scene->cy[num[1]].eye));
-		angle = (t * t) - (scene->cy[num[1]].r * scene->cy[num[1]].r);
-		t = sqrt(angle);
-		tmp.x = scene->cy[num[1]].dir.x * -1;
-		tmp.y = scene->cy[num[1]].dir.y * -1;
-		tmp.z = scene->cy[num[1]].dir.z;
-   		tmp = add_vectors(scene->cy[num[1]].eye, multiply_vector(tmp, t));
-   		*N = normalize_vector(subtract_vectors(Phit, tmp));
-		tmp = normalize_vector(subtract_vectors(scene->light->ori, Phit));
-    	angle = acos(dot_product(*N, tmp)) / (M_PI / 180);
-		if (angle > 90)
-			angle = 90;
-	}
-	return (angle);
-}
-
-// calculates the angle light hits Phit on a plane
-double	get_pl_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
-{
-	double		angle;
-	t_vect3d	tmp;
-
-	tmp = normalize_vector(subtract_vectors(scene->light->ori, Phit));
-	angle = acos(dot_product(scene->pl[num[1]].orth_vec, tmp)) / (M_PI / 180);
-	*N = scene->pl[num[1]].orth_vec;
-	if (angle > 90)
-	{
-		angle = 180 - angle;
-		*N = multiply_vector(*N, -1);
-	}
-	return (angle);
-}
-
 // finds the right function to calculate the angle on Phit
 double	get_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 {
@@ -138,32 +70,6 @@ double	get_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 		angle = get_cy_angle(scene, num, Phit, N);
 	return (angle);
 }
-
-int	check_if_plane_between_cam_and_light(t_scene *scene, t_vect3d Phit[2], double t, int num[2], double angle)
-{
-	t_ray	ray;
-	int		num2;
-	int		num3;
-	double	t2[2];
-
-	ray.eye = scene->light->ori;
-	ray.dir = normalize_vector(subtract_vectors(Phit[0], ray.eye));
-	t2[0] = find_hit_pl(scene, &ray, &num2); //ray from light -> obj
-	ray.eye = scene->cam->eye;
-	ray.dir = normalize_vector(subtract_vectors(scene->light->ori, ray.eye));
-	t2[1] = find_hit_pl(scene, &ray, &num3); //ray from cam -> light
-	if (t2[1] > 0 && num2 == num3 && t2[1] < distance_two_points(scene->cam->eye, scene->light->ori))
-	{
-		if (num[0] == PLANE)
-			return (calculate_light2(angle, Phit[0], scene->pl[num[1]].hsl, scene, t, 1));
-		if (num[0] == SPHERE)
-			return (calculate_light2(angle, Phit[0], scene->sp[num[1]].hsl, scene, t, 1));
-		if (num[0] == CYLINDER)
-			return (calculate_light2(angle, Phit[0], scene->cy[num[1]].hsl, scene, t, 1));
-	}
-	return (-1);
-}
-
 
 // sets the ray from Phit to light and returns the colour of the  pixel with the right lumination
 int	get_color(t_scene *scene, int num[2], double t, t_vect3d Phit[2])
