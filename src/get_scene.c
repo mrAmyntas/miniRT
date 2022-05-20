@@ -97,9 +97,9 @@ void	count_objects(t_scene *scene, char *str, int fd)
 		splitted_str = ft_split(str, ' ');
 		if (!strncmp(splitted_str[0], "pl", 3))
 			scene->amount[0]++;
-		else if (!strncmp(splitted_str[0], "sp", 3))
-			scene->amount[1]++;
 		else if (!strncmp(splitted_str[0], "cy", 3))
+			scene->amount[1]++;
+		else if (!strncmp(splitted_str[0], "sp", 3))
 			scene->amount[2]++;
 		else if (strncmp(splitted_str[0], "A", 2)
 			&& strncmp(splitted_str[0], "C", 2)
@@ -134,9 +134,9 @@ int	set_scene(t_scene *scene, char *name)
 	str = get_next_line(fd);
 	count_objects(scene, str, fd);
 	fd = open(name, O_RDONLY);
-	scene->pl = malloc(sizeof(t_pl) * (scene->amount[0] + 2));
-	scene->sp = malloc(sizeof(t_sp) * (scene->amount[1] + 3));
-	scene->cy = malloc(sizeof(t_cy) * (scene->amount[2] + 2));
+	scene->pl = malloc(sizeof(t_pl) * (scene->amount[PLANE] + 2));
+	scene->sp = malloc(sizeof(t_sp) * (scene->amount[SPHERE] + 3));
+	scene->cy = malloc(sizeof(t_cy) * (scene->amount[CYLINDER] + 2));
 	scene->cam = malloc(sizeof(t_ray));
 	scene->light = malloc(sizeof(t_light));
 	if (!scene->pl || !scene->sp || !scene->cy)

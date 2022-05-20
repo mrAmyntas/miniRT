@@ -14,6 +14,7 @@ typedef struct s_cy
 {
 	t_vect3d	eye;
 	t_vect3d	dir;
+	t_vect3d	r_dir;
     double  	r;
     double  	height;
     int     	rgb;

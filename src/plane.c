@@ -67,7 +67,7 @@ static void	calc_t(t_scene *scene, t_ray *ray, int *num, double *t)
 	t_vect3d	tmp;
 
 	*num = 0;
-	while (*num < scene->amount[0])
+	while (*num < scene->amount[PLANE])
 	{
 		tmp = subtract_vectors(scene->pl[*num].coord, ray->eye);
 		if (dot_product(scene->pl[*num].orth_vec, ray->dir) == 0)
@@ -89,9 +89,9 @@ double	find_hit_pl(t_scene *scene, t_ray *ray, int *num)
 	double		*t;
 	double		ret;
 
-	t = malloc(sizeof(double) * scene->amount[0]);
+	t = malloc(sizeof(double) * scene->amount[PLANE]);
 	calc_t(scene, ray, num, t);
-	*num = find_smallest(scene, t, num, scene->amount[0]);
+	*num = find_smallest(scene, t, num, scene->amount[PLANE]);
 	if (*num != -1)
 	{
 		ret = t[*num];

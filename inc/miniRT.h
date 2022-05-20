@@ -59,5 +59,6 @@ double		find_intersect(t_ray *ray, t_cy_data cy, int *num, int cap);
 double		find_intersect_cap(t_ray *ray, t_cy_data cy, int *num, int cap);
 bool		t_closest(double t1, double t2, double z_m[2], double z);
 double		get_cy_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N);
+bool		inside_cylinder(t_scene *scene);
 
 #endif
