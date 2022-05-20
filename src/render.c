@@ -85,7 +85,7 @@ int	get_color(t_scene *scene, int num[2], double t, t_vect3d Phit[2])
 		return (shadow);
 	ray.eye = Phit[0];
 	ray.dir = normalize_vector(subtract_vectors(scene->light->ori, ray.eye)); 
-	ray.eye = add_vectors(ray.eye, multiply_vector(N, 0.000001)); // 0.000001 = bias
+	ray.eye = add_vectors(ray.eye, multiply_vector(N, 0.0000001)); // 0.000001 = bias
 	shadow = check_shadows(ray, scene, t); //casting ray from the object to the light!
 	if (!compare_vectors(Phit[0], Phit[1]))
 		shadow = 0;

@@ -62,7 +62,7 @@ int	main(int argc, char **argv)
 	t_scene	scene;
 
 	data.height = 1080;
-	data.width = 1920;
+	data.width = 1900;
 	if (argc != 2)
 		ft_error(1, "Invalid amount of arguments\n");
 	read_scene(&scene, argv[1]);
