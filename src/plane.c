@@ -14,16 +14,8 @@ int	check_if_plane_between_cam_and_light(t_scene *scene, t_vect3d Phit[2])
 	ray.dir = normalize_vector(subtract_vectors(scene->light->ori, ray.eye));
 	t2[1] = find_hit_pl(scene, &ray, &num3);
 	if (t2[1] > 0 && num2 == num3 && t2[1] < distance_two_points(scene->cam->eye, scene->light->ori))
-	{
 		return (0);
-		//if (num[0] == PLANE)
-		//	return (calculate_light2(angle, Phit[0], scene->pl[num[1]].hsl, scene, t, 1));
-		//if (num[0] == SPHERE)
-		//	return (calculate_light2(angle, Phit[0], scene->sp[num[1]].hsl, scene, t, 1));
-		//if (num[0] == CYLINDER)
-		//	return (calculate_light2(angle, Phit[0], scene->cy[num[1]].hsl, scene, t, 1));
-	}
-	return (-1);
+	return (1);
 }
 
 // calculates the angle light hits Phit on a plane

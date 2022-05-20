@@ -1,5 +1,28 @@
 #include "../inc/miniRT.h"
 
+
+static double	get_cy_angle_side(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
+{
+	double		t;
+	double		angle;
+	t_vect3d	tmp;
+
+	t = magnitude(subtract_vectors(Phit, scene->cy[num[1]].eye));
+	t = fabs((t * t) - (scene->cy[num[1]].r * scene->cy[num[1]].r));
+	t = sqrt(t);
+	tmp.x = scene->cy[num[1]].dir.x * -1;
+	tmp.y = scene->cy[num[1]].dir.y * -1;
+	tmp.z = scene->cy[num[1]].dir.z;
+   	tmp = add_vectors(scene->cy[num[1]].eye, multiply_vector(tmp, t));
+   	*N = normalize_vector(subtract_vectors(Phit, tmp));
+	tmp = normalize_vector(subtract_vectors(scene->light->ori, Phit));
+	t = dot_product(*N, tmp);
+	angle = acos(t) / (M_PI / 180);
+	if (angle > 90)
+		angle = 90;
+	return (angle);
+}
+
 // calculates the angle light hits Phit on a cylinder
 double	get_cy_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 {
@@ -17,23 +40,9 @@ double	get_cy_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 			angle = 180 - angle;
 			*N = multiply_vector(*N, -1);
 		}
-		//printf("a1:%f\n", angle);
 	}
 	else
-	{
-		t = magnitude(subtract_vectors(Phit, scene->cy[num[1]].eye));
-		angle = (t * t) - (scene->cy[num[1]].r * scene->cy[num[1]].r);
-		t = sqrt(angle);
-		tmp.x = scene->cy[num[1]].dir.x * -1;
-		tmp.y = scene->cy[num[1]].dir.y * -1;
-		tmp.z = scene->cy[num[1]].dir.z;
-   		tmp = add_vectors(scene->cy[num[1]].eye, multiply_vector(tmp, t));
-   		*N = normalize_vector(subtract_vectors(Phit, tmp));
-		tmp = normalize_vector(subtract_vectors(scene->light->ori, Phit));
-    	angle = acos(dot_product(*N, tmp)) / (M_PI / 180);
-		if (angle > 90)
-			angle = 90;
-	}
+		angle = get_cy_angle_side(scene, num, Phit, N);
 	return (angle);
 }
 
