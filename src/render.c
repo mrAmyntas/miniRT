@@ -46,12 +46,13 @@ double	find_closest_object(t_scene *scene, t_ray *ray, int num[2], int cap)
 // checks if the light ray hits Phit and is not blocked by another object
 // t = distance from Phit to light
 // t2 = distance from Phit to an object on the ray
-int	check_shadows(t_ray ray, t_scene *scene, double t)
+int	check_shadows(t_ray ray, t_scene *scene, double t, t_vect3d Phit[2])
 {
 	double		t2;
 	int			num[2];
 
-	check_if_plane_between_cam_and_light(scene, Phit, t, num, angle);
+	if (!check_if_plane_between_cam_and_light(scene, Phit) || !compare_vectors(Phit[0], Phit[1]))
+		return (0);
 	t2 = find_closest_object(scene, &ray, num, 0);
 	if (comp_d(t, t2) && t2 > 0)
 		return (0);
@@ -76,26 +77,19 @@ double	get_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 int	get_color(t_scene *scene, int num[2], double t, t_vect3d Phit[2])
 {
 	double		angle;
-	int			shadow;
 	t_ray		ray;
 	t_vect3d	N;
 
 	angle = get_angle(scene, num, Phit[0], &N);
-//	shadow = check_if_plane_between_cam_and_light(scene, Phit, t, num, angle);
-//	if (shadow != -1)
-//		return (shadow);
 	ray.eye = Phit[0];
 	ray.dir = normalize_vector(subtract_vectors(scene->light->ori, ray.eye)); 
-	ray.eye = add_vectors(ray.eye, multiply_vector(N, 0.0000001)); // 0.000001 = bias
-	shadow = check_shadows(ray, scene, t, Phit); //casting ray from the object to the light!
-	if (!compare_vectors(Phit[0], Phit[1]))
-		shadow = 0;
+	ray.eye = add_vectors(ray.eye, multiply_vector(N, 0.000001)); // 0.000001 = bias
 	if (num[0] == PLANE)
-		return (calculate_light(angle, Phit[0], scene->pl[num[1]].hsl, scene, t, shadow));
+		return (calculate_light(angle, scene->pl[num[1]].hsl, scene, t, check_shadows(ray, scene, t, Phit)));
 	else if (num[0] == SPHERE)
-		return (calculate_light(angle, Phit[0], scene->sp[num[1]].hsl, scene, t, shadow));
+		return (calculate_light(angle, scene->sp[num[1]].hsl, scene, t, check_shadows(ray, scene, t, Phit)));
 	else if (num[0] == CYLINDER)
-		return (calculate_light(angle, Phit[0], scene->cy[num[1]].hsl, scene, t, shadow));
+		return (calculate_light(angle, scene->cy[num[1]].hsl, scene, t, check_shadows(ray, scene, t, Phit)));
 	return (-1);
 }
 
@@ -120,17 +114,16 @@ int	find_pixel_color(t_scene *scene, double t, int num[2], t_vect3d Phit)
 // 	num[1] = number of that type that has been hit by ray
 void	set_pixel(t_data *data, t_scene *scene, int x, int y)
 {
-	t_ray		ray;
 	double		t;
 	int			num[2];
 	int			color;
 	t_vect3d	Phit;
 
-	ray = get_ray(scene, data, x, y);
-	t = find_closest_object(scene, &ray, num, 1);
+	scene->ray_cam = get_ray(scene, data, x, y);
+	t = find_closest_object(scene, &scene->ray_cam, num, 1);
 	if (t > 0)
 	{
-		Phit = add_vectors(ray.eye, multiply_vector(ray.dir, t));
+		Phit = add_vectors(scene->ray_cam.eye, multiply_vector(scene->ray_cam.dir, t));
 		color = find_pixel_color(scene, t, num, Phit);
 		mlx_put_pixel(data->mlx_img, (data->width - x), (data->height - y), color);
 	}

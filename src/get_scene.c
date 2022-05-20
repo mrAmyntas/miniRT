@@ -13,14 +13,14 @@ void	    ft_error(int num, char *msg)
 	exit(num);
 }
 
-int	create_rgb(int r, int g, int b)
+int	create_rgb(int r, int g, int b, char *object)
 {
 	if (r < 0 || r > 255)
-		ft_error(1, "R colour out of range\n");
+		ft_error(1, ft_strjoin("R colour out of range for: ", object));
 	if (g < 0 || r > 255)
-		ft_error(1, "G colour out of range\n");
+		ft_error(1, ft_strjoin("R colour out of range for: ", object));
 	if (b < 0 || r > 255)
-		ft_error(1, "B colour out of range\n");
+		ft_error(1, ft_strjoin("R colour out of range for: ", object));
 	return (r << 24 | g << 16 | b << 8 | 255);
 }
 

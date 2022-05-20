@@ -17,7 +17,7 @@ void	read_a(t_scene *scene, char **line)
 		ft_error(1, "Wrong number of colours for ambient lighting\n");
 	create_hsl(&scene->a_hsl, ft_atoi(colours[0]), ft_atoi(colours[1]), ft_atoi(colours[2]));
 	scene->a_rgb = create_rgb(ft_atoi(colours[0]),
-			ft_atoi(colours[1]), ft_atoi(colours[2]));
+			ft_atoi(colours[1]), ft_atoi(colours[2]), "ambient light\n");
 	free_strstr(colours);
 }
 
@@ -72,6 +72,6 @@ void	read_l(t_scene *scene, char **line)
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of colours for light\n");
 	scene->light->color = create_rgb(ft_atoi(coords[0]),
-			ft_atoi(coords[1]), ft_atoi(coords[2]));
+			ft_atoi(coords[1]), ft_atoi(coords[2]), "light\n");
 	free_strstr(coords);
 }

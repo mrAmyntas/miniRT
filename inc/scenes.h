@@ -79,6 +79,7 @@ typedef struct s_scene
     double  	c_fov;
 	t_vect3d	current_dir;
 	t_ray		*cam;
+	t_ray		ray_cam;
     t_pl   		*pl;
     t_sp    	*sp;
     t_cy    	*cy;
@@ -102,7 +103,7 @@ double		ft_atod(char *str);
 void		free_strstr(char **str);
 int	   	 	strstr_len(char **str);
 void		create_hsl(t_vect3d *hsl, int r, int g, int b);
-int	    	create_rgb(int r, int g, int b);
+int	    	create_rgb(int r, int g, int b, char *object);
 void	    ft_error(int num, char *msg);
 void		set_i_t(t_scene *scene, int num);
 void		set_i_r(t_scene *scene, int num);
