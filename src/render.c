@@ -50,7 +50,6 @@ int	check_shadows(t_ray ray, t_scene *scene, double t)
 {
 	double		t2;
 	int			num[2];
-	t_vect3d	Phit;
 
 	t2 = find_closest_object(scene, &ray, num, 0);
 	if (comp_d(t, t2) && t2 > 0)
@@ -67,6 +66,8 @@ double	get_sp_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
     *N = normalize_vector(subtract_vectors(Phit, scene->sp[num[1]].C));
 	ray.dir = normalize_vector(subtract_vectors(scene->light->ori, Phit));
     angle = acos(dot_product(*N, ray.dir)) / (M_PI / 180);
+	if (angle > 90)
+		angle = 90;
 	return (angle);
 }
 
@@ -92,14 +93,19 @@ double	get_cy_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 	else
 	{
 		t = magnitude(subtract_vectors(Phit, scene->cy[num[1]].eye));
-		t = sqrt(t * t - scene->cy[num[1]].r * scene->cy[num[1]].r);
-   		tmp = add_vectors(scene->cy[num[1]].eye, multiply_vector(scene->cy[num[1]].dir, t));
+		angle = (t * t) - (scene->cy[num[1]].r * scene->cy[num[1]].r);
+		t = sqrt(angle);
+		tmp.x = scene->cy[num[1]].dir.x * -1;
+		tmp.y = scene->cy[num[1]].dir.y * -1;
+		tmp.z = scene->cy[num[1]].dir.z;
+   		tmp = add_vectors(scene->cy[num[1]].eye, multiply_vector(tmp, t));
    		*N = normalize_vector(subtract_vectors(Phit, tmp));
 		tmp = normalize_vector(subtract_vectors(scene->light->ori, Phit));
     	angle = acos(dot_product(*N, tmp)) / (M_PI / 180);
-		//printf("a:%f\n", angle);
+		if (angle > 90)
+			angle = 90;
 	}
-	return (45);
+	return (angle);
 }
 
 // calculates the angle light hits Phit on a plane
