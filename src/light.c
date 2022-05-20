@@ -68,6 +68,6 @@ int    calculate_light(double angle, t_vect3d Phit, t_vect3d hsl, t_scene *scene
 
 int    calculate_light2(double angle, t_vect3d Phit, t_vect3d hsl, t_scene *scene, double t, int shadow)
 {
-	hsl.z = scene->a_ratio / 2;
+	hsl.z = (scene->a_ratio / 3);
     return(hsl_to_rgb(hsl));
 }

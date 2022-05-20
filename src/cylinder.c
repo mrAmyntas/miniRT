@@ -1,5 +1,42 @@
 #include "../inc/miniRT.h"
 
+// calculates the angle light hits Phit on a cylinder
+double	get_cy_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
+{
+	double		angle;
+	double		t;
+	t_vect3d	tmp;
+
+	if (scene->cy[num[1]].cap == 1)
+	{
+		tmp = normalize_vector(subtract_vectors(scene->light->ori, Phit));
+		angle = acos(dot_product(scene->cy[num[1]].dir, tmp)) / (M_PI / 180);
+		*N = scene->cy[num[1]].dir;
+		if (angle > 90)
+		{
+			angle = 180 - angle;
+			*N = multiply_vector(*N, -1);
+		}
+		//printf("a1:%f\n", angle);
+	}
+	else
+	{
+		t = magnitude(subtract_vectors(Phit, scene->cy[num[1]].eye));
+		angle = (t * t) - (scene->cy[num[1]].r * scene->cy[num[1]].r);
+		t = sqrt(angle);
+		tmp.x = scene->cy[num[1]].dir.x * -1;
+		tmp.y = scene->cy[num[1]].dir.y * -1;
+		tmp.z = scene->cy[num[1]].dir.z;
+   		tmp = add_vectors(scene->cy[num[1]].eye, multiply_vector(tmp, t));
+   		*N = normalize_vector(subtract_vectors(Phit, tmp));
+		tmp = normalize_vector(subtract_vectors(scene->light->ori, Phit));
+    	angle = acos(dot_product(*N, tmp)) / (M_PI / 180);
+		if (angle > 90)
+			angle = 90;
+	}
+	return (angle);
+}
+
 double	find_closest_cy(t_scene *scene, t_ray *ray, int *num, int cap)
 {
 	t_cy_data	cy;
