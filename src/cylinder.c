@@ -17,7 +17,7 @@ bool	inside_cylinder_i(t_scene *scene, int i)
 	R = scene->cy[i].r;
 	e = scene->cy[i].r_dir;
 //	m = cross_product()
-
+	return true;
 
 }
 
@@ -28,7 +28,7 @@ bool	inside_cylinder(t_scene *scene)
 	i = 0;
 	while (i < scene->amount[CYLINDER])
 	{
-		if (inside_cylinder_i(scene, i));
+		if (inside_cylinder_i(scene, i))
 			return (true);
 		i++;
 	}
@@ -50,7 +50,7 @@ static double	get_cy_angle_side(t_scene *scene, int num[2], t_vect3d Phit, t_vec
 	t = dot_product(*N, tmp);
 	angle = acos(t) / (M_PI / 180);
 	if (angle > 90)
-		angle = 90;
+		angle = 180 - angle;
 	return (angle);
 }
 
