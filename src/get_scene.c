@@ -96,16 +96,15 @@ void	count_objects(t_scene *scene, char *str, int fd)
 	{
 		splitted_str = ft_split(str, ' ');
 		if (!strncmp(splitted_str[0], "pl", 3))
-			scene->amount[0]++;
+			scene->amount[PLANE]++;
 		else if (!strncmp(splitted_str[0], "cy", 3))
-			scene->amount[1]++;
+			scene->amount[CYLINDER]++;
 		else if (!strncmp(splitted_str[0], "sp", 3))
-			scene->amount[2]++;
+			scene->amount[SPHERE]++;
 		else if (!strncmp(splitted_str[0], "L", 2))
-			scene->amount[3]++;
+			scene->amount[LIGHT]++;
 		else if (strncmp(splitted_str[0], "A", 2)
 			&& strncmp(splitted_str[0], "C", 2)
-			&& strncmp(splitted_str[0], "L", 2)
 			&& strncmp(splitted_str[0], "\n", 2))
 			ft_error(1, "Invalid element(s)\n");
 		free(str);

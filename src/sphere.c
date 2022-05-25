@@ -7,13 +7,10 @@ double	get_sp_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 	t_ray		ray;
 
     *N = normalize_vector(subtract_vectors(Phit, scene->sp[num[1]].C));
-	ray.dir = normalize_vector(subtract_vectors(scene->light->ori, Phit));
-    angle = acos(dot_product(*N, ray.dir)) / (M_PI / 180);
-	if (angle > 90)
-		angle = 90;
+	ray.dir = normalize_vector(subtract_vectors(scene->light[scene->i].ori, Phit));
+    angle = acos(dot_product(*N, ray.dir)) * (180 / M_PI);
 	return (angle);
 }
-
 
 double  calc_t0(double b, double c)
 {

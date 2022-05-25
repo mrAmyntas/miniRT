@@ -24,7 +24,7 @@ double	get_pl_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 	double		angle;
 	t_vect3d	tmp;
 
-	tmp = normalize_vector(subtract_vectors(scene->light->ori, Phit));
+	tmp = normalize_vector(subtract_vectors(scene->light[scene->i].ori, Phit));
 	angle = acos(dot_product(scene->pl[num[1]].orth_vec, tmp)) / (M_PI / 180);
 	*N = scene->pl[num[1]].orth_vec;
 	if (angle > 90)

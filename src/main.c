@@ -88,8 +88,8 @@ int	main(int argc, char **argv)
 	t_data	data;
 	t_scene	scene;
 
-	data.height = 100;
-	data.width = 100;
+	data.height = 800;
+	data.width = 800;
 	//uv_checkers(6, 4, 0xFFFFFFFF, 0x000000FF);
 	if (argc != 2)
 		ft_error(1, "Invalid amount of arguments\n");

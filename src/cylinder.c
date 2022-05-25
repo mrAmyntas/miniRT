@@ -45,11 +45,9 @@ static double	get_cy_angle_side(t_scene *scene, int num[2], t_vect3d Phit, t_vec
 	t = sqrt(t);
    	tmp = add_vectors(scene->cy[num[1]].eye, multiply_vector(scene->cy[num[1]].dir, t));
    	*N = normalize_vector(subtract_vectors(Phit, tmp));
-	tmp = normalize_vector(subtract_vectors(scene->light->ori, Phit));
+	tmp = normalize_vector(subtract_vectors(scene->light[scene->i].ori, Phit));
 	t = dot_product(*N, tmp);
 	angle = acos(t) / (M_PI / 180);
-	if (angle > 90)
-		angle = 90;
 	return (angle);
 }
 
@@ -60,7 +58,7 @@ double	get_cy_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 	double		t;
 	t_vect3d	tmp;
 
-	if (scene->cy[num[1]].cap == 1)
+	if (scene->cy[num[1]].cap > 0)
 	{
 		tmp = normalize_vector(subtract_vectors(scene->light->ori, Phit));
 		angle = acos(dot_product(scene->cy[num[1]].dir, tmp)) / (M_PI / 180);

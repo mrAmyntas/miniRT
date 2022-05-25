@@ -36,6 +36,7 @@ void		hook(void *param);
 void		read_scene(t_scene *scene, char *name);
 void		loop_pixels(t_data *data, t_scene *scene);
 double		find_smallest(t_scene *scene, double *t, int *num, int amount);
+double		get_camray_angle(t_scene *scene, t_vect3d *Phit, int *num);
 
 // *** RAY STUFF *** \\
 

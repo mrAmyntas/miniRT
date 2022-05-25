@@ -75,6 +75,7 @@ typedef struct 	s_cy_data {
 
 typedef struct s_scene
 {
+	int			i;
     int     	amount[4];
     int    		state[3];
 	double 		a_ratio;

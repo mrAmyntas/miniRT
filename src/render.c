@@ -1,5 +1,15 @@
 #include "../inc/miniRT.h"
 
+bool	inside_object(t_scene *scene, t_vect3d *Phit, int *num)
+{
+	double	angle;
+
+	angle = get_camray_angle(scene, Phit, num);
+	if (angle > 90)
+		return (true);
+	return (false);
+}
+
 double	smallest(double t[3])
 {
 	if ((t[0] < t[1] || t[1] < 0) && (t[0] < t[2] || t[2] < 0) && t[0] > 0)
@@ -71,12 +81,12 @@ double	get_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 	return (angle);
 }
 
-void	calc_light_strength(t_scene *scene, t_vect3d Phit[2], int num[2], int i)
+void	calc_light_strength(t_scene *scene, t_vect3d Phit[2], int num[2])
 {
 	t_variable	x;
 	int			num2[2];
 
-	x.ray.eye = scene->light[i].ori;
+	x.ray.eye = scene->light[scene->i].ori;
 	x.ray.dir = normalize_vector(subtract_vectors(Phit[0], x.ray.eye));
 	x.t = find_closest_object(scene, &x.ray, num2, 0);
 	Phit[1] = add_vectors(x.ray.eye, multiply_vector(x.ray.dir, x.t));
@@ -85,34 +95,31 @@ void	calc_light_strength(t_scene *scene, t_vect3d Phit[2], int num[2], int i)
 				* dot_product(x.N, x.ray.dir)), x.ray.dir);
 	x.specular = pow(dot_product(multiply_vector(
 					scene->ray_cam.dir, -1), x.R), 10);
-	x.specular *= scene->light[i].Ks;
+	x.specular *= scene->light[scene->i].Ks;
 	x.diffuse = (((100 - x.t) / 100 + (90 - x.angle)
-				/ 90) / 2) * scene->light[i].Kd;
-	scene->light[i].strength = x.specular + x.diffuse;
-	//printf("str:%f  specular:%f   diffuse:%f   Ks:%f   Kd:%f\n", scene->light[0].strength, x.specular, x.diffuse, scene->light[i].Ks, scene->light[i].Kd);
-	if (scene->light[i].strength < 0)
-		scene->light[i].strength = 0;
+				/ 90) / 2) * scene->light[scene->i].Kd;
+	scene->light[scene->i].strength = x.specular + x.diffuse;
+	if (scene->light[scene->i].strength < 0)
+		scene->light[scene->i].strength = 0;
 	x.ray.eye = Phit[0];
 	x.ray.dir = normalize_vector(subtract_vectors(
-				scene->light[i].ori, x.ray.eye));
+				scene->light[scene->i].ori, x.ray.eye));
 	x.ray.eye = add_vectors(x.ray.eye, multiply_vector(x.N, 0.000001));
-	scene->light[i].strength *= check_shadows(x.ray, scene, x.t, Phit);
-	scene->light[i].strength = 0.5;
+	scene->light[scene->i].strength *= check_shadows(x.ray, scene, x.t, Phit);
+	if (inside_object(scene, Phit, num) && x.angle < 90)
+		scene->light[scene->i].strength = 0;
 }
 
 // sets the ray from Phit to light
 // and returns the colour of the  pixel with the right lumination
 int	get_color(t_scene *scene, int num[2], double t, t_vect3d Phit[2])
 {
-	int	i;
-
-	i = 0;
-	while (i < scene->amount[3])
+	scene->i = 0;
+	while (scene->i < scene->amount[LIGHT])
 	{
-		calc_light_strength(scene, Phit, num, i);
-		i++;
+		calc_light_strength(scene, Phit, num);
+		scene->i++;
 	}
-	
 	// voor checkerboard in een sphere, maar is nog een beetje kijken hoe we het willen
 	// if (num[0] == 2 && !((int)Phit[0].x / ((int)scene->sp[num[1]].size / 4) % 2) && !((int)Phit[0].y / ((int)scene->sp[num[1]].size / 4) % 2))
 	// 	return(0x000000FF - calculate_light(scene->sp[num[1]].hsl, scene));
@@ -142,6 +149,8 @@ void	set_pixel(t_data *data, t_scene *scene, int x, int y)
 	t = find_closest_object(scene, &scene->ray_cam, num, 1);
 	if (t > 0)
 	{
+		// if (t > 14)
+		// 	printf("t:%f\n", t);
 		phit[0] = add_vectors(scene->ray_cam.eye,
 				multiply_vector(scene->ray_cam.dir, t));
 		color = get_color(scene, num, t, phit);

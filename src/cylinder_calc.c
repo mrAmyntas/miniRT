@@ -45,6 +45,8 @@ bool	t_closest(double t1, double t2, double z_m[2], double z)
 //hits the cap first we return this distance (t[2] or t[3])
 //a cap is hit if the z values lie on different sides of the
 //z_min or the z_max
+// cap == 0 when hits side. cap == 1 when hits ori/bot cap
+// cap == 2 when hits top cap
 double	find_intersect(t_ray *ray, t_cy_data cy, int *cap, int set_cap)
 {
 	if (set_cap == 1)
@@ -61,7 +63,11 @@ double	find_intersect(t_ray *ray, t_cy_data cy, int *cap, int set_cap)
 	{
 		cy.t[3] = (cy.z_m[1] - ray->eye.z) / ray->dir.z;
 		if (cy.t[3] < cy.t[0] && cy.t[3] > 0)
+		{
+			if (set_cap == 1)
+				*cap = 2;			
 			return (cy.t[3]);
+		}
 	}
 	if (set_cap == 1)
 		*cap = 0;
@@ -85,7 +91,11 @@ double	find_intersect_cap(t_ray *ray, t_cy_data cy, int *cap, int set_cap)
 	if (cy.t[2] > 0 && (cy.t[2] < cy.t[3] || cy.t[3] < 0))
 		return (cy.t[2]);
 	else if (cy.t[3] > 0)
+	{
+		if (set_cap == 1)
+			*cap = 2;			
 		return (cy.t[3]);
+	}
 	if (set_cap == 1)
 		*cap = -1;
 	return (-1);
