@@ -137,7 +137,7 @@ int	set_scene(t_scene *scene, char *name)
 	count_objects(scene, str, fd);
 	fd = open(name, O_RDONLY);
 	scene->pl = malloc(sizeof(t_pl) * (scene->amount[0] + 2));
-	scene->sp = malloc(sizeof(t_sp) * (scene->amount[1] + 2));
+	scene->sp = malloc(sizeof(t_sp) * (scene->amount[1] + 3));
 	scene->cy = malloc(sizeof(t_cy) * (scene->amount[2] + 2));
 	scene->cam = malloc(sizeof(t_ray));
 	scene->light = malloc(sizeof(t_light) * (scene->amount[3] + 2));

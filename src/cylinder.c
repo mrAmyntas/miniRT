@@ -16,9 +16,8 @@ bool	inside_cylinder_i(t_scene *scene, int i)
 	P = scene->cam->eye;
 	R = scene->cy[i].r;
 	e = scene->cy[i].r_dir;
-//	m = cross_product()
-
-
+	//	m = cross_product()
+	return (0);
 }
 
 bool	inside_cylinder(t_scene *scene)
@@ -28,7 +27,7 @@ bool	inside_cylinder(t_scene *scene)
 	i = 0;
 	while (i < scene->amount[CYLINDER])
 	{
-		if (inside_cylinder_i(scene, i));
+		if (inside_cylinder_i(scene, i))
 			return (true);
 		i++;
 	}
