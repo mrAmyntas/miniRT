@@ -2,16 +2,16 @@
 
 static void	background(t_data *data, t_scene *scene)
 {
-	int			i;
-	int			j;
+	int	i;
+	int	j;
 
 	data->mlx_img = mlx_new_image(data->mlx,
-			data->width + 10, data->height + 10);
+			data->width, data->height);
 	i = 0;
-	while (i < data->width + 1)
+	while (i < data->width)
 	{
 		j = 0;
-		while (j < data->height + 1)
+		while (j < data->height)
 		{
 			mlx_put_pixel(data->mlx_img, i, j, 0x000000FF);
 			j++;
@@ -88,8 +88,8 @@ int	main(int argc, char **argv)
 	t_data	data;
 	t_scene	scene;
 
-	data.height = 1080;
-	data.width = 1920;
+	data.height = 100;
+	data.width = 100;
 	//uv_checkers(6, 4, 0xFFFFFFFF, 0x000000FF);
 	if (argc != 2)
 		ft_error(1, "Invalid amount of arguments\n");
@@ -100,14 +100,14 @@ int	main(int argc, char **argv)
 	set_ray_data(&data, &scene);
 	background(&data, &scene);
 	loop_pixels(&data, &scene);
-	mlx_image_to_window(data.mlx, data.mlx_img, -1, -1);
+	mlx_image_to_window(data.mlx, data.mlx_img, 0, 0);
 	mlx_loop_hook(data.mlx, &hook, data.mlx);
 	mlx_loop(data.mlx);
 	mlx_terminate(data.mlx);
 	free(scene.pl);
 	free(scene.cy);
 	free(scene.sp);
-	free(scene.light);
+	// free(scene.light);
 	free(scene.cam);
 	//system("leaks miniRT");
 	return (EXIT_SUCCESS);

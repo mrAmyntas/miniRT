@@ -20,25 +20,23 @@ double	find_closest_object(t_scene *scene, t_ray *ray, int num[2], int cap)
 
 	t[0] = find_hit_pl(scene, ray, &numb[0]);
 	t[1] = find_hit_cy(scene, ray, &numb[1], cap);
-	numb[2] = find_hit_sphere(scene, ray, scene->amount[1], &t[2]);
+	numb[2] = find_hit_sphere(scene, ray, scene->amount[SPHERE], &t[2]);
 	t[3] = smallest(t);
-	if (comp_d(t[0], t[3]))
+	if (comp_d(t[0], t[3]) && t[0] > 0)
 	{
 		num[0] = PLANE;
 		num[1] = numb[0];
 	}
-	else if (comp_d(t[1], t[3]))
+	else if (comp_d(t[1], t[3]) && t[1] > 0)
 	{
 		num[0] = CYLINDER;
 		num[1] = numb[1];
 	}
-	else if (comp_d(t[2], t[3]))
+	else if (comp_d(t[2], t[3]) && t[2] > 0)
 	{
 		num[0] = SPHERE;
 		num[1] = numb[2];
 	}
-	else
-		num[0] = -1;
 	return (t[3]);
 }
 
@@ -91,6 +89,7 @@ void	calc_light_strength(t_scene *scene, t_vect3d Phit[2], int num[2], int i)
 	x.diffuse = (((100 - x.t) / 100 + (90 - x.angle)
 				/ 90) / 2) * scene->light[i].Kd;
 	scene->light[i].strength = x.specular + x.diffuse;
+	//printf("str:%f  specular:%f   diffuse:%f   Ks:%f   Kd:%f\n", scene->light[0].strength, x.specular, x.diffuse, scene->light[i].Ks, scene->light[i].Kd);
 	if (scene->light[i].strength < 0)
 		scene->light[i].strength = 0;
 	x.ray.eye = Phit[0];
@@ -98,6 +97,7 @@ void	calc_light_strength(t_scene *scene, t_vect3d Phit[2], int num[2], int i)
 				scene->light[i].ori, x.ray.eye));
 	x.ray.eye = add_vectors(x.ray.eye, multiply_vector(x.N, 0.000001));
 	scene->light[i].strength *= check_shadows(x.ray, scene, x.t, Phit);
+	scene->light[i].strength = 0.5;
 }
 
 // sets the ray from Phit to light
@@ -114,12 +114,10 @@ int	get_color(t_scene *scene, int num[2], double t, t_vect3d Phit[2])
 	}
 	
 	// voor checkerboard in een sphere, maar is nog een beetje kijken hoe we het willen
-	if (num[0] == 2 && !((int)Phit[0].x / ((int)scene->sp[num[1]].size / 4) % 2) && !((int)Phit[0].y / ((int)scene->sp[num[1]].size / 4) % 2))
-		return(0x000000FF - calculate_light(scene->sp[num[1]].hsl, scene));
-	if (num[0] == 2 && ((int)Phit[0].x / ((int)scene->sp[num[1]].size / 4) % 2) && ((int)Phit[0].y / ((int)scene->sp[num[1]].size / 4) % 2))
-		return(0x000000FF - calculate_light(scene->sp[num[1]].hsl, scene));
-
-
+	// if (num[0] == 2 && !((int)Phit[0].x / ((int)scene->sp[num[1]].size / 4) % 2) && !((int)Phit[0].y / ((int)scene->sp[num[1]].size / 4) % 2))
+	// 	return(0x000000FF - calculate_light(scene->sp[num[1]].hsl, scene));
+	// if (num[0] == 2 && ((int)Phit[0].x / ((int)scene->sp[num[1]].size / 4) % 2) && ((int)Phit[0].y / ((int)scene->sp[num[1]].size / 4) % 2))
+	// 	return(0x000000FF - calculate_light(scene->sp[num[1]].hsl, scene));
 	if (num[0] == PLANE)
 		return (calculate_light(scene->pl[num[1]].hsl, scene));
 	else if (num[0] == SPHERE)
@@ -158,10 +156,10 @@ void	loop_pixels(t_data *data, t_scene *scene)
 	int	x;
 	int	y;
 
-	x = 0;
+	x = 1;
 	while (x < data->width + 1)
 	{
-		y = 0;
+		y = 1;
 		while (y < data->height + 1)
 		{
 			set_pixel(data, scene, x, y);

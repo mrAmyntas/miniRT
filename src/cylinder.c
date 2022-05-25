@@ -10,15 +10,14 @@ bool	inside_cylinder_i(t_scene *scene, int i)
 	t_vect3d	e;
 	t_vect3d	m;
 
-	cy_end = add_vectors(scene->cy[i].eye, multiply_vector(scene->cy[i].r_dir, scene->cy[i].height));
+	cy_end = add_vectors(scene->cy[i].eye, multiply_vector(scene->cy[i].dir, scene->cy[i].height));
 	A = scene->cy[i].eye;
 	B = cy_end;
 	P = scene->cam->eye;
 	R = scene->cy[i].r;
-	e = scene->cy[i].r_dir;
+	e = scene->cy[i].dir;
 //	m = cross_product()
 	return true;
-
 }
 
 bool	inside_cylinder(t_scene *scene)
@@ -44,13 +43,13 @@ static double	get_cy_angle_side(t_scene *scene, int num[2], t_vect3d Phit, t_vec
 	t = magnitude(subtract_vectors(Phit, scene->cy[num[1]].eye));
 	t = fabs((t * t) - (scene->cy[num[1]].r * scene->cy[num[1]].r));
 	t = sqrt(t);
-   	tmp = add_vectors(scene->cy[num[1]].eye, multiply_vector(scene->cy[num[1]].r_dir, t));
+   	tmp = add_vectors(scene->cy[num[1]].eye, multiply_vector(scene->cy[num[1]].dir, t));
    	*N = normalize_vector(subtract_vectors(Phit, tmp));
 	tmp = normalize_vector(subtract_vectors(scene->light->ori, Phit));
 	t = dot_product(*N, tmp);
 	angle = acos(t) / (M_PI / 180);
 	if (angle > 90)
-		angle = 180 - angle;
+		angle = 90;
 	return (angle);
 }
 

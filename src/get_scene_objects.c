@@ -68,12 +68,9 @@ void	read_sp(t_scene *scene, char **line)
 
 void	read_cy2(t_scene *scene, char **line, int i, char **coords)
 {
-	scene->cy[i].dir.x = ft_atod(coords[0]) * -1;
-	scene->cy[i].dir.y = ft_atod(coords[1]) * -1;
+	scene->cy[i].dir.x = ft_atod(coords[0]);
+	scene->cy[i].dir.y = ft_atod(coords[1]);
 	scene->cy[i].dir.z = ft_atod(coords[2]);
-	scene->cy[i].r_dir.x = ft_atod(coords[0]);
-	scene->cy[i].r_dir.y = ft_atod(coords[1]);
-	scene->cy[i].r_dir.z = ft_atod(coords[2]);
 	if (scene->cy[i].dir.x < 0.000001 && scene->cy[i].dir.y < 0.000001 && fabs(scene->cy[i].dir.z) > 0.999999)
 		scene->cy[i].dir.y = scene->cy[i].dir.y + 0.00000001;
 	if (scene->cy[i].dir.x < -1 || scene->cy[i].dir.x > 1

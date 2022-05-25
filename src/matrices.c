@@ -69,14 +69,18 @@ void	set_i_r_val(double a, t_vect3d axis, t_matrix44d *R)
 void	set_i_r(t_scene *scene, int num)
 {
 	t_vect3d	axis;
+	t_vect3d	dir;
 	t_vect3d	o;
 	double		a;
 
 	o.x = 0;
 	o.y = 0;
 	o.z = 1;
-	a = acos(dot_product(o, scene->cy[num].dir));
-	axis = normalize_vector(cross_product(o, scene->cy[num].dir));
+	dir.x = scene->cy[num].dir.x * -1;
+	dir.y = scene->cy[num].dir.y * -1;
+	dir.z = scene->cy[num].dir.z;
+	a = acos(dot_product(o, dir));
+	axis = normalize_vector(cross_product(o, dir));
 	set_i_r_val(a, axis, &scene->cy[num].I_R);
 }
 

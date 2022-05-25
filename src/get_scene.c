@@ -101,7 +101,7 @@ void	count_objects(t_scene *scene, char *str, int fd)
 			scene->amount[1]++;
 		else if (!strncmp(splitted_str[0], "sp", 3))
 			scene->amount[2]++;
-		else if (!strncmp(splitted_str[0], "L", 3))
+		else if (!strncmp(splitted_str[0], "L", 2))
 			scene->amount[3]++;
 		else if (strncmp(splitted_str[0], "A", 2)
 			&& strncmp(splitted_str[0], "C", 2)
@@ -127,6 +127,7 @@ int	set_scene(t_scene *scene, char *name)
 	scene->amount[0] = 0;
 	scene->amount[1] = 0;
 	scene->amount[2] = 0;
+	scene->amount[3] = 0;
 	scene->origin.x = 0;
 	scene->origin.y = 0;
 	scene->origin.z = 0;
@@ -136,11 +137,11 @@ int	set_scene(t_scene *scene, char *name)
 	str = get_next_line(fd);
 	count_objects(scene, str, fd);
 	fd = open(name, O_RDONLY);
-	scene->pl = malloc(sizeof(t_pl) * (scene->amount[0] + 2));
-	scene->sp = malloc(sizeof(t_sp) * (scene->amount[1] + 3));
-	scene->cy = malloc(sizeof(t_cy) * (scene->amount[2] + 2));
-	scene->cam = malloc(sizeof(t_ray));
-	scene->light = malloc(sizeof(t_light) * (scene->amount[3] + 2));
+	scene->pl = (t_pl *)malloc(sizeof(t_pl) * (scene->amount[PLANE] + 2));
+	scene->sp = (t_sp *)malloc(sizeof(t_sp) * (scene->amount[SPHERE] + 3));
+	scene->cy = (t_cy *)malloc(sizeof(t_cy) * (scene->amount[CYLINDER] + 2));
+	scene->cam = (t_ray *)malloc(sizeof(t_ray));
+	scene->light = (t_light *)malloc(sizeof(t_light) * (scene->amount[LIGHT] + 2));
 	if (!scene->pl || !scene->sp || !scene->cy)
 		ft_error(1, "Malloc error\n");
 	return (fd);
@@ -180,4 +181,5 @@ void	read_scene(t_scene *scene, char *name)
 		str = get_next_line(fd);
 	}
 	free(str);
+	str = NULL;
 }

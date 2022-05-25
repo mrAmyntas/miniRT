@@ -14,7 +14,8 @@ enum	e_object_type
 {
 	PLANE,
 	CYLINDER,
-	SPHERE
+	SPHERE,
+	LIGHT
 };
 
 typedef struct	s_variable
