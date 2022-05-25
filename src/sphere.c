@@ -30,20 +30,20 @@ double  calc_t0(double b, double c)
     return (t[1]);
 }
 
-void    calc_b_c(t_scene *scene, t_ray ray, double bc[2], int count)
+void    calc_b_c(t_scene *scene, t_ray *ray, double bc[2], int count)
 {
     t_vect3d    new;
     t_vect3d    new_D;
     double      power;
 
-    new = subtract_vectors(ray.eye, scene->sp[count].C);
-    new_D = multiply_vector(ray.dir, 2);
+    new = subtract_vectors(ray->eye, scene->sp[count].C);
+    new_D = multiply_vector(ray->dir, 2);
     bc[0] = dot_product(new, new_D);
     power = pow(new.x, 2) + pow(new.y, 2) + pow(new.z, 2);
     bc[1] = power - pow(scene->sp[count].size / 2, 2);
 }
 
-int find_hit_sphere(t_scene *scene, t_ray ray, int count, double *close_t)
+int find_hit_sphere(t_scene *scene, t_ray *ray, int count, double *close_t)
 {
     double      bc[2];
     double      t;

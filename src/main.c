@@ -56,13 +56,41 @@ void	set_ray_data(t_data *data, t_scene *scene)
 	scene->r.yIncVector = divide_vec_scalar(scene->r.tmp, data->height);
 }
 
+void	uv_checkers(int width, int height, int colour_a, int coulour_b)
+{
+	int	u;
+	int	v;
+	int	i[2];
+
+	v = 10000000 / height;
+	u = 10000000 / width;
+	i[0] = 0;
+	//printf("%i %i %i %i\n", v, u, v * height, u * width);
+	while (i[0] < (10000000 - u / 2))
+	{
+		i[1] = 0;
+		while (i[1] < (10000000 - v / 2))
+		{
+			//printf("%i %i\n", i[1] % v, i[0] % u);
+			if ((i[1] / v) % 2 == (i[0] / u) % 2)
+				printf("%i %i: a\n", i[0], i[1]);
+			else
+				printf("%i %i: b\n", i[0], i[1]);
+			i[1] += v;
+		}
+		i[0] += u;
+	}
+
+}
+
 int	main(int argc, char **argv)
 {
 	t_data	data;
 	t_scene	scene;
 
-	data.height = 500;
-	data.width = 500;
+	data.height = 1080;
+	data.width = 1920;
+	//uv_checkers(6, 4, 0xFFFFFFFF, 0x000000FF);
 	if (argc != 2)
 		ft_error(1, "Invalid amount of arguments\n");
 	read_scene(&scene, argv[1]);

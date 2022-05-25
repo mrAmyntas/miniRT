@@ -8,6 +8,9 @@ typedef struct s_light
 	double		brightness;
 	t_vect3d	ori;
 	int			color;
+	double		Kd;
+	double		Ks;
+	double		strength;
 }				t_light;
 
 typedef struct s_cy
@@ -71,7 +74,7 @@ typedef struct 	s_cy_data {
 
 typedef struct s_scene
 {
-    int     	amount[3];
+    int     	amount[4];
     int    		state[3];
 	double 		a_ratio;
     int    		a_rgb;

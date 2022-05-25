@@ -55,6 +55,7 @@ void	read_c(t_scene *scene, char **line)
 void	read_l(t_scene *scene, char **line)
 {
 	char	**coords;
+	static int	i = 0;
 
 	if (scene->state[2])
 		ft_error(1, "Light can only be declared once\n");
@@ -63,15 +64,18 @@ void	read_l(t_scene *scene, char **line)
 	coords = ft_split(line[1], ',');
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of coordinates for light\n");
-	scene->light->ori.x = ft_atod(coords[0]);
-	scene->light->ori.y = ft_atod(coords[1]);
-	scene->light->ori.z = ft_atod(coords[2]);
+	scene->light[i].ori.x = ft_atod(coords[0]);
+	scene->light[i].ori.y = ft_atod(coords[1]);
+	scene->light[i].ori.z = ft_atod(coords[2]);
 	free_strstr(coords);
-	scene->light->brightness = ft_atod(line[2]);
+	scene->light[i].brightness = ft_atod(line[2]); // kan later weg
+	scene->light[i].Kd = 0.8 * ft_atod(line[2]);
+	scene->light[i].Ks = 0.08 * ft_atod(line[2]);
 	coords = ft_split(line[3], ',');
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of colours for light\n");
-	scene->light->color = create_rgb(ft_atoi(coords[0]),
+	scene->light[i].color = create_rgb(ft_atoi(coords[0]),
 			ft_atoi(coords[1]), ft_atoi(coords[2]), "light\n");
 	free_strstr(coords);
+	i++;
 }

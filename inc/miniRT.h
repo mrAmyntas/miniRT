@@ -17,6 +17,17 @@ enum	e_object_type
 	SPHERE
 };
 
+typedef struct	s_variable
+{
+	t_vect3d	R;
+	t_vect3d	N;
+	double		t;
+	double		specular;
+	double		diffuse;
+	double		angle;
+	t_ray		ray;
+}				t_variable;
+
 // *** UTILS *** \\
 
 char		*get_next_line(int fd);
@@ -32,7 +43,7 @@ void		transform_ray(t_scene *scene, t_ray *ray, int *num, double z_m[2]);
 
 // *** SPHERE STUFF *** \\
 
-int 		find_hit_sphere(t_scene *scene, t_ray ray, int count, double *close_t);
+int 		find_hit_sphere(t_scene *scene, t_ray *ray, int count, double *close_t);
 double		get_sp_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N);
 
 
@@ -48,8 +59,7 @@ int    		hsl_to_rgb(t_vect3d hsl);
 double		get_saturation(double l, double minmax[2]);
 double 		get_hue(double minmax[2], double r, double g, double b);
 int     	check_shadow(t_ray ray, t_scene *scene);
-int    		calculate_light(double angle, t_vect3d hsl, t_scene *scene, double t, int shadow);
-int   		calculate_light2(double angle, t_vect3d Phit, t_vect3d hsl, t_scene *scene, double t, int shadow);
+int    		calculate_light(t_vect3d hsl, t_scene *scene);
 
 // *** CYLINDER STUFF *** \\\
 
