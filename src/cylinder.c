@@ -1,5 +1,39 @@
 #include "../inc/miniRT.h"
 
+bool	inside_cylinder_i(t_scene *scene, int i)
+{
+	t_vect3d	cy_end;
+	t_vect3d	A;
+	t_vect3d	B;
+	t_vect3d	P;
+	double		R;
+	t_vect3d	e;
+	t_vect3d	m;
+
+	cy_end = add_vectors(scene->cy[i].eye, multiply_vector(scene->cy[i].r_dir, scene->cy[i].height));
+	A = scene->cy[i].eye;
+	B = cy_end;
+	P = scene->cam->eye;
+	R = scene->cy[i].r;
+	e = scene->cy[i].r_dir;
+//	m = cross_product()
+
+
+}
+
+bool	inside_cylinder(t_scene *scene)
+{
+	int	i;
+
+	i = 0;
+	while (i < scene->amount[CYLINDER])
+	{
+		if (inside_cylinder_i(scene, i));
+			return (true);
+		i++;
+	}
+	return (false);
+}
 
 static double	get_cy_angle_side(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 {
@@ -10,10 +44,7 @@ static double	get_cy_angle_side(t_scene *scene, int num[2], t_vect3d Phit, t_vec
 	t = magnitude(subtract_vectors(Phit, scene->cy[num[1]].eye));
 	t = fabs((t * t) - (scene->cy[num[1]].r * scene->cy[num[1]].r));
 	t = sqrt(t);
-	tmp.x = scene->cy[num[1]].dir.x * -1;
-	tmp.y = scene->cy[num[1]].dir.y * -1;
-	tmp.z = scene->cy[num[1]].dir.z;
-   	tmp = add_vectors(scene->cy[num[1]].eye, multiply_vector(tmp, t));
+   	tmp = add_vectors(scene->cy[num[1]].eye, multiply_vector(scene->cy[num[1]].r_dir, t));
    	*N = normalize_vector(subtract_vectors(Phit, tmp));
 	tmp = normalize_vector(subtract_vectors(scene->light->ori, Phit));
 	t = dot_product(*N, tmp);
@@ -73,15 +104,15 @@ double	find_hit_cy(t_scene *scene, t_ray *ray, int *num, int cap)
 	t_ray	new_ray;
 	double	ret;
 
-	t = malloc(sizeof(double) * scene->amount[2]);
+	t = malloc(sizeof(double) * scene->amount[CYLINDER]);
 	*num = 0;
-	while (*num < scene->amount[2])
+	while (*num < scene->amount[CYLINDER])
 	{
 		new_ray = *ray;
 		t[*num] = find_closest_cy(scene, &new_ray, num, cap);
 		*num = *num + 1;
 	}
-	*num = find_smallest(scene, t, num, scene->amount[2]);
+	*num = find_smallest(scene, t, num, scene->amount[CYLINDER]);
 	if (*num == -1)
 	{
 		free (t);

@@ -97,9 +97,9 @@ void	count_objects(t_scene *scene, char *str, int fd)
 		splitted_str = ft_split(str, ' ');
 		if (!strncmp(splitted_str[0], "pl", 3))
 			scene->amount[0]++;
-		else if (!strncmp(splitted_str[0], "sp", 3))
-			scene->amount[1]++;
 		else if (!strncmp(splitted_str[0], "cy", 3))
+			scene->amount[1]++;
+		else if (!strncmp(splitted_str[0], "sp", 3))
 			scene->amount[2]++;
 		else if (!strncmp(splitted_str[0], "L", 3))
 			scene->amount[3]++;
