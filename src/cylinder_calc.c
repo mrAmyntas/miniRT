@@ -4,7 +4,7 @@
 //returns -1 for 0 intersect points
 //if one, t[0] and t[1] will be equal
 //z values are the z coordinated for the two intersect points.
-double	calc_t_0_1(t_scene *scene, t_ray *ray, int *num, double t[4])
+double	calc_t_0_1(t_scene *scene, t_ray *ray, int *num, double *t)
 {
 	double	r;
 	double	a;
@@ -50,7 +50,7 @@ bool	t_closest(double t1, double t2, double z_m[2], double z)
 double	find_intersect(t_ray *ray, t_cy_data cy, int *cap, int set_cap)
 {
 	if (set_cap == 1)
-		*cap = 1;
+		*cap = BOT;
 	if ((cy.z[0] < cy.z_m[0] && cy.z[1] > cy.z_m[0])
 		|| (cy.z[1] < cy.z_m[0] && cy.z[0] > cy.z_m[0]))
 	{
@@ -65,23 +65,23 @@ double	find_intersect(t_ray *ray, t_cy_data cy, int *cap, int set_cap)
 		if (cy.t[3] < cy.t[0] && cy.t[3] > 0)
 		{
 			if (set_cap == 1)
-				*cap = 2;			
+				*cap = TOP;			
 			return (cy.t[3]);
 		}
 	}
 	if (set_cap == 1)
-		*cap = 0;
+		*cap = NOT;
 	return (cy.t[0]);
 }
 
 //both t_values are outside the z_range of the finite sphere here
 //but there might still be legit intersect points, because it could be
 //that the rays go through a cap.
-//-------> O=====O ------>   (goes through so no t_values)
+//------*-> O=====O ---*--->(goes through and hits sides outside z min/max)
 double	find_intersect_cap(t_ray *ray, t_cy_data cy, int *cap, int set_cap)
 {
 	if (set_cap == 1)
-		*cap = 1;
+		*cap = BOT;
 	if ((cy.z[0] < cy.z_m[0] && cy.z[1] > cy.z_m[0])
 		|| (cy.z[1] < cy.z_m[0] && cy.z[0] > cy.z_m[0]))
 		cy.t[2] = (cy.z_m[0] - ray->eye.z) / ray->dir.z;
@@ -93,10 +93,10 @@ double	find_intersect_cap(t_ray *ray, t_cy_data cy, int *cap, int set_cap)
 	else if (cy.t[3] > 0)
 	{
 		if (set_cap == 1)
-			*cap = 2;			
+			*cap = TOP;			
 		return (cy.t[3]);
 	}
 	if (set_cap == 1)
-		*cap = -1;
+		*cap = NOT;
 	return (-1);
 }

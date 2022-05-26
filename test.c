@@ -646,3 +646,20 @@ int main(void)
 // 	printf("|%f %f %f %f| %f %f %f %f\n", matrix.row4.x1, matrix.row4.y1, matrix.row4.z1, matrix.row4.t1, matrix.row4.x2, matrix.row4.y2, matrix.row4.z2, matrix.row4.t2);
 // 	printf("----------------------\n");
 // }
+
+	//t[3] = smallest(t);
+	// if (comp_d(t[0], t[3]) && t[0] > 0)
+	// {
+	// 	num[0] = PLANE;
+	// 	num[1] = numb[0];
+	// }
+	// else if (comp_d(t[1], t[3]) && t[1] > 0)
+	// {
+	// 	num[0] = CYLINDER;
+	// 	num[1] = numb[1];
+	// }
+	// else if (comp_d(t[2], t[3]) && t[2] > 0)
+	// {
+	// 	num[0] = SPHERE;
+	// 	num[1] = numb[2];
+	// }

@@ -24,30 +24,23 @@ double	smallest(double t[3])
 // finds the closest object and sets num to the id of the object
 double	find_closest_object(t_scene *scene, t_ray *ray, int num[2], int cap)
 {
-	double	t[4];
+	double	t[5];
 	int		i;
-	int		numb[3];
+	int		numb[5];
 
 	t[0] = find_hit_pl(scene, ray, &numb[0]);
 	t[1] = find_hit_cy(scene, ray, &numb[1], cap);
 	numb[2] = find_hit_sphere(scene, ray, scene->amount[SPHERE], &t[2]);
-	t[3] = smallest(t);
-	if (comp_d(t[0], t[3]) && t[0] > 0)
+	t[3] = find_hit_disc(scene, ray, &numb[3]);
+	t[4] = find_hit_torus(scene, ray, &numb[4]);
+	i = find_smallest(scene, t, 1, 5);
+	if (i != -1)
 	{
-		num[0] = PLANE;
-		num[1] = numb[0];
+		num[0] = i;
+		num[1] = numb[i];
+		return (t[i]);
 	}
-	else if (comp_d(t[1], t[3]) && t[1] > 0)
-	{
-		num[0] = CYLINDER;
-		num[1] = numb[1];
-	}
-	else if (comp_d(t[2], t[3]) && t[2] > 0)
-	{
-		num[0] = SPHERE;
-		num[1] = numb[2];
-	}
-	return (t[3]);
+	return (-1);
 }
 
 // checks if the light ray hits Phit and is not blocked by another object
@@ -76,8 +69,13 @@ double	get_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 		angle = get_pl_angle(scene, num, Phit, N);
 	else if (num[0] == SPHERE)
 		angle = get_sp_angle(scene, num, Phit, N);
-	else
+	else if (num[0] == CYLINDER)
 		angle = get_cy_angle(scene, num, Phit, N);
+	else if (num[0] == DISC)
+		angle = get_di_angle(scene, num, Phit, N);
+	else if (num[0] == TORUS)
+		angle = get_tor_angle(scene, num, Phit, N);
+
 	return (angle);
 }
 
@@ -131,6 +129,10 @@ int	get_color(t_scene *scene, int num[2], double t, t_vect3d Phit[2])
 		return (calculate_light(scene->sp[num[1]].hsl, scene));
 	else if (num[0] == CYLINDER)
 		return (calculate_light(scene->cy[num[1]].hsl, scene));
+	else if (num[0] == DISC)
+		return (calculate_light(scene->di[num[1]].hsl, scene));
+	else if (num[0] == TORUS)
+		return (calculate_light(scene->tor[num[1]].hsl, scene));
 	return (-1);
 }
 
@@ -149,14 +151,13 @@ void	set_pixel(t_data *data, t_scene *scene, int x, int y)
 	t = find_closest_object(scene, &scene->ray_cam, num, 1);
 	if (t > 0)
 	{
-		// if (t > 14)
-		// 	printf("t:%f\n", t);
 		phit[0] = add_vectors(scene->ray_cam.eye,
 				multiply_vector(scene->ray_cam.dir, t));
 		color = get_color(scene, num, t, phit);
 		mlx_put_pixel(data->mlx_img, (data->width - x),
 			(data->height - y), color);
 	}
+
 }
 
 // loops through all the pixels in the window

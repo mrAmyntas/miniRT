@@ -24,7 +24,9 @@ SRC =	src/main.c\
 		src/light.c\
 		src/calculate_hsl.c\
 		src/ray.c\
-		src/calc_camray_angles.c
+		src/calc_camray_angles.c\
+		src/disc.c\
+		src/torus.c
 
 INC = 	inc/miniRT.h\
 		libft/libft.h\

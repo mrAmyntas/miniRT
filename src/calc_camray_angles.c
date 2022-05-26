@@ -37,9 +37,9 @@ static double	get_angle_cy(t_scene *scene, t_vect3d Phit, int *num)
 	t_vect3d	tmp;
 	t_vect3d	N;
 
-	if (scene->cy[num[1]].cap > 0)
+	if (scene->cy[num[1]].cap != NOT)
 	{
-		if (scene->cy[num[1]].cap == 1)
+		if (scene->cy[num[1]].cap == BOT)
 			N = multiply_vector(scene->cy[num[1]].dir, -1);
 		else
 			N = scene->cy[num[1]].dir;
