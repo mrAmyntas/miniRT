@@ -26,8 +26,8 @@ double	get_cy_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 
 	if (scene->cy[num[1]].cap != NOT)
 	{
-		if (scene->cy[num[1]].cap == TOP)
-			*N = multiply_vector(scene->cy[num[1]].dir, -1);
+		if (scene->cy[num[1]].cap == BOT)
+		*N = multiply_vector(scene->cy[num[1]].dir, -1);
 		else
 			*N = scene->cy[num[1]].dir;
 		tmp = normalize_vector(subtract_vectors(scene->cam->eye, Phit));
@@ -71,14 +71,14 @@ double	find_caps(t_scene *scene, int *num, t_ray *ray, int cap, int x, int y)
 	tmp[1] = subtract_vectors(tmp[1], P);
 	// if (x == 152 && y == 186 && cap == 1)
 	// 	printf("t0:%f   t1:%f    dot0:%f    dot1:%f    r^2:%f\n", t[0], t[1], dot_product(tmp[0], tmp[0]), dot_product(tmp[1], tmp[1]), scene->cy[*num].r * scene->cy[*num].r);
-	if ((t[0] > 0 && dot_product(tmp[0], tmp[0]) <= scene->cy[*num].r * scene->cy[*num].r + 0.001
-		&& (t[0] < t[1] || t[1] < 0 || dot_product(tmp[1], tmp[1]) > scene->cy[*num].r * scene->cy[*num].r)))
+	if ((t[0] > 0 && dot_product(tmp[0], tmp[0]) <= scene->cy[*num].r * scene->cy[*num].r
+		&& (t[0] < t[1] || t[1] < 0 || (dot_product(tmp[1], tmp[1]) > scene->cy[*num].r * scene->cy[*num].r))))
 	{
 		if (cap == 1)
 			scene->cy[*num].cap = BOT;
 		return (t[0]);
 	}
-	if (t[1] > 0 && dot_product(tmp[1], tmp[1]) <= scene->cy[*num].r * scene->cy[*num].r + 0.001)
+	if (t[1] > 0 && dot_product(tmp[1], tmp[1]) <= scene->cy[*num].r * scene->cy[*num].r)
 	{
 		if (cap == 1)
 			scene->cy[*num].cap = TOP;
@@ -98,22 +98,22 @@ double	find_closest_cy(t_scene *scene, t_ray *ray, int *num, int cap, int x, int
 	cy.ret = calc_t_0_1(scene, ray, num, cy.t);
 	if (isnan(cy.t[0]) && isnan(cy.t[1]))
 	{
-		if (x == 152 && y == 186 && cap == 1)
-			printf("here\n");
+		// if (x == 152 && y == 186 && cap == 1)
+		// 	printf("here\n");
 		return (find_caps(scene, num, ray, cap, x, y));
 	}
 	cy.z[0] = ray->eye.z + ray->dir.z * cy.t[0];
 	cy.z[1] = ray->eye.z + ray->dir.z * cy.t[1];
 	if (t_closest(cy.t[0], cy.t[1], cy.z_m, cy.z[0]))
 	{
-		if (x == 152 && y == 186 && cap == 1)
-			printf("hier\n");
+		// if (x == 152 && y == 186 && cap == 1)
+		// 	printf("hier\n");
 		return (find_intersect(ray, cy, &scene->cy[*num].cap, cap));
 	}
 	else if (t_closest(cy.t[1], cy.t[0], cy.z_m, cy.z[1]))
 	{
-		if (x == 152 && y == 186 && cap == 1)
-			printf("hiero\n");
+		// if (x == 152 && y == 186 && cap == 1)
+		// 	printf("hiero\n");
 		cy.t[0] = cy.t[1];
 		return (find_intersect(ray, cy, &scene->cy[*num].cap, cap));
 	}
@@ -122,7 +122,7 @@ double	find_closest_cy(t_scene *scene, t_ray *ray, int *num, int cap, int x, int
 		// if (x == 152 && y == 186 && cap == 1)
 		// 	printf("hierachteraan\n");
 		return (find_caps(scene, num, ray, cap, x, y));
-		return (find_intersect_cap(ray, cy, &scene->cy[*num].cap, cap));
+		// return (find_intersect_cap(ray, cy, &scene->cy[*num].cap, cap));
 	}
 }
 

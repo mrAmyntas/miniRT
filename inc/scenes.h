@@ -63,6 +63,7 @@ typedef struct s_sp
 	double		size;
 	t_vect3d	lsh;
 	t_vect3d	hsl;
+	t_matrix44d	I_T;
 }				t_sp;
 
 typedef struct 	s_ray {

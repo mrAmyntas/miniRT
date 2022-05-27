@@ -37,6 +37,28 @@ void	set_i_t(t_scene *scene, int num)
 	scene->cy[num].I_T.row4.t = 1;
 }
 
+//inverted translation matrix for sphere stuff
+void	set_i_t_sp(t_scene *scene, int num)
+{
+	scene->sp[num].I_T.row1.x = 1;
+	scene->sp[num].I_T.row1.y = 0;
+	scene->sp[num].I_T.row1.z = 0;
+	scene->sp[num].I_T.row1.t = 0 - scene->sp[num].C.x;
+	scene->sp[num].I_T.row2.x = 0;
+	scene->sp[num].I_T.row2.y = 1;
+	scene->sp[num].I_T.row2.z = 0;
+	scene->sp[num].I_T.row2.t = 0 - scene->sp[num].C.y;
+	scene->sp[num].I_T.row3.x = 0;
+	scene->sp[num].I_T.row3.y = 0;
+	scene->sp[num].I_T.row3.z = 1;
+	scene->sp[num].I_T.row3.t = 0 - scene->sp[num].C.z;
+	scene->sp[num].I_T.row4.x = 0;
+	scene->sp[num].I_T.row4.y = 0;
+	scene->sp[num].I_T.row4.z = 0;
+	scene->sp[num].I_T.row4.t = 1;
+}
+
+
 //rotation matrix (only inverted because we change cylinder vector
 //values at read_scene)
 void	set_i_r_val(double a, t_vect3d axis, t_matrix44d *R)

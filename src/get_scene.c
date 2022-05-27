@@ -109,6 +109,7 @@ void	count_objects(t_scene *scene, char *str, int fd)
 			scene->amount[DISC]++;
 		else if (strncmp(splitted_str[0], "A", 2)
 			&& strncmp(splitted_str[0], "C", 2)
+			&& strncmp(splitted_str[0], "#", 2)
 			&& strncmp(splitted_str[0], "\n", 2))
 			ft_error(1, "Invalid element(s)\n");
 		free(str);
@@ -173,7 +174,6 @@ void	find_element(t_scene *scene, char **splitted_str)
 		read_di(scene, splitted_str);
 	else if (!strncmp(splitted_str[0], "tor", 4))
 		read_tor(scene, splitted_str);
-
 
 }
 
