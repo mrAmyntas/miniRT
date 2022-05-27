@@ -92,23 +92,15 @@ void	calc_light_strength(t_scene *scene, t_vect3d Phit[2], int num[2])
 	x.t = find_closest_object(scene, &x.ray, num2, 0);
 	Phit[1] = add_vectors(x.ray.eye, multiply_vector(x.ray.dir, x.t));
 	x.angle = get_angle(scene, num, Phit[0], &x.N);
-
-	
-
-	if ((inside_object(scene, Phit, num) && x.angle < 90.0) || (!inside_object(scene, Phit, num) && x.angle > 90.0) || x.angle == -1)
-	{
+	if ((inside_object(scene, Phit, num) && x.angle < 90.0 && x.angle != -1))
 		return ;
-	}
-	printf("1   ");
-	if (inside_object(scene, Phit, num))
-		printf("2   ");
+	else if ((!inside_object(scene, Phit, num) && x.angle > 90.0) || (x.angle == -1 && !(inside_object(scene, Phit, num) && x.angle < 90.0)))
+		return ;
 	if (inside_object(scene, Phit, num) && (x.angle > 90.0 || x.angle == -1))
 	{
-		printf("3   ");
 		x.N = multiply_vector(x.N, -1);
 		x.angle = 180 - x.angle;
 	}
-	printf("4   \n");
 	x.R = subtract_vectors(multiply_vector(x.N, 2
 				* dot_product(x.N, x.ray.dir)), x.ray.dir);
 	x.specular = pow(dot_product(multiply_vector(
