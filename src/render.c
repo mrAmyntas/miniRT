@@ -104,7 +104,7 @@ void	calc_light_strength(t_scene *scene, t_vect3d Phit[2], int num[2])
 	x.R = subtract_vectors(multiply_vector(x.N, 2
 				* dot_product(x.N, x.ray.dir)), x.ray.dir);
 	x.specular = pow(dot_product(multiply_vector(
-					scene->ray_cam.dir, -1), x.R), 10);
+					scene->ray_cam.dir, -1), x.R), 50);
 	x.specular *= scene->light[scene->i].Ks;
 	x.diffuse = (((100 - x.t) / 100 + (90 - x.angle)
 				/ 90) / 2) * scene->light[scene->i].Kd;
@@ -128,11 +128,15 @@ int	get_color(t_scene *scene, int num[2], double t, t_vect3d Phit[2])
 		calc_light_strength(scene, Phit, num);
 		scene->i++;
 	}
+
 	// voor checkerboard in een sphere, maar is nog een beetje kijken hoe we het willen
-	// if (num[0] == 2 && !((int)Phit[0].x / ((int)scene->sp[num[1]].size / 4) % 2) && !((int)Phit[0].y / ((int)scene->sp[num[1]].size / 4) % 2))
-	// 	return(0x000000FF - calculate_light(scene->sp[num[1]].hsl, scene));
-	// if (num[0] == 2 && ((int)Phit[0].x / ((int)scene->sp[num[1]].size / 4) % 2) && ((int)Phit[0].y / ((int)scene->sp[num[1]].size / 4) % 2))
-	// 	return(0x000000FF - calculate_light(scene->sp[num[1]].hsl, scene));
+	if (num[0] == SPHERE && !((int)Phit[0].x / ((int)scene->sp[num[1]].size / 4) % 2) && !((int)Phit[0].y / ((int)scene->sp[num[1]].size / 4) % 2))
+		return(calculate_light(scene->sp[num[1]].lsh, scene));
+	
+	if (num[0] == SPHERE && ((int)Phit[0].x / ((int)scene->sp[num[1]].size / 4) % 2) && ((int)Phit[0].y / ((int)scene->sp[num[1]].size / 4) % 2))
+		return(calculate_light(scene->sp[num[1]].lsh, scene));
+	
+
 	if (num[0] == PLANE)
 		return (calculate_light(scene->pl[num[1]].hsl, scene));
 	else if (num[0] == SPHERE)
