@@ -61,6 +61,7 @@ typedef struct s_sp
     int     	rgb;
 	t_vect3d	coord;
 	double		size;
+	t_vect3d	lsh;
 	t_vect3d	hsl;
 }				t_sp;
 

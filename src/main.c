@@ -56,17 +56,41 @@ void	set_ray_data(t_data *data, t_scene *scene)
 	scene->r.yIncVector = divide_vec_scalar(scene->r.tmp, data->height);
 }
 
+void	uv_checkers(int	width, int height, int colour_a, int colour_b)
+{
+	double u;
+	double v;
+	
+	u = 0;
+	while (u <= 1)
+	{
+		v = 0;
+		while (v <= 1)
+		{
+			if (!(((int)(u * width) + (int)(v * height)) % 2))
+				printf("%f %f: a\n", u, v);
+			else
+				printf("%f %f: b\n", u, v);
+			v += 0.5;
+		}
+		u += 0.5;
+	}
+}
+
 int	main(int argc, char **argv)
 {
 	t_data	data;
 	t_scene	scene;
 
-	data.height = 400;
-	data.width = 400;
+	data.height = 600;
+	data.width = 600;
 	//uv_checkers(6, 4, 0xFFFFFFFF, 0x000000FF);
 	if (argc != 2)
 		ft_error(1, "Invalid amount of arguments\n");
 	read_scene(&scene, argv[1]);
+
+	uv_checkers(2, 2, 0xFFFFFFFF, 0x000000FF);
+
 	data.mlx = mlx_init(data.width, data.height, "MiniRT", true);
 	if (!data.mlx)
 		exit(EXIT_FAILURE);
