@@ -75,6 +75,7 @@ void	create_hsl(t_vect3d *hsl, int r, int g, int b)
 {
 	double	minmax[2];
 
+
 	minmax[0] = get_min(r, g, b);
 	minmax[1] = get_max(r, g, b);
 	hsl->z = (minmax[0] + minmax[1]) / 2;
@@ -82,8 +83,10 @@ void	create_hsl(t_vect3d *hsl, int r, int g, int b)
 	hsl->x = 0;
 	if (minmax[0] == minmax[1])
 		return;
+	printf("%i %i %i,	", r, g, b);
 	hsl->y = get_saturation(hsl->z, minmax);
 	hsl->x = get_hue(minmax, r , g , b );
 	if (hsl->x < 0)
 		hsl->x += 360;
+	printf("%f %f %f\n", hsl->x, hsl->y, hsl->z);
 }
