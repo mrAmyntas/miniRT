@@ -98,6 +98,7 @@ void	calc_light_strength(t_scene *scene, t_vect3d Phit[2], int num[2], int i)
 				scene->light[i].ori, x.ray.eye));
 	x.ray.eye = add_vectors(x.ray.eye, multiply_vector(x.N, 0.000001));
 	scene->light[i].strength *= check_shadows(x.ray, scene, x.t, Phit);
+	printf("%i: %f\n", i, scene->light[i].strength);
 }
 
 // sets the ray from Phit to light
@@ -110,14 +111,15 @@ int	get_color(t_scene *scene, int num[2], double t, t_vect3d Phit[2])
 	while (i < scene->amount[3])
 	{
 		calc_light_strength(scene, Phit, num, i);
+		//scene->light[i].strength = 1;
 		i++;
 	}
 	
 	// voor checkerboard in een sphere, maar is nog een beetje kijken hoe we het willen
-	if (num[0] == 2 && !((int)Phit[0].x / ((int)scene->sp[num[1]].size / 4) % 2) && !((int)Phit[0].y / ((int)scene->sp[num[1]].size / 4) % 2))
-		return(0x000000FF - calculate_light(scene->sp[num[1]].hsl, scene));
-	if (num[0] == 2 && ((int)Phit[0].x / ((int)scene->sp[num[1]].size / 4) % 2) && ((int)Phit[0].y / ((int)scene->sp[num[1]].size / 4) % 2))
-		return(0x000000FF - calculate_light(scene->sp[num[1]].hsl, scene));
+	//if (num[0] == 2 && !((int)Phit[0].x / ((int)scene->sp[num[1]].size / 4) % 2) && !((int)Phit[0].y / ((int)scene->sp[num[1]].size / 4) % 2))
+	//	return(0x000000FF - calculate_light(scene->sp[num[1]].hsl, scene));
+	//if (num[0] == 2 && ((int)Phit[0].x / ((int)scene->sp[num[1]].size / 4) % 2) && ((int)Phit[0].y / ((int)scene->sp[num[1]].size / 4) % 2))
+	//	return(0x000000FF - calculate_light(scene->sp[num[1]].hsl, scene));
 
 
 	if (num[0] == PLANE)

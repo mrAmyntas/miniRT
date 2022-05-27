@@ -51,11 +51,14 @@ int    calculate_light(t_vect3d hsl, t_scene *scene)
     int     i;
 
     i = 0;
+    bright = 0;
     while (i < scene->amount[3])
     {
         bright += scene->light[i].strength;
         i++;
     }
     hsl.z = bright + scene->a_ratio * (hsl.z * hsl.z);
+    if (hsl.z > 1)
+        hsl.z = 1;
     return (hsl_to_rgb(hsl));
 }

@@ -141,7 +141,7 @@ int	set_scene(t_scene *scene, char *name)
 	scene->cy = malloc(sizeof(t_cy) * (scene->amount[2] + 2));
 	scene->cam = malloc(sizeof(t_ray));
 	scene->light = malloc(sizeof(t_light) * (scene->amount[3] + 2));
-	if (!scene->pl || !scene->sp || !scene->cy)
+	if (!scene->pl || !scene->sp || !scene->cy || !scene->light)
 		ft_error(1, "Malloc error\n");
 	return (fd);
 }
