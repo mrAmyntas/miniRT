@@ -31,6 +31,25 @@ typedef struct	s_variable
 	t_ray		ray;
 }				t_variable;
 
+typedef struct	s_quatric
+{
+	double	Rsq;
+	double	rsq;
+	double	xD;
+	double	yD;
+	double	zD;
+	double	xE;
+	double	yE;
+	double	zE;
+	double	xD2;
+	double	yD2;
+	double	zD2;
+	double	xE2;
+	double	yE2;
+	double	zE2;
+}				t_quatric;
+
+
 // *** UTILS *** \\
 
 char		*get_next_line(int fd);

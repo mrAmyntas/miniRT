@@ -663,3 +663,15 @@ int main(void)
 	// 	num[0] = SPHERE;
 	// 	num[1] = numb[2];
 	// }
+
+	// a[0] = pow(ray->dir.x, 4) + pow(ray->dir.y, 4) + pow(ray->dir.z, 4) + 2 * pow(ray->dir.x, 2) * pow(ray->dir.y, 2) + 2 * pow(ray->dir.x, 2) * pow(ray->dir.z, 2) + 2 * pow(ray->dir.y, 2) * pow(ray->dir.z, 2);
+	// a[1] = 4 * pow(ray->dir.x, 3) * ray->eye.x + 4 * pow(ray->dir.y, 3) * ray->eye.y + 4 * pow(ray->dir.z, 3) * ray->eye.z + 4 * pow(ray->dir.x, 2) * ray->dir.y * ray->eye.y + 4 * pow(ray->dir.x, 2)
+	// 	* ray->dir.z * ray->eye.z + 4 * ray->dir.x * ray->eye.x * pow(ray->dir.y, 2) + 4 * pow(ray->dir.y, 2) * ray->dir.z * ray->eye.z + 4 * ray->dir.x * ray->eye.x * pow(ray->dir.z, 2) + 4 * ray->dir.y * ray->eye.y * pow(ray->dir.z, 2);
+	// a[2] = -2 * Rsq * pow(ray->dir.x, 2) - 2 * Rsq * pow(ray->dir.y, 2) + 2 * Rsq * pow(ray->dir.z, 2) - 2 * rsq * pow(ray->dir.x, 2) - 2 * rsq * pow(ray->dir.y, 2) - 2 * rsq * pow(ray->dir.z, 2) + 6 * pow(ray->dir.x, 2) * pow(ray->eye.x, 2) + 2 * pow(ray->eye.x, 2) * pow(ray->dir.y, 2)
+	// 	+ 8 * ray->dir.x * ray->eye.x * ray->dir.y * ray->eye.y + 2 * pow(ray->dir.x, 2) * pow(ray->eye.y, 2) + 6 * pow(ray->dir.y, 2) * pow(ray->eye.y, 2) + 2 * pow(ray->eye.x, 2) * pow(ray->dir.z, 2) + 2 * pow(ray->eye.y, 2) * pow(ray->dir.z, 2) + 8 * ray->dir.x * ray->eye.x * ray->dir.z * ray->eye.z
+	// 	+ 8 * ray->dir.y * ray->eye.y * ray->dir.z * ray->eye.z + 2 * pow(ray->dir.x, 2) * pow(ray->eye.z, 2) + 2 * pow(ray->dir.y, 2) * pow(ray->dir.z, 2) + 6 * pow(ray->dir.z, 2) * pow(ray->eye.z, 2);
+	// a[3] = -4 * Rsq * ray->dir.x * ray->eye.x - 4 * Rsq * ray->dir.y * ray->eye.y + 4 * Rsq * ray->dir.z * ray->eye.z - 4 * rsq * ray->dir.x * ray->eye.x - 4 * rsq * ray->dir.y * ray->eye.y - 4 * rsq * ray->dir.z * ray->eye.z + 4 * ray->dir.x * pow(ray->eye.x, 3)
+	// 	+ 4 * pow(ray->eye.x, 2) * ray->dir.y * ray->eye.y + 4 * ray->dir.x * ray->eye.x * pow(ray->eye.y, 2) + 4 * ray->dir.y * pow(ray->eye.y, 3) + 4 * pow(ray->eye.x, 2) * ray->dir.z * ray->eye.z + 4 * pow(ray->eye.y, 2) * ray->dir.z * ray->eye.z + 4 * ray->dir.x * ray->eye.x * pow(ray->eye.z, 2)
+	// 	+ 4 * ray->dir.y * ray->eye.y * pow(ray->eye.z, 2) + 4 * ray->dir.z * pow(ray->eye.z, 3);
+	// a[4] = pow(Rsq, 2) - 2 * Rsq * pow(ray->eye.x, 2) - 2 * Rsq * pow(ray->eye.y, 2) + 2 * Rsq * pow(ray->eye.z, 2) + pow(rsq, 2) - 2 * rsq * Rsq - 2 * rsq * pow(ray->eye.x, 2) - 2 * rsq * pow(ray->eye.y, 2) - 2 * rsq * pow(ray->eye.z, 2) + pow(ray->eye.x, 4) + pow(ray->eye.y, 4)
+	// 	+ pow(ray->eye.z, 4) + 2 * pow(ray->eye.x, 2) * pow(ray->eye.y, 2) + 2 * pow(ray->eye.x, 2) * pow(ray->eye.z, 2) + 2 * pow(ray->eye.y, 2) * pow(ray->eye.z, 2);

@@ -165,7 +165,7 @@ void	read_tor2(t_scene *scene, char **line, int i, char **coords)
 		ft_error(1, "One of the vectors for a torus is out of range\n");
 	scene->tor[i].dir = normalize_vector(scene->tor[i].dir);
 	free_strstr(coords);
-	scene->tor[i].r_cir = ft_atod(line[3]);
+	scene->tor[i].R_cir = ft_atod(line[3]);
 	scene->tor[i].r_tube = ft_atod(line[4]);
 	coords = ft_split(line[5], ',');
 	if (strstr_len(coords) != 3)
