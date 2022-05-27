@@ -86,7 +86,7 @@ int    		calculate_light(t_vect3d hsl, t_scene *scene);
 
 // *** CYLINDER STUFF *** \\\
 
-double		find_hit_cy(t_scene *scene, t_ray *ray, int *num, int cap);
+double		find_hit_cy(t_scene *scene, t_ray *ray, int *num, int cap, int x, int y);
 double		calc_t_0_1(t_scene *scene, t_ray *ray, int *num, double t[4]);
 double		find_intersect(t_ray *ray, t_cy_data cy, int *num, int cap);
 double		find_intersect_cap(t_ray *ray, t_cy_data cy, int *num, int cap);

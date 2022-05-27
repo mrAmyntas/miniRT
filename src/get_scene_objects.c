@@ -96,6 +96,7 @@ void	read_cy(t_scene *scene, char **line)
 	char		**coords;
 	static int	i = 0;
 
+	scene->cy[i].cap = NOT;
 	if (strstr_len(line) != 6)
 		ft_error(1, "Wrong number of arguments for a cylinder\n");
 	coords = ft_split(line[1], ',');
