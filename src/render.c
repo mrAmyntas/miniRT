@@ -5,7 +5,7 @@ bool	inside_object(t_scene *scene, t_vect3d *Phit, int *num)
 	double	angle;
 
 	angle = get_camray_angle(scene, Phit, num);
-	if (angle > 90)
+	if (angle > 90 || isnan(angle))
 		return (true);
 	return (false);
 }
@@ -103,6 +103,7 @@ void	calc_light_strength(t_scene *scene, t_vect3d Phit[2], int num[2])
 	x.ray.dir = normalize_vector(subtract_vectors(
 				scene->light[scene->i].ori, x.ray.eye));
 	x.ray.eye = add_vectors(x.ray.eye, multiply_vector(x.N, 0.000001));
+	printf("x.specular: %f\n", x.specular);
 	scene->light[scene->i].strength *= check_shadows(x.ray, scene, x.t, Phit);
 	if (inside_object(scene, Phit, num) && x.angle < 90)
 		scene->light[scene->i].strength = 0;

@@ -61,13 +61,12 @@ int	main(int argc, char **argv)
 	t_data	data;
 	t_scene	scene;
 
-	data.height = 800;
-	data.width = 800;
+	data.height = 400;
+	data.width = 400;
 	//uv_checkers(6, 4, 0xFFFFFFFF, 0x000000FF);
 	if (argc != 2)
 		ft_error(1, "Invalid amount of arguments\n");
 	read_scene(&scene, argv[1]);
-	printf("%i %i %i %i\n", scene.amount[0], scene.amount[1], scene.amount[2], scene.amount[3]);
 	data.mlx = mlx_init(data.width, data.height, "MiniRT", true);
 	if (!data.mlx)
 		exit(EXIT_FAILURE);
