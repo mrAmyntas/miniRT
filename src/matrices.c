@@ -60,7 +60,7 @@ void	set_i_t_sp(t_scene *scene, int num)
 
 
 //rotation matrix (only inverted because we change cylinder vector
-//values at read_scene)
+//values)
 void	set_i_r_val(double a, t_vect3d axis, t_matrix44d *R)
 {
 	double	c;

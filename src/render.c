@@ -132,7 +132,7 @@ bool	uv_checkers(t_scene *scene, t_vect3d Phit, int num)
 	t_vect3d N;
 	
 	N = normalize_vector(subtract_vectors(scene->origin, scene->sp[num].C));
-	printf("%f %f %f\n", N.x, N.y, N.z);
+	// printf("%f %f %f\n", N.x, N.y, N.z);
 	u = 1 - (atan2(Phit.x, Phit.z) / (2 * M_PI) + 0.5);
 	v = 1 - (acos(Phit.y / magnitude(multiply_vector(N, -1))) / M_PI);
 	if (!(((int)(u * scene->checker[1]) + (int)(v * scene->checker[0])) % 2))
