@@ -14,7 +14,10 @@ enum	e_object_type
 {
 	PLANE,
 	CYLINDER,
-	SPHERE
+	SPHERE,
+	DISC,
+	TORUS,
+	LIGHT
 };
 
 typedef struct	s_variable
@@ -34,7 +37,8 @@ char		*get_next_line(int fd);
 void		hook(void *param);
 void		read_scene(t_scene *scene, char *name);
 void		loop_pixels(t_data *data, t_scene *scene);
-double		find_smallest(t_scene *scene, double *t, int *num, int amount);
+double		find_smallest(t_scene *scene, double *t, int num, int amount);
+double		get_camray_angle(t_scene *scene, t_vect3d *Phit, int *num);
 
 // *** RAY STUFF *** \\
 
@@ -70,5 +74,15 @@ double		find_intersect_cap(t_ray *ray, t_cy_data cy, int *num, int cap);
 bool		t_closest(double t1, double t2, double z_m[2], double z);
 double		get_cy_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N);
 bool		inside_cylinder(t_scene *scene);
+
+// *** DISC STUFF *** \\\
+
+double		find_hit_disc(t_scene *scene, t_ray *ray, int *num);
+double		get_di_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N);
+
+// *** TORUS STUFF *** \\\
+
+double		find_hit_torus(t_scene *scene, t_ray *ray, int *num);
+double		get_tor_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N);
 
 #endif

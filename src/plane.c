@@ -24,7 +24,7 @@ double	get_pl_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 	double		angle;
 	t_vect3d	tmp;
 
-	tmp = normalize_vector(subtract_vectors(scene->light->ori, Phit));
+	tmp = normalize_vector(subtract_vectors(scene->light[scene->i].ori, Phit));
 	angle = acos(dot_product(scene->pl[num[1]].orth_vec, tmp)) / (M_PI / 180);
 	*N = scene->pl[num[1]].orth_vec;
 	if (angle > 90)
@@ -36,12 +36,12 @@ double	get_pl_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 }
 
 //finds smallest non-negative t_value
-double	find_smallest(t_scene *scene, double *t, int *num, int amount)
+double	find_smallest(t_scene *scene, double *t, int num, int amount)
 {
 	int	i;
 	int	j;
 
-	if (*num == 0)
+	if (num == 0)
 		return (-1);
 	i = 0;
 	j = 1;
@@ -91,7 +91,7 @@ double	find_hit_pl(t_scene *scene, t_ray *ray, int *num)
 
 	t = malloc(sizeof(double) * scene->amount[PLANE]);
 	calc_t(scene, ray, num, t);
-	*num = find_smallest(scene, t, num, scene->amount[PLANE]);
+	*num = find_smallest(scene, t, *num, scene->amount[PLANE]);
 	if (*num != -1)
 	{
 		ret = t[*num];

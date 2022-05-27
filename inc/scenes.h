@@ -17,15 +17,26 @@ typedef struct s_cy
 {
 	t_vect3d	eye;
 	t_vect3d	dir;
-	t_vect3d	r_dir;
     double  	r;
     double  	height;
     int     	rgb;
-	t_vect3d	hsl; // h = x = 0, s = y = 1, l = z = 2
+	t_vect3d	hsl;
 	t_matrix44d	I_T;
 	t_matrix44d	I_R;
 	int			cap;
 }				t_cy;
+
+typedef struct s_tor
+{
+	t_vect3d	coord;
+	t_vect3d	dir;
+    double  	r_cir;
+    double  	r_tube;
+    int     	rgb;
+	t_vect3d	hsl;
+	t_matrix44d	I_T;
+	t_matrix44d	I_R;
+}				t_tor;
 
 typedef struct s_pl
 {
@@ -34,6 +45,15 @@ typedef struct s_pl
     int			rgb;
 	t_vect3d	hsl;
 }				t_pl;
+
+typedef struct s_di
+{
+	t_vect3d	orth_vec;
+	t_vect3d	coord;
+    int			rgb;
+	t_vect3d	hsl;
+	double		r;
+}				t_di;
 
 typedef struct s_sp
 {
@@ -73,9 +93,15 @@ typedef struct 	s_cy_data {
 	int			ret;
 }				t_cy_data;
 
+typedef struct 	s_tor_data {
+	double 		t[4];
+	int			ret;
+}				t_tor_data;
+
 typedef struct s_scene
 {
-    int     	amount[4];
+	int			i;
+    int     	amount[6];
     int    		state[3];
 	double 		a_ratio;
     int    		a_rgb;
@@ -87,15 +113,27 @@ typedef struct s_scene
     t_pl   		*pl;
     t_sp    	*sp;
     t_cy    	*cy;
+    t_di    	*di;
+	t_tor		*tor;
 	t_light		*light;
 	t_vect3d	origin;
+	t_vect3d	ori_dir;
 	t_ray_data	r;
 }				t_scene;
+
+enum	e_cy_cap
+{
+	NOT,
+	BOT,
+	TOP
+};
 
 // read objects
 void	read_cy(t_scene *scene, char **line);
 void	read_sp(t_scene *scene, char **line);
 void	read_pl(t_scene *scene, char **line);
+void	read_di(t_scene *scene, char **line);
+void	read_tor(t_scene *scene, char **line);
 
 // read elements
 void	read_a(t_scene *scene, char **line);
