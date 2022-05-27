@@ -21,7 +21,7 @@ bool	compare_vectors(t_vect3d vec1, t_vect3d vec2)
 	return (false);
 }
 
-//compare doubles
+//compare doubles. if same returns true
 bool	comp_d(double x, double y)
 {
 	if (x > y)

@@ -30,7 +30,7 @@ typedef struct s_tor
 {
 	t_vect3d	coord;
 	t_vect3d	dir;
-    double  	r_cir;
+    double  	R_cir;
     double  	r_tube;
     int     	rgb;
 	t_vect3d	hsl;
