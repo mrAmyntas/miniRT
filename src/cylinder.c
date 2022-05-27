@@ -24,16 +24,14 @@ double	get_cy_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 	double		t;
 	t_vect3d	tmp;
 
-	if (scene->cy[num[1]].cap > 0)
+	if (scene->cy[num[1]].cap != NOT)
 	{
-		tmp = normalize_vector(subtract_vectors(scene->light->ori, Phit));
-		angle = acos(dot_product(scene->cy[num[1]].dir, tmp)) / (M_PI / 180);
-		*N = scene->cy[num[1]].dir;
-		if (angle > 90)
-		{
-			angle = 180 - angle;
-			*N = multiply_vector(*N, -1);
-		}
+		if (scene->cy[num[1]].cap == BOT)
+			*N = multiply_vector(scene->cy[num[1]].dir, -1);
+		else
+			*N = scene->cy[num[1]].dir;
+		tmp = normalize_vector(subtract_vectors(scene->cam->eye, Phit));
+		angle = acos(dot_product(*N, tmp)) / (M_PI / 180);
 	}
 	else
 		angle = get_cy_angle_side(scene, num, Phit, N);
@@ -96,7 +94,7 @@ double	find_closest_cy(t_scene *scene, t_ray *ray, int *num, int cap)
 	P = scene->origin;
 	transform_ray(scene, ray, num, cy.z_m);
 	cy.ret = calc_t_0_1(scene, ray, num, cy.t);
-	if (isnan(cy.t[0])  && isnan(cy.t[1]))
+	if (isnan(cy.t[0]) && isnan(cy.t[1]))
 		return (find_caps(scene, num, ray, cap));
 	cy.z[0] = ray->eye.z + ray->dir.z * cy.t[0];
 	cy.z[1] = ray->eye.z + ray->dir.z * cy.t[1];

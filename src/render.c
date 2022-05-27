@@ -5,7 +5,9 @@ bool	inside_object(t_scene *scene, t_vect3d *Phit, int *num)
 	double	angle;
 
 	angle = get_camray_angle(scene, Phit, num);
-	if (angle > 90 || isnan(angle))
+	if (isnan(angle))
+		angle = 0;
+	if (angle > 90)
 		return (true);
 	return (false);
 }
@@ -75,7 +77,8 @@ double	get_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 		angle = get_di_angle(scene, num, Phit, N);
 	else if (num[0] == TORUS)
 		angle = get_tor_angle(scene, num, Phit, N);
-
+	if (isnan(angle))
+		return (0);
 	return (angle);
 }
 
@@ -84,11 +87,19 @@ void	calc_light_strength(t_scene *scene, t_vect3d Phit[2], int num[2])
 	t_variable	x;
 	int			num2[2];
 
+	scene->light[scene->i].strength = 0;
 	x.ray.eye = scene->light[scene->i].ori;
 	x.ray.dir = normalize_vector(subtract_vectors(Phit[0], x.ray.eye));
 	x.t = find_closest_object(scene, &x.ray, num2, 0);
 	Phit[1] = add_vectors(x.ray.eye, multiply_vector(x.ray.dir, x.t));
 	x.angle = get_angle(scene, num, Phit[0], &x.N);
+	if (inside_object(scene, Phit, num) && x.angle < 90.0)
+		return ;
+	if (inside_object(scene, Phit, num) && (x.angle > 90.0 || comp_d(x.angle, 0)))
+	{
+		multiply_vector(x.N, -1);
+		x.angle = 180 - x.angle;
+	}
 	x.R = subtract_vectors(multiply_vector(x.N, 2
 				* dot_product(x.N, x.ray.dir)), x.ray.dir);
 	x.specular = pow(dot_product(multiply_vector(
@@ -103,10 +114,7 @@ void	calc_light_strength(t_scene *scene, t_vect3d Phit[2], int num[2])
 	x.ray.dir = normalize_vector(subtract_vectors(
 				scene->light[scene->i].ori, x.ray.eye));
 	x.ray.eye = add_vectors(x.ray.eye, multiply_vector(x.N, 0.000001));
-	printf("x.specular: %f\n", x.specular);
 	scene->light[scene->i].strength *= check_shadows(x.ray, scene, x.t, Phit);
-	if (inside_object(scene, Phit, num) && x.angle < 90)
-		scene->light[scene->i].strength = 0;
 }
 
 // sets the ray from Phit to light
