@@ -51,6 +51,7 @@ int    calculate_light(t_vect3d hsl, t_scene *scene)
     int     i;
 
     i = 0;
+    bright = 0;
     while (i < scene->amount[LIGHT])
     {
         bright += scene->light[i].strength;

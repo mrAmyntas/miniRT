@@ -22,7 +22,8 @@ double  calc_t0(double b, double c)
     t[0] /= 2;
     t[1] = (b * -1) - sqrt((pow(b, 2) - (4 * c)));
     t[1] /= 2;
-    if (t[0] <= t[1])
+    //printf("%f %f\n", t[0], t[1]);
+    if ((t[0] < t[1] && t[0] > 0) || t[1] < 0)
         return (t[0]);
     return (t[1]);
 }
@@ -53,7 +54,8 @@ int find_hit_sphere(t_scene *scene, t_ray *ray, int count, double *close_t)
     {    
         calc_b_c(scene, ray, bc, i);
         t = calc_t0(bc[0], bc[1]);
-        if ((t < *close_t && t != -1) || (*close_t < 0 && t != -1))
+        //printf("%f\n", t);
+        if ((t < *close_t && t > 0) || (*close_t < 0 && t > 0))
         {
             *close_t = t;
             save_i = i;
