@@ -64,6 +64,7 @@ void	read_sp(t_scene *scene, char **line)
 	create_hsl(&scene->sp[i].lsh, 255 - ft_atoi(coords[0]), 255 - ft_atoi(coords[1]), 255 - ft_atoi(coords[2]));
 	scene->sp[i].rgb = create_rgb(ft_atoi(coords[0]),
 			ft_atoi(coords[1]), ft_atoi(coords[2]), ft_strjoin("sphere ", ft_itoa(i)));
+	set_i_t_sp(scene, i);
 	i++;
 }
 
@@ -97,6 +98,7 @@ void	read_cy(t_scene *scene, char **line)
 	char		**coords;
 	static int	i = 0;
 
+	scene->cy[i].cap = NOT;
 	if (strstr_len(line) != 6)
 		ft_error(1, "Wrong number of arguments for a cylinder\n");
 	coords = ft_split(line[1], ',');

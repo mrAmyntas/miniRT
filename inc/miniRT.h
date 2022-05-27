@@ -68,6 +68,7 @@ void		transform_ray(t_scene *scene, t_ray *ray, int *num, double z_m[2]);
 
 int 		find_hit_sphere(t_scene *scene, t_ray *ray, int count, double *close_t);
 double		get_sp_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N);
+void		set_i_t_sp(t_scene *scene, int num);
 
 
 // *** PLANE STUFF *** \\
@@ -86,7 +87,7 @@ int    		calculate_light(t_vect3d hsl, t_scene *scene);
 
 // *** CYLINDER STUFF *** \\\
 
-double		find_hit_cy(t_scene *scene, t_ray *ray, int *num, int cap);
+double		find_hit_cy(t_scene *scene, t_ray *ray, int *num, int cap, int x, int y);
 double		calc_t_0_1(t_scene *scene, t_ray *ray, int *num, double t[4]);
 double		find_intersect(t_ray *ray, t_cy_data cy, int *num, int cap);
 double		find_intersect_cap(t_ray *ray, t_cy_data cy, int *num, int cap);
