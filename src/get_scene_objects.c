@@ -63,6 +63,7 @@ void	read_sp(t_scene *scene, char **line)
 	create_hsl(&scene->sp[i].hsl, ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
 	create_hsl(&scene->sp[i].lsh, 255 - ft_atoi(coords[0]), 255 - ft_atoi(coords[1]), 255 - ft_atoi(coords[2]));
 	//printf("%i %i, %i %i %i\n", hsl_to_rgb(scene->sp[i].hsl), hsl_to_rgb(scene->sp[i].lsh), 255 - ft_atoi(coords[0]), 255 - ft_atoi(coords[1]), 255 - ft_atoi(coords[2]));
+	printf("%i %i %i\n", 255 - ft_atoi(coords[0]), 255 - ft_atoi(coords[1]), 255 - ft_atoi(coords[2]));
 	scene->sp[i].rgb = create_rgb(ft_atoi(coords[0]),
 			ft_atoi(coords[1]), ft_atoi(coords[2]), ft_strjoin("sphere ", ft_itoa(i)));
 	set_i_t_sp(scene, i);
