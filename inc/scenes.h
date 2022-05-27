@@ -120,6 +120,7 @@ typedef struct s_scene
 	t_vect3d	origin;
 	t_vect3d	ori_dir;
 	t_ray_data	r;
+	int			checker[2];
 }				t_scene;
 
 enum	e_cy_cap

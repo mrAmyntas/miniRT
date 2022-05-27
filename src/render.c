@@ -118,6 +118,22 @@ void	calc_light_strength(t_scene *scene, t_vect3d Phit[2], int num[2])
 	scene->light[scene->i].strength *= check_shadows(x.ray, scene, x.t, Phit);
 }
 
+bool	uv_checkers(t_scene *scene, t_vect3d Phit, int num)
+{
+	double u;
+	double v;
+	t_vect3d N;
+	
+	N = normalize_vector(subtract_vectors(scene->origin, scene->sp[num].C));
+	printf("%f %f %f\n", N.x, N.y, N.z);
+	u = 1 - (atan2(Phit.x, Phit.z) / (2 * M_PI) + 0.5);
+	v = 1 - (acos(Phit.y / magnitude(multiply_vector(N, -1))) / M_PI);
+	if (!(((int)(u * scene->checker[1]) + (int)(v * scene->checker[0])) % 2))
+		return (false);
+	else
+		return (true);
+}
+
 // sets the ray from Phit to light
 // and returns the colour of the  pixel with the right lumination
 int	get_color(t_scene *scene, int num[2], double t, t_vect3d Phit[2])
@@ -128,15 +144,11 @@ int	get_color(t_scene *scene, int num[2], double t, t_vect3d Phit[2])
 		calc_light_strength(scene, Phit, num);
 		scene->i++;
 	}
-
-	// voor checkerboard in een sphere, maar is nog een beetje kijken hoe we het willen
-	if (num[0] == SPHERE && !((int)Phit[0].x / ((int)scene->sp[num[1]].size / 4) % 2) && !((int)Phit[0].y / ((int)scene->sp[num[1]].size / 4) % 2))
-		return(calculate_light(scene->sp[num[1]].lsh, scene));
-	
-	if (num[0] == SPHERE && ((int)Phit[0].x / ((int)scene->sp[num[1]].size / 4) % 2) && ((int)Phit[0].y / ((int)scene->sp[num[1]].size / 4) % 2))
-		return(calculate_light(scene->sp[num[1]].lsh, scene));
-	
-
+	if (num[0] == SPHERE)
+	{
+		if (!uv_checkers(scene, Phit[0], num[1]))
+			return (calculate_light(scene->sp[num[1]].lsh, scene));
+	}
 	if (num[0] == PLANE)
 		return (calculate_light(scene->pl[num[1]].hsl, scene));
 	else if (num[0] == SPHERE)
