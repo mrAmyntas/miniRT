@@ -5,9 +5,7 @@ bool	inside_object(t_scene *scene, t_vect3d *Phit, int *num)
 	double	angle;
 
 	angle = get_camray_angle(scene, Phit, num);
-	if (isnan(angle))
-		angle = 0;
-	if (angle > 90)
+	if (angle > 90 || isnan(angle))
 		return (true);
 	return (false);
 }
@@ -86,6 +84,7 @@ void	calc_light_strength(t_scene *scene, t_vect3d Phit[2], int num[2])
 {
 	t_variable	x;
 	int			num2[2];
+	t_vect3d	i_dir;
 
 	scene->light[scene->i].strength = 0;
 	x.ray.eye = scene->light[scene->i].ori;
@@ -93,10 +92,23 @@ void	calc_light_strength(t_scene *scene, t_vect3d Phit[2], int num[2])
 	x.t = find_closest_object(scene, &x.ray, num2, 0);
 	Phit[1] = add_vectors(x.ray.eye, multiply_vector(x.ray.dir, x.t));
 	x.angle = get_angle(scene, num, Phit[0], &x.N);
-	if ((inside_object(scene, Phit, num) && x.angle < 90) || (!inside_object(scene, Phit, num) && x.angle >= 90) || x.angle == -1)
+
+	
+
+	if ((inside_object(scene, Phit, num) && x.angle < 90.0) || (!inside_object(scene, Phit, num) && x.angle > 90.0) || x.angle == -1)
+	{
 		return ;
-	if (inside_object(scene, Phit, num) && x.angle > 90)
+	}
+	printf("1   ");
+	if (inside_object(scene, Phit, num))
+		printf("2   ");
+	if (inside_object(scene, Phit, num) && (x.angle > 90.0 || x.angle == -1))
+	{
+		printf("3   ");
+		x.N = multiply_vector(x.N, -1);
 		x.angle = 180 - x.angle;
+	}
+	printf("4   \n");
 	x.R = subtract_vectors(multiply_vector(x.N, 2
 				* dot_product(x.N, x.ray.dir)), x.ray.dir);
 	x.specular = pow(dot_product(multiply_vector(
@@ -160,6 +172,8 @@ void	set_pixel(t_data *data, t_scene *scene, int x, int y)
 		phit[0] = add_vectors(scene->ray_cam.eye,
 				multiply_vector(scene->ray_cam.dir, t));
 		color = get_color(scene, num, t, phit);
+		if (isnan(color))
+			color = 0xFFFFFFFF;
 		mlx_put_pixel(data->mlx_img, (data->width - x),
 			(data->height - y), color);
 	}
