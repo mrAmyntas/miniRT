@@ -78,7 +78,7 @@ double	get_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 	else if (num[0] == TORUS)
 		angle = get_tor_angle(scene, num, Phit, N);
 	if (isnan(angle))
-		return (0);
+		angle = -1;
 	return (angle);
 }
 
@@ -93,13 +93,10 @@ void	calc_light_strength(t_scene *scene, t_vect3d Phit[2], int num[2])
 	x.t = find_closest_object(scene, &x.ray, num2, 0);
 	Phit[1] = add_vectors(x.ray.eye, multiply_vector(x.ray.dir, x.t));
 	x.angle = get_angle(scene, num, Phit[0], &x.N);
-	if (inside_object(scene, Phit, num) && x.angle < 90.0)
+	if ((inside_object(scene, Phit, num) && x.angle < 90) || (!inside_object(scene, Phit, num) && x.angle >= 90) || x.angle == -1)
 		return ;
-	if (inside_object(scene, Phit, num) && (x.angle > 90.0 || comp_d(x.angle, 0)))
-	{
-		multiply_vector(x.N, -1);
+	if (inside_object(scene, Phit, num) && x.angle > 90)
 		x.angle = 180 - x.angle;
-	}
 	x.R = subtract_vectors(multiply_vector(x.N, 2
 				* dot_product(x.N, x.ray.dir)), x.ray.dir);
 	x.specular = pow(dot_product(multiply_vector(
