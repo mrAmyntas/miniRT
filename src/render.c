@@ -5,7 +5,9 @@ bool	inside_object(t_scene *scene, t_vect3d *Phit, int *num)
 	double	angle;
 
 	angle = get_camray_angle(scene, Phit, num);
-	if (angle > 90 || isnan(angle))
+	if (isnan(angle))
+		angle = 0;
+	if (angle > 90)
 		return (true);
 	return (false);
 }
