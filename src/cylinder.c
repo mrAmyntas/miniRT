@@ -72,12 +72,12 @@ double	find_caps(t_scene *scene, int *num, t_ray *ray, int cap, int x, int y)
 	t[1] = (dot_product(scene->ori_dir, tmp[1]))
 			/ (dot_product(scene->ori_dir, ray->dir));
 	tmp[0] = add_vectors(ray->eye, multiply_vector(ray->dir, t[0]));
-	tmp[0] = subtract_vectors(tmp[0], scene->ori_dir);
+	tmp[0] = subtract_vectors(tmp[0], scene->origin);
 	tmp[1] = add_vectors(ray->eye, multiply_vector(ray->dir, t[1]));
 	tmp[1] = subtract_vectors(tmp[1], P);
 	// if (x == 100 && y == 200 && cap == 1)
 	// 	printf("t0:%f   t1:%f    dot0:%f    dot1:%f    r^2:%f\n", t[0], t[1], dot_product(tmp[0], tmp[0]), dot_product(tmp[1], tmp[1]), scene->cy[*num].r * scene->cy[*num].r);
-	if ((t[0] > 0 && dot_product(tmp[0], tmp[0]) <= scene->cy[*num].r * scene->cy[*num].r + 1
+	if ((t[0] > 0 && dot_product(tmp[0], tmp[0]) <= scene->cy[*num].r * scene->cy[*num].r
 		&& (t[0] < t[1] || t[1] < 0 || (dot_product(tmp[1], tmp[1]) > scene->cy[*num].r * scene->cy[*num].r))))
 	{
 		if (cap == 1)
