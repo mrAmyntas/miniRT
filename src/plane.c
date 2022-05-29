@@ -61,7 +61,7 @@ double	find_smallest(t_scene *scene, double *t, int num, int amount)
 }
 
 //calculates t_value for each plane
-//38: checks if plane/ray are parallel
+//73: checks if plane/ray are parallel
 static void	calc_t(t_scene *scene, t_ray *ray, int *num, double *t)
 {
 	t_vect3d	tmp;

@@ -58,7 +58,7 @@ int    calculate_light(t_vect3d hsl, t_scene *scene)
         i++;
     }
     hsl.z = bright + scene->a_ratio + (hsl.z / 2); // zoiets???
-    printf("%f %f %f\n", hsl.z, bright, scene->a_ratio);
+    // printf("%f %f %f\n", hsl.z, bright, scene->a_ratio);
 	if (hsl.z > 1)
 		hsl.z = 1;
     return (hsl_to_rgb(hsl));

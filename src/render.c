@@ -55,7 +55,7 @@ int	check_shadows(t_ray ray, t_scene *scene, double t, t_vect3d Phit[2])
 		|| !compare_vectors(Phit[0], Phit[1]))
 		return (0);
 	t2 = find_closest_object(scene, &ray, num, 0, 0, 0);
-	if (comp_d(t, t2) && t2 > 0)
+	if (comp_d(t, t2) && t2 > 0.0)
 		return (0);
 	return (1);
 }
@@ -149,11 +149,11 @@ int	get_color(t_scene *scene, int num[2], double t, t_vect3d Phit[2])
 		calc_light_strength(scene, Phit, num);
 		scene->i++;
 	}
-	if (num[0] == SPHERE)
-	{
-		if (!checkers(scene, Phit[0], num[1]))
-			return (calculate_light(scene->sp[num[1]].lsh, scene));
-	}
+	// if (num[0] == SPHERE)
+	// {
+	// 	if (!checkers(scene, Phit[0], num[1]))
+	// 		return (calculate_light(scene->sp[num[1]].lsh, scene));
+	// }
 	if (num[0] == PLANE)
 		return (calculate_light(scene->pl[num[1]].hsl, scene));
 	else if (num[0] == SPHERE)
@@ -182,8 +182,7 @@ void	set_pixel(t_data *data, t_scene *scene, int x, int y)
 	t = find_closest_object(scene, &scene->ray_cam, num, 1, x, y);
 	if (t > 0)
 	{
-		phit[0] = add_vectors(scene->ray_cam.eye,
-				multiply_vector(scene->ray_cam.dir, t));
+		phit[0] = add_vectors(scene->ray_cam.eye, multiply_vector(scene->ray_cam.dir, t));
 		color = get_color(scene, num, t, phit);
 		if (isnan(color))
 			color = 0xFFFFFFFF;

@@ -9,24 +9,30 @@ bool	incr(int *num)
 int main(void)
 {
 
-	t_vect3d vec2 = {1, 1, 1};
-	t_vect3d vec1 = {0, 0, 0.1};
+	double a[2] = {10.0, 1.00};
+	double b = 2.5;
 
-	printf("%f %f %f\n", vec1.x, vec1.y, vec1.z);
+	double c = b * -4.*a[0];
+	printf("%f\n", c); 
 
-	vec1 = normalize_vector(vec1);
-	//vec2 = normalize_vector(vec2);
-	printf("%f %f %f\n", vec1.x, vec1.y, vec1.z);
+// 	t_vect3d vec2 = {1, 1, 1};
+// 	t_vect3d vec1 = {0, 0, 0.1};
 
-	double dot = dot_product(vec1, vec2);
-	double magf = magnitude(vec1) * magnitude(vec2);
+// 	printf("%f %f %f\n", vec1.x, vec1.y, vec1.z);
+
+// 	vec1 = normalize_vector(vec1);
+// 	//vec2 = normalize_vector(vec2);
+// 	printf("%f %f %f\n", vec1.x, vec1.y, vec1.z);
+
+// 	double dot = dot_product(vec1, vec2);
+// 	double magf = magnitude(vec1) * magnitude(vec2);
 
 
-//	double angle = acos(dot / magf);
-	double angle = acos(dot_product(vec1, vec2) / (magnitude(vec1) * magnitude(vec2)));
+// //	double angle = acos(dot / magf);
+// 	double angle = acos(dot_product(vec1, vec2) / (magnitude(vec1) * magnitude(vec2)));
 
-	printf(":%f\n", angle);
-	return 0;
+// 	printf(":%f\n", angle);
+// 	return 0;
 }
 
 //gcc test.c src/vectorstuff.c MLX42/libmlx42.a -lft -L ./libft -lglfw -L "/Users/bhoitzin/.brew/opt/glfw/lib/" -I./inc && ./a.out

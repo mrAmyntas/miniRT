@@ -63,13 +63,13 @@ double		get_camray_angle(t_scene *scene, t_vect3d *Phit, int *num);
 
 t_ray		get_ray(t_scene *scene, t_data *data, double x, double y);
 void		transform_ray(t_scene *scene, t_ray *ray, int *num, double z_m[2]);
+void		translate_ray(t_vect3d *eye, t_matrix44d I_T);
+void		rotate_ray(t_ray *ray, t_matrix44d I_R);
 
 // *** SPHERE STUFF *** \\
 
 int 		find_hit_sphere(t_scene *scene, t_ray *ray, int count, double *close_t);
 double		get_sp_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N);
-void		set_i_t_sp(t_scene *scene, int num);
-
 
 // *** PLANE STUFF *** \\
 
@@ -104,5 +104,7 @@ double		get_di_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N);
 
 double		find_hit_torus(t_scene *scene, t_ray *ray, int *num);
 double		get_tor_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N);
+void		set_i_r_tor(t_scene *scene, int num);
+void		set_i_t_tor(t_scene *scene, int num);
 
 #endif
