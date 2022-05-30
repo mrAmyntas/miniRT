@@ -73,7 +73,7 @@ double	get_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 		angle = get_cy_angle(scene, num, Phit, N);
 	else if (num[0] == DISC)
 		angle = get_di_angle(scene, num, Phit, N);
-	else if (num[0] == TORUS)
+	else if (num[0] == TORUS) //doesnt work
 		angle = get_tor_angle(scene, num, Phit, N);
 	if (isnan(angle))
 		angle = -1;
@@ -91,12 +91,8 @@ void	calc_light_strength(t_scene *scene, t_vect3d Phit[2], int num[2])
 	x.ray.dir = normalize_vector(subtract_vectors(Phit[0], x.ray.eye));
 	x.t = find_closest_object(scene, &x.ray, num2, 0, 0, 0);
 	Phit[1] = add_vectors(x.ray.eye, multiply_vector(x.ray.dir, x.t));
-	x.angle = get_angle(scene, num, Phit[0], &x.N);
-	// printf("a:%f   bool:%d\n", x.angle, inside_object(scene, Phit, num));
-	// if (x.angle > 90)
-	// 	printf("light is inside\n");
-	// if (inside_object(scene, Phit, num))
-	// 	printf("cam is inside\n");
+	// printf("0: %f %f %f\n1: %f %f %f\n\n", Phit[0].x, Phit[0].y, Phit[0].z, Phit[1].x, Phit[1].y, Phit[1].z);
+	x.angle = get_angle(scene, num, Phit[1], &x.N);
 	if ((inside_object(scene, Phit, num) && x.angle < 90.0 && x.angle != -1))
 		return ;
 	else if ((!inside_object(scene, Phit, num) && x.angle > 90.0) || (x.angle == -1 && !(inside_object(scene, Phit, num) && x.angle < 90.0)))

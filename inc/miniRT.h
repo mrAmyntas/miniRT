@@ -65,6 +65,7 @@ t_ray		get_ray(t_scene *scene, t_data *data, double x, double y);
 void		transform_ray(t_scene *scene, t_ray *ray, int *num, double z_m[2]);
 void		translate_ray(t_vect3d *eye, t_matrix44d I_T);
 void		rotate_ray(t_ray *ray, t_matrix44d I_R);
+void		rotate_normal(t_vect3d *N, t_matrix44d I_R);
 
 // *** SPHERE STUFF *** \\
 
@@ -106,5 +107,6 @@ double		find_hit_torus(t_scene *scene, t_ray *ray, int *num);
 double		get_tor_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N);
 void		set_i_r_tor(t_scene *scene, int num);
 void		set_i_t_tor(t_scene *scene, int num);
+void		set_r_tor(t_scene *scene, int num);
 
 #endif

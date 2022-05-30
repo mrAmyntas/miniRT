@@ -100,7 +100,7 @@ double	find_closest_cy(t_scene *scene, t_ray *ray, int *num, int cap, int x, int
 	t_vect3d	P;
 
 	P = scene->origin;
-	transform_ray(scene, ray, num, cy.z_m); // translation doesnt need matrix really
+	transform_ray(scene, ray, num, cy.z_m);
 	cy.ret = calc_t_0_1(scene, ray, num, cy.t);
 	if (isnan(cy.t[0]) && isnan(cy.t[1]))
 	{

@@ -30,6 +30,21 @@ void	rotate_ray(t_ray *ray, t_matrix44d I_R)
 	normalize_vector(ray->dir);
 }
 
+void	rotate_normal(t_vect3d *N, t_matrix44d I_R)
+{
+	t_vec4d	new_ray_dir;
+
+	new_ray_dir.x = N->x;
+	new_ray_dir.y = N->y;
+	new_ray_dir.z = N->z;
+	new_ray_dir.t = 0;
+	new_ray_dir = matrix44d_x_vert4d(I_R, new_ray_dir);
+	N->x = new_ray_dir.x;
+	N->y = new_ray_dir.y;
+	N->z = new_ray_dir.z;
+	normalize_vector(*N);
+}
+
 void	translate_ray(t_vect3d *eye, t_matrix44d I_T)
 {
 	t_vec4d	new_eye;

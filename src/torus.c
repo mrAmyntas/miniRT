@@ -1,5 +1,7 @@
 #include "../inc/miniRT.h"
 
+//0,0,1 torus direction weird (see long distance)
+//Phit calcs seem off, something with translation z value and direction being along z-axis
 typedef struct s_complex_num{
 	double	real;
 	double	img;
@@ -7,19 +9,19 @@ typedef struct s_complex_num{
 
 double	get_tor_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 {
-	N->x = 0;
-	N->y = 1;
-	N->z = 0;
-	return 45;
+
+	t_vect3d	tmp;
+	double		t;
+	double		angle;
+
+	N->x = scene->tor[num[1]].N.x;
+	N->y = scene->tor[num[1]].N.y;
+	N->z = scene->tor[num[1]].N.z;
+	tmp = normalize_vector(subtract_vectors(scene->light[scene->i].ori, Phit));
+	t = dot_product(*N, tmp);
+	angle = acos(t) / (M_PI / 180);
+	return (angle);
 }
-// div = ( xD4 + yD4 + zD4 + 2 xD2 yD2 + 2 xD2 zD2 + 2 yD2 zD2 ) 
-// t^4
-// + t^3 ( 4 xD3 xE + 4 yD3 yE + 4 zD3 zE + 4 xD2 yD yE + 4 xD2 zD zE + 4 xD xE yD2 + 4 yD2 zD zE + 4 xD xE zD2 + 4 yD yE zD2 ) / div
-// + t^2 ( - 2 R2 xD2 - 2 R2 yD2 + 2 R2 zD2 - 2 r2 xD2 - 2 r2 yD2 - 2 r2 zD2 + 6 xD2 xE2 + 2 xE2 yD2 + 8 xD xE yD yE + 2 xD2 yE2 + 6 yD2 yE2 + 2 xE2 zD2 + 2 yE2 zD2 + 8 xD xE zD zE + 8 yD yE zD zE + 2 xD2 zE2 + 2 yD2 zE2 + 6 zD2 zE2 ) / div
-// + t ( - 4 R2 xD xE - 4 R2 yD yE + 4 R2 zD zE - 4 r2 xD xE - 4 r2 yD yE - 4 r2 zD zE + 4 xD xE3 + 4 xE2 yD yE + 4 xD xE yE2 + 4 yD yE3 + 4 xE2 zD zE + 4 yE2 zD zE + 4 xD xE zE2 + 4 yD yE zE2 + 4 zD zE3 ) / div
-// + ( R4 - 2 R2 xE2 - 2 R2 yE2 + 2 R2 zE2 + r4 - 2 r2 R2 - 2 r2 xE2 - 2 r2 yE2 - 2 r2 zE2 + xE4 + yE4 + zE4 + 2 xE2 yE2 + 2 xE2 zE2 + 2 yE2 zE2 ) / div = 0
-
-
 
 static void	set_values(t_scene *scene, t_ray *ray, int *num, t_quatric *val)
 {
@@ -107,7 +109,7 @@ static int	solve_cubic(double *x, double a, double b, double c)
 		x[0] = (A + B) - a;
 		x[1] = -0.5 * (A + B) - a;
 		x[2] = 0.5 * sqrt(3.0) * (A - B);
-		if (fabs(x[2]) < 0.000001)
+		if (fabs(x[2]) < 0.0000001)
 		{
 			x[2] = x[1];
 			return (2);
@@ -149,12 +151,12 @@ static int	calc_t(t_scene *scene, t_ray *ray, int *num, double *t)
 	}
 
 	D = y * y - 4 * a[4];
-	if (fabs(D) < 0.000001)
+	if (fabs(D) < 0.0000001)
 	{
 		q1 = y * 0.5;
 		q2 = q1;
 		D = a[1] * a[1] - 4 * (a[2] - y);
-		if (fabs(D) < 0.000001)
+		if (fabs(D) < 0.0000001)
 		{
 			p1 = a[1] * 0.5;
 			p2 = p1;
@@ -211,18 +213,11 @@ static int	calc_t(t_scene *scene, t_ray *ray, int *num, double *t)
 	return 0;
 }
 
-
-
-void	transform_tor_ray(t_scene *scene, t_ray *ray, int *num)
-{
-//	translate_ray(&ray->eye, scene->tor[*num].I_T);
-//	rotate_ray(ray, scene->tor[*num].I_R);
-}
-
 static double	find_closest_tor(t_scene *scene, t_ray *ray, int *num)
 {
 	t_tor_data	tor;
 	double		t[4] = {-1, -1, -1, -1};
+	double		ret;
 
 	translate_ray(&ray->eye, scene->tor[*num].I_T);
 	rotate_ray(ray, scene->tor[*num].I_R);
@@ -230,7 +225,27 @@ static double	find_closest_tor(t_scene *scene, t_ray *ray, int *num)
 		return (-1);
 	// if (t[0] > 0 || t[1] > 0 || t[2] > 0 || t[3] > 0)
 	// 	printf("t:%f %f %f %f\n", t[0], t[1], t[2], t[3]);
-	return (find_smallest(scene, t, 1, 4));
+	ret = find_smallest(scene, t, 1, 4);
+	if (ret < 0.0)
+		return -1;
+
+	//calc_normal
+	t_vect3d 	centre_to_phit;
+	t_vect3d	Phit;
+	t_vect3d	centre_to_middle_of_tube;
+	t_vect3d 	middle_of_tube;
+	t_ray		tmp;
+
+	Phit = add_vectors(ray->eye, multiply_vector(ray->dir, ret));
+	centre_to_phit = normalize_vector(subtract_vectors(Phit, scene->tor[*num].coord));
+	centre_to_middle_of_tube.x = centre_to_phit.x;
+	centre_to_middle_of_tube.y = centre_to_phit.y;
+	centre_to_middle_of_tube.z = 0;
+	middle_of_tube = add_vectors(scene->tor[*num].coord, multiply_vector(centre_to_middle_of_tube, scene->tor[*num].R_cir));
+	scene->tor[*num].N = normalize_vector(subtract_vectors(Phit, middle_of_tube));
+	// ROTATE THE NORMAL BACK !!!!
+	rotate_normal(&scene->tor[*num].N, scene->tor[*num].R);
+	return (ret);
 }
 
 double	find_hit_torus(t_scene *scene, t_ray *ray, int *num)
