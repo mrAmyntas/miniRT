@@ -1,5 +1,6 @@
 #include "../inc/miniRT.h"
 
+#define eps 0.0000001
 //0,0,1 torus direction weird (see long distance)
 //Phit calcs seem off, something with translation z value and direction being along z-axis
 typedef struct s_complex_num{
@@ -11,8 +12,8 @@ double	get_tor_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 {
 
 	t_vect3d	tmp;
-	double		t;
-	double		angle;
+	long double		t;
+	long double		angle;
 
 	N->x = scene->tor[num[1]].N.x;
 	N->y = scene->tor[num[1]].N.y;
@@ -43,7 +44,7 @@ static void	set_values(t_scene *scene, t_ray *ray, int *num, t_quatric *val)
 
 //if a[0] is 0, there is no directional vector so cant calculate
 //anything meaningfull.
-static int	get_a(t_scene *scene, t_ray *ray, double *a, int *num)
+static int	get_a(t_scene *scene, t_ray *ray, long double *a, int *num)
 {
 	t_quatric	val;
 
@@ -65,15 +66,15 @@ static int	get_a(t_scene *scene, t_ray *ray, double *a, int *num)
 	return (0);
 }
 
-static int	solve_cubic(double *x, double a, double b, double c)
+static int	solve_cubic(long double *x, long double a, long double b, long double c)
 {
-	double	a2;
-	double	q;
-	double	r;
-	double	r2;
-	double	q3;
-	double	A;
-	double	B;
+	long double	a2;
+	long double	q;
+	long double	r;
+	long double	r2;
+	long double	q3;
+	long double	A;
+	long double	B;
 
 	a2 = a * a;
 	q = (a2 - 3 * b) / 9;
@@ -98,7 +99,7 @@ static int	solve_cubic(double *x, double a, double b, double c)
 	}
 	else
 	{
-		A = -1.0 * pow(fabs(r) + sqrt(r2 - q3), 1.0 / 3);
+		A = -1.0 * pow(fabsl(r) + sqrt(r2 - q3), 1.0 / 3);
 		if (r < 0)
 			A = -A;
 		if (comp_d(A, 0) == true)
@@ -109,7 +110,7 @@ static int	solve_cubic(double *x, double a, double b, double c)
 		x[0] = (A + B) - a;
 		x[1] = -0.5 * (A + B) - a;
 		x[2] = 0.5 * sqrt(3.0) * (A - B);
-		if (fabs(x[2]) < 0.0000001)
+		if (fabsl(x[2]) < eps)
 		{
 			x[2] = x[1];
 			return (2);
@@ -121,10 +122,10 @@ static int	solve_cubic(double *x, double a, double b, double c)
 //a[0] * t^4 + a[1] * t^3 + a[2] * t^2 + a[3] * t + a[4]
 static int	calc_t(t_scene *scene, t_ray *ray, int *num, double *t)
 {
-	double	a[5];
-	double	b[3];
-	double	x[3];
-	unsigned int ret;
+	long double	a[5];
+	long double	b[3];
+	long double	x[3];
+	long unsigned int ret;
 	t_complex_num complex_num[4];
 
 	if (get_a(scene, ray, a, num) == -1)
@@ -139,24 +140,24 @@ static int	calc_t(t_scene *scene, t_ray *ray, int *num, double *t)
 	b[2] = -a[1] * a[1] * a[4] - a[3] * a[3] + 4.0 * a[2] * a[4];
 	ret = solve_cubic(x, b[0], b[1], b[2]);
 
-	double q1, q2, p1, p2, D, sqD, y;
+	long double q1, q2, p1, p2, D, sqD, y;
 
 	y = x[0];
 	if (ret != 1)
 	{
-		if (fabs(x[1]) > fabs(y))
+		if (fabsl(x[1]) > fabsl(y))
 			y = x[1];
-		if (fabs(x[2]) > fabs(y))
+		if (fabsl(x[2]) > fabsl(y))
 			y = x[2];
 	}
 
 	D = y * y - 4 * a[4];
-	if (fabs(D) < 0.0000001)
+	if (fabsl(D) < eps)
 	{
 		q1 = y * 0.5;
 		q2 = q1;
 		D = a[1] * a[1] - 4 * (a[2] - y);
-		if (fabs(D) < 0.0000001)
+		if (fabsl(D) < eps)
 		{
 			p1 = a[1] * 0.5;
 			p2 = p1;
@@ -213,12 +214,21 @@ static int	calc_t(t_scene *scene, t_ray *ray, int *num, double *t)
 	return 0;
 }
 
-static double	find_closest_tor(t_scene *scene, t_ray *ray, int *num)
+static double	find_closest_tor(t_scene *scene, t_ray *ray, int *num, int set_N)
 {
 	t_tor_data	tor;
 	double		t[4] = {-1, -1, -1, -1};
-	double		ret;
+	int			ret;
+	t_ray		ori_ray;
 
+	ori_ray.dir.x = ray->dir.x;
+	ori_ray.dir.y = ray->dir.y;
+	ori_ray.dir.z = ray->dir.z;
+	ori_ray.eye.x = ray->eye.x;
+	ori_ray.eye.y = ray->eye.y;
+	ori_ray.eye.z = ray->eye.z;
+
+	// printf("ray:%f %f %f %f %f %f ori:%f %f %f %f %f %f\n", ray->eye.x, ray->eye.y, ray->eye.z, ray->dir.x, ray->dir.y, ray->dir.z, ori_ray->eye.x, ori_ray->eye.y, ori_ray->eye.z, ray->dir.x, ray->dir.y, ray->dir.z);
 	translate_ray(&ray->eye, scene->tor[*num].I_T);
 	rotate_ray(ray, scene->tor[*num].I_R);
 	if (calc_t(scene, ray, num, t) == -1)
@@ -226,29 +236,32 @@ static double	find_closest_tor(t_scene *scene, t_ray *ray, int *num)
 	// if (t[0] > 0 || t[1] > 0 || t[2] > 0 || t[3] > 0)
 	// 	printf("t:%f %f %f %f\n", t[0], t[1], t[2], t[3]);
 	ret = find_smallest(scene, t, 1, 4);
-	if (ret < 0.0)
+	if (ret < 0)
 		return -1;
+	if (set_N == 1)
+	{
+		//calc_normal
+		t_vect3d 	centre_to_phit;
+		t_vect3d	Phit;
+		t_vect3d	centre_to_middle_of_tube;
+		t_vect3d 	middle_of_tube;
+		t_ray		tmp;
 
-	//calc_normal
-	t_vect3d 	centre_to_phit;
-	t_vect3d	Phit;
-	t_vect3d	centre_to_middle_of_tube;
-	t_vect3d 	middle_of_tube;
-	t_ray		tmp;
-
-	Phit = add_vectors(ray->eye, multiply_vector(ray->dir, ret));
-	centre_to_phit = normalize_vector(subtract_vectors(Phit, scene->tor[*num].coord));
-	centre_to_middle_of_tube.x = centre_to_phit.x;
-	centre_to_middle_of_tube.y = centre_to_phit.y;
-	centre_to_middle_of_tube.z = 0;
-	middle_of_tube = add_vectors(scene->tor[*num].coord, multiply_vector(centre_to_middle_of_tube, scene->tor[*num].R_cir));
-	scene->tor[*num].N = normalize_vector(subtract_vectors(Phit, middle_of_tube));
-	// ROTATE THE NORMAL BACK !!!!
-	rotate_normal(&scene->tor[*num].N, scene->tor[*num].R);
-	return (ret);
+		Phit = add_vectors(ray->eye, multiply_vector(ray->dir, t[ret]));
+		centre_to_phit = normalize_vector(subtract_vectors(Phit, scene->origin));
+		centre_to_middle_of_tube.x = centre_to_phit.x;
+		centre_to_middle_of_tube.y = centre_to_phit.y;
+		centre_to_middle_of_tube.z = 0;
+		middle_of_tube = add_vectors(scene->origin, multiply_vector(centre_to_middle_of_tube, scene->tor[*num].R_cir));
+		scene->tor[*num].N = normalize_vector(subtract_vectors(Phit, middle_of_tube));
+		// ROTATE THE NORMAL BACK !!!!
+		rotate_normal(&scene->tor[*num].N, scene->tor[*num].R);
+		scene->tor[*num].N = normalize_vector(scene->tor[*num].N);
+	}
+	return (t[ret]);
 }
 
-double	find_hit_torus(t_scene *scene, t_ray *ray, int *num)
+double	find_hit_torus(t_scene *scene, t_ray *ray, int *num, int set_N)
 {
 	double	*t;
 	t_ray	new_ray;
@@ -259,7 +272,7 @@ double	find_hit_torus(t_scene *scene, t_ray *ray, int *num)
 	while (*num < scene->amount[TORUS])
 	{
 		new_ray = *ray;
-		t[*num] = find_closest_tor(scene, &new_ray, num);
+		t[*num] = find_closest_tor(scene, &new_ray, num, set_N);
 		*num = *num + 1;
 	}
 	*num = find_smallest(scene, t, *num, scene->amount[TORUS]);

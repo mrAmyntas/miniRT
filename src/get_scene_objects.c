@@ -165,14 +165,14 @@ void	read_tor2(t_scene *scene, char **line, int i, char **coords)
 	scene->tor[i].dir.z = ft_atod(coords[2]);
 	if (fabs(scene->tor[i].dir.x) < 0.00001 && fabs(scene->tor[i].dir.y) < 0.00001 && fabs(scene->tor[i].dir.z) > 0.999999)
 	{
-		if (scene->tor[i].dir.y < 0.0)
-			scene->tor[i].dir.y = scene->tor[i].dir.y - 0.000001;
-		else
-			scene->tor[i].dir.y = scene->tor[i].dir.y + 0.000001;
-		if (scene->tor[i].dir.x < 0.0)
-			scene->tor[i].dir.x = scene->tor[i].dir.x - 0.000001;
-		else
-			scene->tor[i].dir.x = scene->tor[i].dir.x + 0.000001;
+		// if (scene->tor[i].dir.y < 0.0)
+		// 	scene->tor[i].dir.y = scene->tor[i].dir.y - 0.000001;
+		// else
+		// scene->tor[i].dir.y = scene->tor[i].dir.y + 0.000001;
+		// if (scene->tor[i].dir.x < 0.0)
+		// 	scene->tor[i].dir.x = scene->tor[i].dir.x - 0.000001;
+		// else
+		scene->tor[i].dir.x = scene->tor[i].dir.x + 0.000001;
 	}
 	if (scene->tor[i].dir.x < -1 || scene->tor[i].dir.x > 1
 		|| scene->tor[i].dir.y < -1 || scene->tor[i].dir.y > 1

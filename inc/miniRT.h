@@ -56,7 +56,7 @@ char		*get_next_line(int fd);
 void		hook(void *param);
 void		read_scene(t_scene *scene, char *name);
 void		loop_pixels(t_data *data, t_scene *scene);
-double		find_smallest(t_scene *scene, double *t, int num, int amount);
+int			find_smallest(t_scene *scene, double *t, int num, int amount);
 double		get_camray_angle(t_scene *scene, t_vect3d *Phit, int *num);
 
 // *** RAY STUFF *** \\
@@ -103,7 +103,7 @@ double		get_di_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N);
 
 // *** TORUS STUFF *** \\\
 
-double		find_hit_torus(t_scene *scene, t_ray *ray, int *num);
+double		find_hit_torus(t_scene *scene, t_ray *ray, int *num, int set_N);
 double		get_tor_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N);
 void		set_i_r_tor(t_scene *scene, int num);
 void		set_i_t_tor(t_scene *scene, int num);
