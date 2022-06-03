@@ -44,6 +44,7 @@ typedef struct s_pl
 	t_vect3d	coord;
     int			rgb;
 	t_vect3d	hsl;
+	t_vect3d	lsh;
 }				t_pl;
 
 typedef struct s_di

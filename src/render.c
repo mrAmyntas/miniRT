@@ -100,9 +100,7 @@ void	calc_light_strength(t_scene *scene, t_vect3d Phit[2], int num[2])
 	if ((inside_object(scene, Phit, num) && x.angle < 90.0 && x.angle != -1))
 		return ;
 	else if ((!inside_object(scene, Phit, num) && x.angle > 90.0) || (x.angle == -1 && !(inside_object(scene, Phit, num) && x.angle < 90.0)))
-	{
 		return ;
-	}
 	if (inside_object(scene, Phit, num) && (x.angle > 90.0 || x.angle == -1))
 	{
 		x.N = multiply_vector(x.N, -1);
@@ -153,6 +151,11 @@ int	get_color(t_scene *scene, int num[2], double t, t_vect3d Phit[2])
 	{
 		if (!checkers(scene, Phit[0], num[1]))
 			return (calculate_light(scene->sp[num[1]].lsh, scene));
+	}
+	if (num[0] == PLANE)
+	{
+		if (!(((((int)Phit[0].x % 1) * scene->checker[1]) + ((1 - ((int)Phit[0].z % 1)) * scene->checker[0])) % 2))
+			return (calculate_light(scene->pl[num[1]].lsh, scene));
 	}
 	if (num[0] == PLANE)
 		return (calculate_light(scene->pl[num[1]].hsl, scene));
