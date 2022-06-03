@@ -132,6 +132,8 @@ int	set_scene(t_scene *scene, char *name)
 	scene->amount[1] = 0;
 	scene->amount[2] = 0;
 	scene->amount[3] = 0;
+	scene->amount[4] = 0;
+	scene->amount[5] = 0;
 	scene->origin.x = 0;
 	scene->origin.y = 0;
 	scene->origin.z = 0;

@@ -35,8 +35,8 @@ double	get_pl_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 	return (angle);
 }
 
-//finds smallest non-negative t_value
-double	find_smallest(t_scene *scene, double *t, int num, int amount)
+//finds smallest non-negative t-value and returns which t_value this is
+int	find_smallest(t_scene *scene, double *t, int num, int amount)
 {
 	int	i;
 	int	j;
@@ -61,7 +61,7 @@ double	find_smallest(t_scene *scene, double *t, int num, int amount)
 }
 
 //calculates t_value for each plane
-//38: checks if plane/ray are parallel
+//73: checks if plane/ray are parallel
 static void	calc_t(t_scene *scene, t_ray *ray, int *num, double *t)
 {
 	t_vect3d	tmp;

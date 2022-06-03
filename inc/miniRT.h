@@ -56,20 +56,21 @@ char		*get_next_line(int fd);
 void		hook(void *param);
 void		read_scene(t_scene *scene, char *name);
 void		loop_pixels(t_data *data, t_scene *scene);
-double		find_smallest(t_scene *scene, double *t, int num, int amount);
+int			find_smallest(t_scene *scene, double *t, int num, int amount);
 double		get_camray_angle(t_scene *scene, t_vect3d *Phit, int *num);
 
 // *** RAY STUFF *** \\
 
 t_ray		get_ray(t_scene *scene, t_data *data, double x, double y);
 void		transform_ray(t_scene *scene, t_ray *ray, int *num, double z_m[2]);
+void		translate_ray(t_vect3d *eye, t_matrix44d I_T);
+void		rotate_ray(t_ray *ray, t_matrix44d I_R);
+void		rotate_normal(t_vect3d *N, t_matrix44d I_R);
 
 // *** SPHERE STUFF *** \\
 
 int 		find_hit_sphere(t_scene *scene, t_ray *ray, int count, double *close_t);
 double		get_sp_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N);
-void		set_i_t_sp(t_scene *scene, int num);
-
 
 // *** PLANE STUFF *** \\
 
@@ -102,7 +103,10 @@ double		get_di_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N);
 
 // *** TORUS STUFF *** \\\
 
-double		find_hit_torus(t_scene *scene, t_ray *ray, int *num);
+double		find_hit_torus(t_scene *scene, t_ray *ray, int *num, int set_N);
 double		get_tor_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N);
+void		set_i_r_tor(t_scene *scene, int num);
+void		set_i_t_tor(t_scene *scene, int num);
+void		set_r_tor(t_scene *scene, int num);
 
 #endif

@@ -32,7 +32,7 @@ double	find_closest_object(t_scene *scene, t_ray *ray, int num[2], int cap, int 
 	t[1] = find_hit_cy(scene, ray, &numb[1], cap, x, y);
 	numb[2] = find_hit_sphere(scene, ray, scene->amount[SPHERE], &t[2]);
 	t[3] = find_hit_disc(scene, ray, &numb[3]);
-	t[4] = find_hit_torus(scene, ray, &numb[4]);
+	t[4] = find_hit_torus(scene, ray, &numb[4], cap);
 	i = find_smallest(scene, t, 1, 5);
 	if (i != -1)
 	{
@@ -53,9 +53,11 @@ int	check_shadows(t_ray ray, t_scene *scene, double t, t_vect3d Phit[2])
 
 	if (!check_if_plane_between_cam_and_light(scene, Phit)
 		|| !compare_vectors(Phit[0], Phit[1]))
+	{
 		return (0);
+	}
 	t2 = find_closest_object(scene, &ray, num, 0, 0, 0);
-	if (comp_d(t, t2) && t2 > 0)
+	if (comp_d(t, t2) && t2 > 0.0)
 		return (0);
 	return (1);
 }
@@ -91,16 +93,19 @@ void	calc_light_strength(t_scene *scene, t_vect3d Phit[2], int num[2])
 	x.ray.dir = normalize_vector(subtract_vectors(Phit[0], x.ray.eye));
 	x.t = find_closest_object(scene, &x.ray, num2, 0, 0, 0);
 	Phit[1] = add_vectors(x.ray.eye, multiply_vector(x.ray.dir, x.t));
-	x.angle = get_angle(scene, num, Phit[0], &x.N);
-	// printf("a:%f   bool:%d\n", x.angle, inside_object(scene, Phit, num));
-	// if (x.angle > 90)
-	// 	printf("light is inside\n");
-	// if (inside_object(scene, Phit, num))
-	// 	printf("cam is inside\n");
+	// printf("0: %f %f %f\n1: %f %f %f\n\n", Phit[0].x, Phit[0].y, Phit[0].z, Phit[1].x, Phit[1].y, Phit[1].z);
+	x.angle = get_angle(scene, num, Phit[1], &x.N);
+	// printf("inside:%i     angle:%f\n\n", inside_object(scene, Phit, num), x.angle);
 	if ((inside_object(scene, Phit, num) && x.angle < 90.0 && x.angle != -1))
+	{
+		// printf("hier!\n");
 		return ;
+	}
 	else if ((!inside_object(scene, Phit, num) && x.angle > 90.0) || (x.angle == -1 && !(inside_object(scene, Phit, num) && x.angle < 90.0)))
+	{
+		// printf(" hero\n");
 		return ;
+	}
 	if (inside_object(scene, Phit, num) && (x.angle > 90.0 || x.angle == -1))
 	{
 		x.N = multiply_vector(x.N, -1);
@@ -147,11 +152,11 @@ int	get_color(t_scene *scene, int num[2], double t, t_vect3d Phit[2])
 		calc_light_strength(scene, Phit, num);
 		scene->i++;
 	}
-	if (num[0] == SPHERE)
-	{
-		if (!checkers(scene, Phit[0], num[1]))
-			return (calculate_light(scene->sp[num[1]].lsh, scene));
-	}
+	// if (num[0] == SPHERE)
+	// {
+	// 	if (!checkers(scene, Phit[0], num[1]))
+	// 		return (calculate_light(scene->sp[num[1]].lsh, scene));
+	// }
 	if (num[0] == PLANE)
 	{
 		if (!(((((int)Phit[0].x % 1) * scene->checker[1]) + ((1 - ((int)Phit[0].z % 1)) * scene->checker[0])) % 2))
@@ -185,8 +190,7 @@ void	set_pixel(t_data *data, t_scene *scene, int x, int y)
 	t = find_closest_object(scene, &scene->ray_cam, num, 1, x, y);
 	if (t > 0)
 	{
-		phit[0] = add_vectors(scene->ray_cam.eye,
-				multiply_vector(scene->ray_cam.dir, t));
+		phit[0] = add_vectors(scene->ray_cam.eye, multiply_vector(scene->ray_cam.dir, t));
 		color = get_color(scene, num, t, phit);
 		if (isnan(color))
 			color = 0xFFFFFFFF;

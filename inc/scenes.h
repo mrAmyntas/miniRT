@@ -36,6 +36,8 @@ typedef struct s_tor
 	t_vect3d	hsl;
 	t_matrix44d	I_T;
 	t_matrix44d	I_R;
+	t_matrix44d	R;
+	t_vect3d	N;
 }				t_tor;
 
 typedef struct s_pl

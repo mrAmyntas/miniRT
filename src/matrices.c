@@ -37,25 +37,25 @@ void	set_i_t(t_scene *scene, int num)
 	scene->cy[num].I_T.row4.t = 1;
 }
 
-//inverted translation matrix for sphere stuff
-void	set_i_t_sp(t_scene *scene, int num)
+//inverted translation matrix for torus stuff optimize with 1 funct, not one per object
+void	set_i_t_tor(t_scene *scene, int num)
 {
-	scene->sp[num].I_T.row1.x = 1;
-	scene->sp[num].I_T.row1.y = 0;
-	scene->sp[num].I_T.row1.z = 0;
-	scene->sp[num].I_T.row1.t = 0 - scene->sp[num].C.x;
-	scene->sp[num].I_T.row2.x = 0;
-	scene->sp[num].I_T.row2.y = 1;
-	scene->sp[num].I_T.row2.z = 0;
-	scene->sp[num].I_T.row2.t = 0 - scene->sp[num].C.y;
-	scene->sp[num].I_T.row3.x = 0;
-	scene->sp[num].I_T.row3.y = 0;
-	scene->sp[num].I_T.row3.z = 1;
-	scene->sp[num].I_T.row3.t = 0 - scene->sp[num].C.z;
-	scene->sp[num].I_T.row4.x = 0;
-	scene->sp[num].I_T.row4.y = 0;
-	scene->sp[num].I_T.row4.z = 0;
-	scene->sp[num].I_T.row4.t = 1;
+	scene->tor[num].I_T.row1.x = 1;
+	scene->tor[num].I_T.row1.y = 0;
+	scene->tor[num].I_T.row1.z = 0;
+	scene->tor[num].I_T.row1.t = scene->tor[num].coord.x * -1;
+	scene->tor[num].I_T.row2.x = 0;
+	scene->tor[num].I_T.row2.y = 1;
+	scene->tor[num].I_T.row2.z = 0;
+	scene->tor[num].I_T.row2.t = scene->tor[num].coord.y * -1;
+	scene->tor[num].I_T.row3.x = 0;
+	scene->tor[num].I_T.row3.y = 0;
+	scene->tor[num].I_T.row3.z = 1;
+	scene->tor[num].I_T.row3.t = scene->tor[num].coord.z * -1;
+	scene->tor[num].I_T.row4.x = 0;
+	scene->tor[num].I_T.row4.y = 0;
+	scene->tor[num].I_T.row4.z = 0;
+	scene->tor[num].I_T.row4.t = 1;
 }
 
 
@@ -104,6 +104,45 @@ void	set_i_r(t_scene *scene, int num)
 	a = acos(dot_product(o, dir));
 	axis = normalize_vector(cross_product(o, dir));
 	set_i_r_val(a, axis, &scene->cy[num].I_R);
+}
+
+
+void	set_i_r_tor(t_scene *scene, int num)
+{
+	t_vect3d	axis;
+	t_vect3d	dir;
+	t_vect3d	o;
+	double		a;
+
+	o.x = 0;
+	o.y = 0;
+	o.z = 1;
+	dir.x = scene->tor[num].dir.x * -1;
+	dir.y = scene->tor[num].dir.y * -1;
+	dir.z = scene->tor[num].dir.z;
+	a = acos(dot_product(o, dir));
+	axis = normalize_vector(cross_product(o, dir));
+	set_i_r_val(a, axis, &scene->tor[num].I_R);
+}
+
+void	set_r_tor(t_scene *scene, int num)
+{
+	scene->tor[num].R.row1.x = scene->tor[num].I_R.row1.x;
+	scene->tor[num].R.row1.y = scene->tor[num].I_R.row2.x;
+	scene->tor[num].R.row1.z = scene->tor[num].I_R.row3.x;
+	scene->tor[num].R.row1.t = scene->tor[num].I_R.row4.x;
+	scene->tor[num].R.row2.x = scene->tor[num].I_R.row1.y;
+	scene->tor[num].R.row2.y = scene->tor[num].I_R.row2.y;
+	scene->tor[num].R.row2.z = scene->tor[num].I_R.row3.y;
+	scene->tor[num].R.row2.t = scene->tor[num].I_R.row4.y;
+	scene->tor[num].R.row3.x = scene->tor[num].I_R.row1.z;
+	scene->tor[num].R.row3.y = scene->tor[num].I_R.row2.z;
+	scene->tor[num].R.row3.z = scene->tor[num].I_R.row3.z;
+	scene->tor[num].R.row3.t = scene->tor[num].I_R.row4.z;
+	scene->tor[num].R.row4.x = scene->tor[num].I_R.row1.t;
+	scene->tor[num].R.row4.y = scene->tor[num].I_R.row2.t;
+	scene->tor[num].R.row4.z = scene->tor[num].I_R.row3.t;
+	scene->tor[num].R.row4.t = scene->tor[num].I_R.row4.t;
 }
 
 void	printf_matrix44d(t_matrix44d m)
