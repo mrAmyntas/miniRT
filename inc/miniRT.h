@@ -31,23 +31,23 @@ typedef struct	s_variable
 	t_ray		ray;
 }				t_variable;
 
-typedef struct	s_quatric
+typedef struct s_quatric
 {
-	double	Rsq;
-	double	rsq;
-	double	xD;
-	double	yD;
-	double	zD;
-	double	xE;
-	double	yE;
-	double	zE;
-	double	xD2;
-	double	yD2;
-	double	zD2;
-	double	xE2;
-	double	yE2;
-	double	zE2;
-}				t_quatric;
+	double	r_c2;
+	double	r_t2;
+	double	xd;
+	double	yd;
+	double	zd;
+	double	xe;
+	double	ye;
+	double	ze;
+	double	xd2;
+	double	yd2;
+	double	zd2;
+	double	xe2;
+	double	ye2;
+	double	ze2;
+}			t_quatric;
 
 
 // *** UTILS *** \\
@@ -88,13 +88,13 @@ int    		calculate_light(t_vect3d hsl, t_scene *scene);
 
 // *** CYLINDER STUFF *** \\\
 
-double		find_hit_cy(t_scene *scene, t_ray *ray, int *num, int cap, int x, int y);
+double		find_hit_cy(t_scene *scene, t_ray *ray, int *num, int cap);
 double		calc_t_0_1(t_scene *scene, t_ray *ray, int *num, double t[4]);
 double		find_intersect(t_ray *ray, t_cy_data cy, int *num, int cap);
-double		find_intersect_cap(t_ray *ray, t_cy_data cy, int *num, int cap);
 bool		t_closest(double t1, double t2, double z_m[2], double z);
 double		get_cy_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N);
 bool		inside_cylinder(t_scene *scene);
+double		find_caps(t_scene *scene, int *num, t_ray *ray, int cap);
 
 // *** DISC STUFF *** \\\
 
@@ -105,8 +105,7 @@ double		get_di_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N);
 
 double		find_hit_torus(t_scene *scene, t_ray *ray, int *num, int set_N);
 double		get_tor_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N);
-void		set_i_r_tor(t_scene *scene, int num);
-void		set_i_t_tor(t_scene *scene, int num);
 void		set_r_tor(t_scene *scene, int num);
+int			get_a(t_scene *scene, t_ray *ray, long double *a, int *num);
 
 #endif

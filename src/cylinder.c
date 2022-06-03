@@ -1,6 +1,7 @@
 #include "../inc/miniRT.h"
 
-static double	get_cy_angle_side(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
+static double	get_cy_angle_side(t_scene *scene, int num[2],
+		t_vect3d Phit, t_vect3d *N)
 {
 	double		t;
 	double		angle;
@@ -9,8 +10,9 @@ static double	get_cy_angle_side(t_scene *scene, int num[2], t_vect3d Phit, t_vec
 	t = magnitude(subtract_vectors(Phit, scene->cy[num[1]].eye));
 	t = fabs((t * t) - (scene->cy[num[1]].r * scene->cy[num[1]].r));
 	t = sqrt(t);
-   	tmp = add_vectors(scene->cy[num[1]].eye, multiply_vector(scene->cy[num[1]].dir, t));
-   	*N = normalize_vector(subtract_vectors(Phit, tmp));
+	tmp = add_vectors(scene->cy[num[1]].eye,
+			multiply_vector(scene->cy[num[1]].dir, t));
+	*N = normalize_vector(subtract_vectors(Phit, tmp));
 	tmp = normalize_vector(subtract_vectors(scene->light[scene->i].ori, Phit));
 	t = dot_product(*N, tmp);
 	angle = acos(t) / (M_PI / 180);
@@ -27,16 +29,11 @@ double	get_cy_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 	if (scene->cy[num[1]].cap != NOT)
 	{
 		if (scene->cy[num[1]].cap == BOT)
-		{
-			// printf("BOT\n");
 			*N = multiply_vector(scene->cy[num[1]].dir, -1);
-		}
 		else
-		{
-			// printf("TOP\n");
 			*N = scene->cy[num[1]].dir;
-		}
-		tmp = normalize_vector(subtract_vectors(scene->light[scene->i].ori, Phit));
+		tmp = normalize_vector(subtract_vectors(
+					scene->light[scene->i].ori, Phit));
 		angle = acos(dot_product(*N, tmp)) / (M_PI / 180);
 	}
 	else
@@ -47,92 +44,44 @@ double	get_cy_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 static void	calc_t_val(t_scene *scene, t_ray *ray, t_vect3d *tmp, double *t)
 {
 	t[0] = (dot_product(scene->ori_dir, tmp[0]))
-			/ (dot_product(scene->ori_dir, ray->dir));
+		/ (dot_product(scene->ori_dir, ray->dir));
 	t[1] = (dot_product(scene->ori_dir, tmp[1]))
-			/ (dot_product(scene->ori_dir, ray->dir));
+		/ (dot_product(scene->ori_dir, ray->dir));
 }
 
-//calculates if ray hits the cap (basically a disc)
-//this would be missed if ray doesnt hit sides within
-//valid z ranges
-double	find_caps(t_scene *scene, int *num, t_ray *ray, int cap, int x, int y)
-{
-	t_vect3d	tmp[2];
-	double		t[2];
-	t_vect3d	P;
-
-	P = scene->origin;
-	if (dot_product(scene->ori_dir, ray->dir) == 0)
-		return (-1);
-	tmp[0] = subtract_vectors(P, ray->eye);
-	P.z = scene->cy[*num].height;
-	tmp[1] = subtract_vectors(P, ray->eye);
-	t[0] = (dot_product(scene->ori_dir, tmp[0]))
-			/ (dot_product(scene->ori_dir, ray->dir));
-	t[1] = (dot_product(scene->ori_dir, tmp[1]))
-			/ (dot_product(scene->ori_dir, ray->dir));
-	tmp[0] = add_vectors(ray->eye, multiply_vector(ray->dir, t[0]));
-	tmp[0] = subtract_vectors(tmp[0], scene->origin);
-	tmp[1] = add_vectors(ray->eye, multiply_vector(ray->dir, t[1]));
-	tmp[1] = subtract_vectors(tmp[1], P);
-	// if (x == 100 && y == 200 && cap == 1)
-	// 	printf("t0:%f   t1:%f    dot0:%f    dot1:%f    r^2:%f\n", t[0], t[1], dot_product(tmp[0], tmp[0]), dot_product(tmp[1], tmp[1]), scene->cy[*num].r * scene->cy[*num].r);
-	if ((t[0] > 0 && dot_product(tmp[0], tmp[0]) <= scene->cy[*num].r * scene->cy[*num].r
-		&& (t[0] < t[1] || t[1] < 0 || (dot_product(tmp[1], tmp[1]) > scene->cy[*num].r * scene->cy[*num].r))))
-	{
-		if (cap == 1)
-			scene->cy[*num].cap = BOT;
-		return (t[0]);
-	}
-	if (t[1] > 0 && dot_product(tmp[1], tmp[1]) <= scene->cy[*num].r * scene->cy[*num].r)
-	{
-		if (cap == 1)
-			scene->cy[*num].cap = TOP;
-		return (t[1]);
-	}
-	scene->cy[*num].cap = NOT;
-	return (-1);
-}
-
-double	find_closest_cy(t_scene *scene, t_ray *ray, int *num, int cap, int x, int y)
+//translation and rotation of ray and set z-min and z-max.
+//the cylinder intersect points are calculated as if it's 
+//origin is in the world origin, aligned along the z-axis
+//so the ray which comes from the camera in world space
+//needs to be translated and rotated with the inverse of
+//the translation and rotation that the cylinder has compared
+//to its origin position.
+//z_m[0] is z_min is 0, z_m[1] is z_max is the height
+double	find_closest_cy(t_scene *scene, t_ray *ray, int *num, int cap)
 {
 	t_cy_data	cy;
-	t_vect3d	P;
 
-	P = scene->origin;
-	transform_ray(scene, ray, num, cy.z_m);
+	cy.z_m[0] = 0;
+	cy.z_m[1] = scene->cy[*num].height;
+	translate_ray(&ray->eye, scene->cy[*num].I_T);
+	rotate_ray(ray, scene->cy[*num].I_R);
 	cy.ret = calc_t_0_1(scene, ray, num, cy.t);
 	if (isnan(cy.t[0]) && isnan(cy.t[1]))
-	{
-		// if (x == 100 && y == 200 && cap == 1)
-		// 	printf("here\n");
-		return (find_caps(scene, num, ray, cap, x, y));
-	}
+		return (find_caps(scene, num, ray, cap));
 	cy.z[0] = ray->eye.z + ray->dir.z * cy.t[0];
 	cy.z[1] = ray->eye.z + ray->dir.z * cy.t[1];
 	if (t_closest(cy.t[0], cy.t[1], cy.z_m, cy.z[0]))
-	{
-		// if (x == 100 && y == 200 && cap == 1)
-		// 	printf("hier\n");
 		return (find_intersect(ray, cy, &scene->cy[*num].cap, cap));
-	}
 	else if (t_closest(cy.t[1], cy.t[0], cy.z_m, cy.z[1]))
 	{
-		// if (x == 100 && y == 200 && cap == 1)
-		// 	printf("hiero\n");
 		cy.t[0] = cy.t[1];
 		return (find_intersect(ray, cy, &scene->cy[*num].cap, cap));
 	}
 	else
-	{
-		// if (x == 100 && y == 200 && cap == 1)
-		// 	printf("hierachteraan\n");
-		return (find_caps(scene, num, ray, cap, x, y));
-		// return (find_intersect_cap(ray, cy, &scene->cy[*num].cap, cap));
-	}
+		return (find_caps(scene, num, ray, cap));
 }
 
-double	find_hit_cy(t_scene *scene, t_ray *ray, int *num, int cap, int x, int y)
+double	find_hit_cy(t_scene *scene, t_ray *ray, int *num, int cap)
 {
 	double	*t;
 	t_ray	new_ray;
@@ -143,9 +92,7 @@ double	find_hit_cy(t_scene *scene, t_ray *ray, int *num, int cap, int x, int y)
 	while (*num < scene->amount[CYLINDER])
 	{
 		new_ray = *ray;
-		t[*num] = find_closest_cy(scene, &new_ray, num, cap, x, y);
-		// if (x == 100 && y == 200)
-		// 	printf("ret:%f\n", t[*num]);
+		t[*num] = find_closest_cy(scene, &new_ray, num, cap);
 		*num = *num + 1;
 	}
 	*num = find_smallest(scene, t, *num, scene->amount[CYLINDER]);

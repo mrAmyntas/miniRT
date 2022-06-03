@@ -22,8 +22,9 @@ static double	get_angle_side_cy(t_scene *scene, int num[2], t_vect3d Phit)
 	t = magnitude(subtract_vectors(Phit, scene->cy[num[1]].eye));
 	t = fabs((t * t) - (scene->cy[num[1]].r * scene->cy[num[1]].r));
 	t = sqrt(t);
-   	tmp = add_vectors(scene->cy[num[1]].eye, multiply_vector(scene->cy[num[1]].dir, t));
-   	N = normalize_vector(subtract_vectors(Phit, tmp));
+	tmp = add_vectors(scene->cy[num[1]].eye,
+			multiply_vector(scene->cy[num[1]].dir, t));
+	N = normalize_vector(subtract_vectors(Phit, tmp));
 	tmp = normalize_vector(subtract_vectors(scene->cam->eye, Phit));
 	t = dot_product(N, tmp);
 	angle = acos(t) / (M_PI / 180);
@@ -52,6 +53,18 @@ static double	get_angle_cy(t_scene *scene, t_vect3d Phit, int *num)
 
 }
 
+static double	get_angle_tor(t_scene *scene, t_vect3d Phit, int num[2])
+{
+	t_vect3d	tmp;
+	double		t;
+	double		angle;
+
+	tmp = normalize_vector(subtract_vectors(scene->cam->eye, Phit));
+	t = dot_product(scene->tor[num[1]].N, tmp);
+	angle = acos(t) / (M_PI / 180);
+	return (angle);
+}
+
 // finds the right function to calculate the angle between 
 // Phit->cam   and normal
 // if this is > 90, then camera has to be inside the obj 
@@ -61,6 +74,8 @@ double	get_camray_angle(t_scene *scene, t_vect3d *Phit, int *num)
 		return (get_angle_cy(scene, Phit[0], num));
 	if (num[0] == SPHERE)
 		return (get_angle_sp(scene, Phit[0], num));
+	if (num[0] == TORUS)
+		return (get_angle_tor(scene, Phit[0], num));
 	else
 		return (-1);
 }

@@ -91,8 +91,6 @@ void	read_cy2(t_scene *scene, char **line, int i, char **coords)
 	create_hsl(&scene->cy[i].hsl, ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
 	scene->cy[i].rgb = create_rgb(ft_atoi(coords[0]),
 			ft_atoi(coords[1]), ft_atoi(coords[2]), ft_strjoin("cylinder ", ft_itoa(i)));
-	set_i_t(scene, i);
-	set_i_r(scene, i);
 }
 
 void	read_cy(t_scene *scene, char **line)
@@ -114,6 +112,8 @@ void	read_cy(t_scene *scene, char **line)
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of vectors for a cylinder\n");
 	read_cy2(scene, line, i, coords);
+	set_i_t(&scene->cy[i].eye, &scene->cy[i].I_T);
+	set_i_r(&scene->cy[i].dir, &scene->cy[i].I_R);
 	i++;
 }
 
@@ -165,16 +165,11 @@ void	read_tor2(t_scene *scene, char **line, int i, char **coords)
 	scene->tor[i].dir.y = ft_atod(coords[1]);
 	scene->tor[i].dir.z = ft_atod(coords[2]);
 	if (fabs(scene->tor[i].dir.x) < 0.00001 && fabs(scene->tor[i].dir.y) < 0.00001 && fabs(scene->tor[i].dir.z) > 0.999999)
-	{
-		// if (scene->tor[i].dir.y < 0.0)
-		// 	scene->tor[i].dir.y = scene->tor[i].dir.y - 0.000001;
-		// else
-		// scene->tor[i].dir.y = scene->tor[i].dir.y + 0.000001;
-		// if (scene->tor[i].dir.x < 0.0)
-		// 	scene->tor[i].dir.x = scene->tor[i].dir.x - 0.000001;
-		// else
 		scene->tor[i].dir.x = scene->tor[i].dir.x + 0.000001;
-	}
+	if (fabs(scene->tor[i].dir.x) < 0.00001 && fabs(scene->tor[i].dir.z) < 0.00001 && fabs(scene->tor[i].dir.y) > 0.999999)
+		scene->tor[i].dir.x = scene->tor[i].dir.x + 0.000001;
+	if (fabs(scene->tor[i].dir.y) < 0.00001 && fabs(scene->tor[i].dir.z) < 0.00001 && fabs(scene->tor[i].dir.x) > 0.999999)
+		scene->tor[i].dir.x = scene->tor[i].dir.y + 0.000001;
 	if (scene->tor[i].dir.x < -1 || scene->tor[i].dir.x > 1
 		|| scene->tor[i].dir.y < -1 || scene->tor[i].dir.y > 1
 		|| scene->tor[i].dir.z < -1 || scene->tor[i].dir.z > 1)
@@ -210,8 +205,8 @@ void	read_tor(t_scene *scene, char **line)
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of vectors for a torus\n");
 	read_tor2(scene, line, i, coords);
-	set_i_t_tor(scene, i);
-	set_i_r_tor(scene, i);
+	set_i_t(&scene->tor[i].coord, &scene->tor[i].I_T);
+	set_i_r(&scene->tor[i].dir, &scene->tor[i].I_R);
 	set_r_tor(scene, i);
 	i++;
 }

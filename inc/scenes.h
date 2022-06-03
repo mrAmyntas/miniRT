@@ -153,7 +153,7 @@ int	   	 	strstr_len(char **str);
 void		create_hsl(t_vect3d *hsl, int r, int g, int b);
 int	    	create_rgb(int r, int g, int b, char *object);
 void	    ft_error(int num, char *msg);
-void		set_i_t(t_scene *scene, int num);
-void		set_i_r(t_scene *scene, int num);
+void		set_i_t(t_vect3d *world_coord, t_matrix44d *mat);
+void		set_i_r(t_vect3d *obj_dir, t_matrix44d *mat);
 
 #endif

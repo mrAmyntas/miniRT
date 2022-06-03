@@ -13,7 +13,8 @@ int	check_if_plane_between_cam_and_light(t_scene *scene, t_vect3d Phit[2])
 	ray.eye = scene->cam->eye;
 	ray.dir = normalize_vector(subtract_vectors(scene->light->ori, ray.eye));
 	t2[1] = find_hit_pl(scene, &ray, &num3);
-	if (t2[1] > 0 && num2 == num3 && t2[1] < distance_two_points(scene->cam->eye, scene->light->ori))
+	if (t2[1] > 0 && num2 == num3 && t2[1]
+		< distance_two_points(scene->cam->eye, scene->light->ori))
 		return (0);
 	return (1);
 }

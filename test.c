@@ -38,10 +38,54 @@ int main(void)
 //gcc test.c src/vectorstuff.c MLX42/libmlx42.a -lft -L ./libft -lglfw -L "/Users/bhoitzin/.brew/opt/glfw/lib/" -I./inc && ./a.out
 
 
+	// t_quatric	val;
+
+	// set_values(scene, ray, num, &val);
+	// a[0] = pow(val.xD, 4) + pow(val.yD, 4) + pow(val.zD, 4) + 2 * val.xD2 * val.yD2 + 2 * val.xD2 * val.zD2 + 2 * val.yD2 * val.zD2;
+	// if (comp_d(a[0], 0))
+	// 	return (-1);
+	// a[1] = (4 * pow(val.xD, 3) * val.xE + 4 * pow(val.yD, 3) * val.yE + 4 * pow(val.zD, 3) * val.zE + 4 * val.xD2 * val.yD * val.yE + 4 * val.xD2
+	// 	* val.zD * val.zE + 4 * val.xD * val.xE * val.yD2 + 4 * val.yD2 * val.zD * val.zE + 4 * val.xD * val.xE * val.zD2 + 4 * val.yD * val.yE * val.zD2) / a[0];
+
+	// a[2] = (-2 * val.Rsq * val.xD2 - 2 * val.Rsq * val.yD2 + 2 * val.Rsq * val.zD2 - 2 * val.rsq * val.xD2 - 2 * val.rsq * val.yD2 - 2 * val.rsq * val.zD2 + 6 * val.xD2 * val.xE2 + 2 * val.xE2 * val.yD2
+	// 	+ 8 * val.xD * val.xE * val.yD * val.yE + 2 * val.xD2 * val.yE2 + 6 * val.yD2 * val.yE2 + 2 * val.xE2 * val.zD2 + 2 * val.yE2 * val.zD2 + 8 * val.xD * val.xE * val.zD * val.zE
+	// 	+ 8 * val.yD * val.yE * val.zD * val.zE + 2 * val.xD2 * val.zE2 + 2 * val.yD2 * val.zE2 + 6 * val.zD2 * val.zE2) / a[0];
+	// a[3] = (-4 * val.Rsq * val.xD * val.xE - 4 * val.Rsq * val.yD * val.yE + 4 * val.Rsq * val.zD * val.zE - 4 * val.rsq * val.xD * val.xE - 4 * val.rsq * val.yD * val.yE - 4 * val.rsq * val.zD * val.zE + 4 * val.xD * pow(val.xE, 3)
+	// 	+ 4 * val.xE2 * val.yD * val.yE + 4 * val.xD * val.xE * val.yE2 + 4 * val.yD * pow(val.yE, 3) + 4 * val.xE2 * val.zD * val.zE + 4 * val.yE2 * val.zD * val.zE + 4 * val.xD * val.xE * val.zE2
+	// 	+ 4 * val.yD * val.yE * val.zE2 + 4 * val.zD * pow(val.zE, 3)) / a[0];
+	// a[4] = (pow(val.Rsq, 2) - 2 * val.Rsq * val.xE2 - 2 * val.Rsq * val.yE2 + 2 * val.Rsq * val.zE2 + pow(val.rsq, 2) - 2 * val.rsq * val.Rsq - 2 * val.rsq * val.xE2 - 2 * val.rsq * val.yE2 - 2 * val.rsq * val.zE2 + pow(val.xE, 4) + pow(val.yE, 4)
+	// 	+ pow(val.zE, 4) + 2 * val.xE2 * val.yE2 + 2 * val.xE2 * val.zE2 + 2 * val.yE2 * val.zE2) / a[0];
+	// return (0);
 
 
 
 
+//both t_values are outside the z_range of the finite sphere here
+//but there might still be legit intersect points, because it could be
+//that the rays go through a cap.
+//------*-> O=====O ---*--->(goes through and hits sides outside z min/max)
+// double	find_intersect_cap(t_ray *ray, t_cy_data cy, int *cap, int set_cap)
+// {
+// 	if (set_cap == 1)
+// 		*cap = BOT;
+// 	if ((cy.z[0] < cy.z_m[0] && cy.z[1] > cy.z_m[0])
+// 		|| (cy.z[1] < cy.z_m[0] && cy.z[0] > cy.z_m[0]))
+// 		cy.t[2] = (cy.z_m[0] - ray->eye.z) / ray->dir.z;
+// 	if ((cy.z[0] < cy.z_m[1] && cy.z[1] > cy.z_m[1])
+// 		|| (cy.z[1] < cy.z_m[1] && cy.z[0] > cy.z_m[1]))
+// 		cy.t[3] = (cy.z_m[1] - ray->eye.z) / ray->dir.z;
+// 	if (cy.t[2] > 0 && (cy.t[2] < cy.t[3] || cy.t[3] < 0))
+// 		return (cy.t[2]);
+// 	else if (cy.t[3] > 0)
+// 	{
+// 		if (set_cap == 1)
+// 			*cap = TOP;			
+// 		return (cy.t[3]);
+// 	}
+// 	if (set_cap == 1)
+// 		*cap = NOT;
+// 	return (-1);
+// }
 
 
 
