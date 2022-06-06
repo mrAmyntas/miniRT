@@ -65,7 +65,7 @@ double	find_intersect(t_ray *ray, t_cy_data cy, int *cap, int set_cap)
 		if (cy.t[3] < cy.t[0] && cy.t[3] > 0)
 		{
 			if (set_cap == 1)
-				*cap = TOP;			
+				*cap = TOP;
 			return (cy.t[3]);
 		}
 	}

@@ -31,7 +31,7 @@ typedef struct	s_variable
 	t_ray		ray;
 }				t_variable;
 
-typedef struct s_quatric
+typedef struct s_quartic
 {
 	double	r_c2;
 	double	r_t2;
@@ -47,7 +47,7 @@ typedef struct s_quatric
 	double	xe2;
 	double	ye2;
 	double	ze2;
-}			t_quatric;
+}			t_quartic;
 
 
 // *** UTILS *** \\
@@ -107,5 +107,8 @@ double		find_hit_torus(t_scene *scene, t_ray *ray, int *num, int set_N);
 double		get_tor_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N);
 void		set_r_tor(t_scene *scene, int num);
 int			get_a(t_scene *scene, t_ray *ray, long double *a, int *num);
+int			solve_cubic(t_solve_quartic_var *d);
+void		set_normal(t_scene *scene, t_ray *ray, int *num, double t);
+void		solve_quartic(t_solve_quartic_var *d);
 
 #endif

@@ -17,11 +17,10 @@ double	get_di_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 	return (angle);
 }
 
-
 static void	calc_t(t_scene *scene, t_ray *ray, int *num, double *t)
 {
 	t_vect3d	tmp;
-	t_vect3d 	tmp2;
+	t_vect3d	tmp2;
 
 	*num = 0;
 	while (*num < scene->amount[DISC])

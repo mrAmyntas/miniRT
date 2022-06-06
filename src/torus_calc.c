@@ -1,5 +1,25 @@
 #include "../inc/miniRT.h"
 
+void	set_normal(t_scene *scene, t_ray *ray, int *num, double t)
+{
+	t_vect3d	centre_to_phit;
+	t_vect3d	phit;
+	t_vect3d	centre_to_middle_of_tube;
+	t_vect3d	middle_of_tube;
+	t_ray		tmp;
+
+	phit = add_vectors(ray->eye, multiply_vector(ray->dir, t));
+	centre_to_phit = normalize_vector(subtract_vectors(phit, scene->origin));
+	centre_to_middle_of_tube.x = centre_to_phit.x;
+	centre_to_middle_of_tube.y = centre_to_phit.y;
+	centre_to_middle_of_tube.z = 0;
+	middle_of_tube = add_vectors(scene->origin,
+			multiply_vector(centre_to_middle_of_tube, scene->tor[*num].R_cir));
+	scene->tor[*num].N = normalize_vector(
+			subtract_vectors(phit, middle_of_tube));
+	rotate_normal(&scene->tor[*num].N, scene->tor[*num].R);
+	scene->tor[*num].N = normalize_vector(scene->tor[*num].N);
+}
 
 double	get_tor_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 {
@@ -16,7 +36,7 @@ double	get_tor_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 	return (angle);
 }
 
-static void	set_values(t_scene *scene, t_ray *ray, int *num, t_quatric *val)
+static void	set_values(t_scene *scene, t_ray *ray, int *num, t_quartic *val)
 {
 	val->r_t2 = pow(scene->tor[*num].r_tube, 2);
 	val->r_c2 = pow(scene->tor[*num].R_cir, 2);
@@ -34,7 +54,7 @@ static void	set_values(t_scene *scene, t_ray *ray, int *num, t_quatric *val)
 	val->ze2 = pow(ray->eye.z, 2);
 }
 
-static void	get_a_1_2(long double *a, t_quatric val)
+static void	get_a_1_2(long double *a, t_quartic val)
 {
 	a[1] = (4 * pow(val.xd, 3) * val.xe + 4 * pow(val.yd, 3) * val.ye + 4
 			* pow(val.zd, 3) * val.ze + 4 * val.xd2 * val.yd * val.ye + 4
@@ -55,7 +75,7 @@ static void	get_a_1_2(long double *a, t_quatric val)
 //anything meaningful.
 int	get_a(t_scene *scene, t_ray *ray, long double *a, int *num)
 {
-	t_quatric	val;
+	t_quartic	val;
 
 	set_values(scene, ray, num, &val);
 	a[0] = pow(val.xd, 4) + pow(val.yd, 4) + pow(val.zd, 4) + 2 * val.xd2

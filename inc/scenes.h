@@ -98,6 +98,28 @@ typedef struct 	s_cy_data {
 	int			ret;
 }				t_cy_data;
 
+typedef struct s_solve_quartic
+{
+	long double			a[5];
+	long double			b[3];
+	long double			x[3];
+	long unsigned int	ret;
+	long double			q1;
+	long double			q2;
+	long double			p1;
+	long double			p2;
+	long double			d;
+	long double			sqd;
+	long double			a2;
+	long double			q;
+	long double			r;
+	long double			r2;
+	long double			q3;
+	long double			o;
+	long double			o2;
+	long double			y;
+}						t_solve_quartic_var;
+
 typedef struct 	s_tor_data {
 	double 		t[4];
 	int			ret;

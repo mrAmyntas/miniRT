@@ -82,7 +82,6 @@ void	set_i_r(t_vect3d *obj_dir, t_matrix44d *mat)
 	a = acos(dot_product(o, dir));
 	axis = normalize_vector(cross_product(o, dir));
 	set_i_r_val(a, axis, mat);
-
 }
 
 void	set_r_tor(t_scene *scene, int num)
