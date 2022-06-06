@@ -21,6 +21,7 @@ SRC =	src/main.c\
 		src/cylinder_calc.c\
 		src/matrices.c\
 		src/render.c\
+		src/render_utils.c\
 		src/light.c\
 		src/calculate_hsl.c\
 		src/ray.c\
