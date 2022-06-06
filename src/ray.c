@@ -69,14 +69,14 @@ void	translate_ray(t_vect3d *eye, t_matrix44d I_T)
 
 //returns a ray with its eye same as the camera and
 //direction towards the pixelcoords x and y
-t_ray	get_ray(t_scene *scene, t_data *data, double x, double y)
+t_ray	get_ray(t_scene *scene, double x, double y)
 {
-	scene->r.tmp = add_vectors(scene->r.viewPlaneBottomLeftPoint,
-			multiply_vector(scene->r.xIncVector, x));
-	scene->r.ViewPlanePoint = add_vectors(
-			scene->r.tmp, multiply_vector(scene->r.yIncVector, y));
+	scene->r.tmp = add_vectors(scene->r.viewplanebottomleftpoint,
+			multiply_vector(scene->r.x_inc_vector, x));
+	scene->r.viewplanepoint = add_vectors(
+			scene->r.tmp, multiply_vector(scene->r.y_inc_vector, y));
 	scene->r.ray.eye = scene->cam->eye;
 	scene->r.ray.dir = normalize_vector(
-			subtract_vectors(scene->r.ViewPlanePoint, scene->cam->eye));
+			subtract_vectors(scene->r.viewplanepoint, scene->cam->eye));
 	return (scene->r.ray);
 }

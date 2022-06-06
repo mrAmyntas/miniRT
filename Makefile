@@ -41,7 +41,7 @@ all: $(LIBFT_NAME) $(MLX_NAME) $(OBJ_DIR) $(NAME)
 
 $(NAME): $(OBJ) $(LIBFT_NAME)
 	$(CC) $(OBJ) $(FLAGS) MLX42/libmlx42.a -lft -L ./libft -lglfw -L "/Users/$(USER)/.brew/opt/glfw/lib/" -o $(NAME)
-#	$(CC) $(OBJ) $(FLAGS) MLX42/libmlx42.a -lft -L ./libft -lglfw -L "/usr/local/cellar/glfw/3.3.7/lib/" -o $(NAME) (is voor compilation bij mij thuis)
+#	$(CC) $(OBJ) $(FLAGS) MLX42/libmlx42.a -lft -L ./libft -lglfw -L "/usr/local/cellar/glfw/3.3.7/lib/" -o $(NAME)
 
 $(MLX_NAME):
 	make -C ./mlx42

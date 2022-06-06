@@ -38,6 +38,17 @@ int main(void)
 //gcc test.c src/vectorstuff.c MLX42/libmlx42.a -lft -L ./libft -lglfw -L "/Users/bhoitzin/.brew/opt/glfw/lib/" -I./inc && ./a.out
 
 
+// static void	calc_t_val(t_scene *scene, t_ray *ray, t_vect3d *tmp, double *t)
+// {
+// 	t[0] = (dot_product(scene->ori_dir, tmp[0]))
+// 		/ (dot_product(scene->ori_dir, ray->dir));
+// 	t[1] = (dot_product(scene->ori_dir, tmp[1]))
+// 		/ (dot_product(scene->ori_dir, ray->dir));
+// }
+
+
+
+
 	// t_quatric	val;
 
 	// set_values(scene, ray, num, &val);

@@ -53,9 +53,9 @@ void	read_sp(t_scene *scene, char **line)
 	coords = ft_split(line[1], ',');
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of coordinates for a sphere\n");
-	scene->sp[i].C.x = ft_atod(coords[0]);
-	scene->sp[i].C.y = ft_atod(coords[1]);
-	scene->sp[i].C.z = ft_atod(coords[2]);
+	scene->sp[i].c.x = ft_atod(coords[0]);
+	scene->sp[i].c.y = ft_atod(coords[1]);
+	scene->sp[i].c.z = ft_atod(coords[2]);
 	free_strstr(coords);
 	scene->sp[i].size = ft_atod(line[2]);
 	coords = ft_split(line[3], ',');
@@ -112,8 +112,8 @@ void	read_cy(t_scene *scene, char **line)
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of vectors for a cylinder\n");
 	read_cy2(scene, line, i, coords);
-	set_i_t(&scene->cy[i].eye, &scene->cy[i].I_T);
-	set_i_r(&scene->cy[i].dir, &scene->cy[i].I_R);
+	set_i_t(&scene->cy[i].eye, &scene->cy[i].i_t);
+	set_i_r(&scene->cy[i].dir, &scene->cy[i].i_r);
 	i++;
 }
 
@@ -176,7 +176,7 @@ void	read_tor2(t_scene *scene, char **line, int i, char **coords)
 		ft_error(1, "One of the vectors for a torus is out of range\n");
 	scene->tor[i].dir = normalize_vector(scene->tor[i].dir);
 	free_strstr(coords);
-	scene->tor[i].R_cir = ft_atod(line[3]);
+	scene->tor[i].r_cir = ft_atod(line[3]);
 	scene->tor[i].r_tube = ft_atod(line[4]);
 	coords = ft_split(line[5], ',');
 	if (strstr_len(coords) != 3)
@@ -205,8 +205,8 @@ void	read_tor(t_scene *scene, char **line)
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of vectors for a torus\n");
 	read_tor2(scene, line, i, coords);
-	set_i_t(&scene->tor[i].coord, &scene->tor[i].I_T);
-	set_i_r(&scene->tor[i].dir, &scene->tor[i].I_R);
+	set_i_t(&scene->tor[i].coord, &scene->tor[i].i_t);
+	set_i_r(&scene->tor[i].dir, &scene->tor[i].i_r);
 	set_r_tor(scene, i);
 	i++;
 }

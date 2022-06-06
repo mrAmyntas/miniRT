@@ -6,7 +6,6 @@ void	set_normal(t_scene *scene, t_ray *ray, int *num, double t)
 	t_vect3d	phit;
 	t_vect3d	centre_to_middle_of_tube;
 	t_vect3d	middle_of_tube;
-	t_ray		tmp;
 
 	phit = add_vectors(ray->eye, multiply_vector(ray->dir, t));
 	centre_to_phit = normalize_vector(subtract_vectors(phit, scene->origin));
@@ -14,11 +13,11 @@ void	set_normal(t_scene *scene, t_ray *ray, int *num, double t)
 	centre_to_middle_of_tube.y = centre_to_phit.y;
 	centre_to_middle_of_tube.z = 0;
 	middle_of_tube = add_vectors(scene->origin,
-			multiply_vector(centre_to_middle_of_tube, scene->tor[*num].R_cir));
-	scene->tor[*num].N = normalize_vector(
+			multiply_vector(centre_to_middle_of_tube, scene->tor[*num].r_cir));
+	scene->tor[*num].n = normalize_vector(
 			subtract_vectors(phit, middle_of_tube));
-	rotate_normal(&scene->tor[*num].N, scene->tor[*num].R);
-	scene->tor[*num].N = normalize_vector(scene->tor[*num].N);
+	rotate_normal(&scene->tor[*num].n, scene->tor[*num].r);
+	scene->tor[*num].n = normalize_vector(scene->tor[*num].n);
 }
 
 double	get_tor_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
@@ -27,9 +26,9 @@ double	get_tor_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 	double		t;
 	double		angle;
 
-	N->x = scene->tor[num[1]].N.x;
-	N->y = scene->tor[num[1]].N.y;
-	N->z = scene->tor[num[1]].N.z;
+	N->x = scene->tor[num[1]].n.x;
+	N->y = scene->tor[num[1]].n.y;
+	N->z = scene->tor[num[1]].n.z;
 	tmp = normalize_vector(subtract_vectors(scene->light[scene->i].ori, Phit));
 	t = dot_product(*N, tmp);
 	angle = acos(t) / (M_PI / 180);
@@ -39,7 +38,7 @@ double	get_tor_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 static void	set_values(t_scene *scene, t_ray *ray, int *num, t_quartic *val)
 {
 	val->r_t2 = pow(scene->tor[*num].r_tube, 2);
-	val->r_c2 = pow(scene->tor[*num].R_cir, 2);
+	val->r_c2 = pow(scene->tor[*num].r_cir, 2);
 	val->xd = ray->dir.x;
 	val->yd = ray->dir.y;
 	val->zd = ray->dir.z;

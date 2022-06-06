@@ -6,7 +6,7 @@ static double	get_angle_sp(t_scene *scene, t_vect3d Phit, int *num)
 	t_ray		ray;
 	t_vect3d	normal;
 
-	normal = normalize_vector(subtract_vectors(Phit, scene->sp[num[1]].C));
+	normal = normalize_vector(subtract_vectors(Phit, scene->sp[num[1]].c));
 	ray.dir = normalize_vector(subtract_vectors(scene->cam->eye, Phit));
 	angle = acos(dot_product(normal, ray.dir)) * (180 / M_PI);
 	return (angle);
@@ -34,7 +34,6 @@ static double	get_angle_side_cy(t_scene *scene, int num[2], t_vect3d Phit)
 static double	get_angle_cy(t_scene *scene, t_vect3d Phit, int *num)
 {
 	double		angle;
-	double		t;
 	t_vect3d	tmp;
 	t_vect3d	normal;
 
@@ -59,7 +58,7 @@ static double	get_angle_tor(t_scene *scene, t_vect3d Phit, int num[2])
 	double		angle;
 
 	tmp = normalize_vector(subtract_vectors(scene->cam->eye, Phit));
-	t = dot_product(scene->tor[num[1]].N, tmp);
+	t = dot_product(scene->tor[num[1]].n, tmp);
 	angle = acos(t) / (M_PI / 180);
 	return (angle);
 }

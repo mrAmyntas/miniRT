@@ -37,7 +37,7 @@ double	get_pl_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 }
 
 //finds smallest non-negative t-value and returns which t_value this is
-int	find_smallest(t_scene *scene, double *t, int num, int amount)
+int	find_smallest(double *t, int num, int amount)
 {
 	int	i;
 	int	j;
@@ -92,7 +92,7 @@ double	find_hit_pl(t_scene *scene, t_ray *ray, int *num)
 
 	t = malloc(sizeof(double) * scene->amount[PLANE]);
 	calc_t(scene, ray, num, t);
-	*num = find_smallest(scene, t, *num, scene->amount[PLANE]);
+	*num = find_smallest(t, *num, scene->amount[PLANE]);
 	if (*num != -1)
 	{
 		ret = t[*num];

@@ -54,7 +54,7 @@ double	find_hit_disc(t_scene *scene, t_ray *ray, int *num)
 
 	t = malloc(sizeof(double) * scene->amount[DISC]);
 	calc_t(scene, ray, num, t);
-	*num = find_smallest(scene, t, *num, scene->amount[DISC]);
+	*num = find_smallest(t, *num, scene->amount[DISC]);
 	if (*num != -1)
 	{
 		ret = t[*num];

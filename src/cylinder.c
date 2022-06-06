@@ -23,7 +23,6 @@ static double	get_cy_angle_side(t_scene *scene, int num[2],
 double	get_cy_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 {
 	double		angle;
-	double		t;
 	t_vect3d	tmp;
 
 	if (scene->cy[num[1]].cap != NOT)
@@ -41,14 +40,6 @@ double	get_cy_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 	return (angle);
 }
 
-static void	calc_t_val(t_scene *scene, t_ray *ray, t_vect3d *tmp, double *t)
-{
-	t[0] = (dot_product(scene->ori_dir, tmp[0]))
-		/ (dot_product(scene->ori_dir, ray->dir));
-	t[1] = (dot_product(scene->ori_dir, tmp[1]))
-		/ (dot_product(scene->ori_dir, ray->dir));
-}
-
 //translation and rotation of ray and set z-min and z-max.
 //the cylinder intersect points are calculated as if it's 
 //origin is in the world origin, aligned along the z-axis
@@ -63,8 +54,8 @@ double	find_closest_cy(t_scene *scene, t_ray *ray, int *num, int cap)
 
 	cy.z_m[0] = 0;
 	cy.z_m[1] = scene->cy[*num].height;
-	translate_ray(&ray->eye, scene->cy[*num].I_T);
-	rotate_ray(ray, scene->cy[*num].I_R);
+	translate_ray(&ray->eye, scene->cy[*num].i_t);
+	rotate_ray(ray, scene->cy[*num].i_r);
 	cy.ret = calc_t_0_1(scene, ray, num, cy.t);
 	if (isnan(cy.t[0]) && isnan(cy.t[1]))
 		return (find_caps(scene, num, ray, cap));
@@ -95,7 +86,7 @@ double	find_hit_cy(t_scene *scene, t_ray *ray, int *num, int cap)
 		t[*num] = find_closest_cy(scene, &new_ray, num, cap);
 		*num = *num + 1;
 	}
-	*num = find_smallest(scene, t, *num, scene->amount[CYLINDER]);
+	*num = find_smallest(t, *num, scene->amount[CYLINDER]);
 	if (*num == -1)
 	{
 		free (t);

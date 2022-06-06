@@ -63,17 +63,16 @@ static void	set_values(t_ray *ori_ray, t_ray *ray, double *t)
 static double	find_closest_tor(t_scene *scene, t_ray *ray,
 	int *num, int set_N)
 {
-	t_tor_data	tor;
 	double		t[4];
 	int			ret;
 	t_ray		ori_ray;
 
 	set_values(&ori_ray, ray, t);
-	translate_ray(&ray->eye, scene->tor[*num].I_T);
-	rotate_ray(ray, scene->tor[*num].I_R);
+	translate_ray(&ray->eye, scene->tor[*num].i_t);
+	rotate_ray(ray, scene->tor[*num].i_r);
 	if (calc_t(scene, ray, num, t) == -1)
 		return (-1);
-	ret = find_smallest(scene, t, 1, 4);
+	ret = find_smallest(t, 1, 4);
 	if (ret < 0)
 		return (-1);
 	if (set_N == 1)
@@ -96,7 +95,7 @@ double	find_hit_torus(t_scene *scene, t_ray *ray,
 		t[*num] = find_closest_tor(scene, &new_ray, num, set_N);
 		*num = *num + 1;
 	}
-	*num = find_smallest(scene, t, *num, scene->amount[TORUS]);
+	*num = find_smallest(t, *num, scene->amount[TORUS]);
 	if (*num == -1)
 	{
 		free (t);

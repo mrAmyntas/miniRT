@@ -69,8 +69,8 @@ void	read_l(t_scene *scene, char **line)
 	scene->light[i].ori.z = ft_atod(coords[2]);
 	free_strstr(coords);
 	scene->light[i].brightness = ft_atod(line[2]); // kan later weg
-	scene->light[i].Kd = 0.8 * ft_atod(line[2]);
-	scene->light[i].Ks = 0.04 * ft_atod(line[2]);
+	scene->light[i].kd = 0.8 * ft_atod(line[2]);
+	scene->light[i].ks = 0.04 * ft_atod(line[2]);
 	coords = ft_split(line[3], ',');
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of colours for light\n");

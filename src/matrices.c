@@ -86,20 +86,20 @@ void	set_i_r(t_vect3d *obj_dir, t_matrix44d *mat)
 
 void	set_r_tor(t_scene *scene, int num)
 {
-	scene->tor[num].R.row1.x = scene->tor[num].I_R.row1.x;
-	scene->tor[num].R.row1.y = scene->tor[num].I_R.row2.x;
-	scene->tor[num].R.row1.z = scene->tor[num].I_R.row3.x;
-	scene->tor[num].R.row1.t = scene->tor[num].I_R.row4.x;
-	scene->tor[num].R.row2.x = scene->tor[num].I_R.row1.y;
-	scene->tor[num].R.row2.y = scene->tor[num].I_R.row2.y;
-	scene->tor[num].R.row2.z = scene->tor[num].I_R.row3.y;
-	scene->tor[num].R.row2.t = scene->tor[num].I_R.row4.y;
-	scene->tor[num].R.row3.x = scene->tor[num].I_R.row1.z;
-	scene->tor[num].R.row3.y = scene->tor[num].I_R.row2.z;
-	scene->tor[num].R.row3.z = scene->tor[num].I_R.row3.z;
-	scene->tor[num].R.row3.t = scene->tor[num].I_R.row4.z;
-	scene->tor[num].R.row4.x = scene->tor[num].I_R.row1.t;
-	scene->tor[num].R.row4.y = scene->tor[num].I_R.row2.t;
-	scene->tor[num].R.row4.z = scene->tor[num].I_R.row3.t;
-	scene->tor[num].R.row4.t = scene->tor[num].I_R.row4.t;
+	scene->tor[num].r.row1.x = scene->tor[num].i_r.row1.x;
+	scene->tor[num].r.row1.y = scene->tor[num].i_r.row2.x;
+	scene->tor[num].r.row1.z = scene->tor[num].i_r.row3.x;
+	scene->tor[num].r.row1.t = scene->tor[num].i_r.row4.x;
+	scene->tor[num].r.row2.x = scene->tor[num].i_r.row1.y;
+	scene->tor[num].r.row2.y = scene->tor[num].i_r.row2.y;
+	scene->tor[num].r.row2.z = scene->tor[num].i_r.row3.y;
+	scene->tor[num].r.row2.t = scene->tor[num].i_r.row4.y;
+	scene->tor[num].r.row3.x = scene->tor[num].i_r.row1.z;
+	scene->tor[num].r.row3.y = scene->tor[num].i_r.row2.z;
+	scene->tor[num].r.row3.z = scene->tor[num].i_r.row3.z;
+	scene->tor[num].r.row3.t = scene->tor[num].i_r.row4.z;
+	scene->tor[num].r.row4.x = scene->tor[num].i_r.row1.t;
+	scene->tor[num].r.row4.y = scene->tor[num].i_r.row2.t;
+	scene->tor[num].r.row4.z = scene->tor[num].i_r.row3.t;
+	scene->tor[num].r.row4.t = scene->tor[num].i_r.row4.t;
 }
