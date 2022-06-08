@@ -51,7 +51,7 @@ double	get_saturation(double l, double minmax[2])
 	return (num);
 }
 
-double get_hue(double minmax[2], double r, double g, double b)
+double	get_hue(double minmax[2], double r, double g, double b)
 {
 	double	num;
 	double	rgb[3];
@@ -68,7 +68,7 @@ double get_hue(double minmax[2], double r, double g, double b)
 		num = 2 + (rgb[2] - rgb[0]) / (minmax[1] - minmax[0]);
 	else if (minmax[1] == rgb[2])
 		num = 4 + (rgb[0] - rgb[1]) / (minmax[1] - minmax[0]);
-	return(num * 60);	
+	return (num * 60);
 }
 
 void	create_hsl(t_vect3d *hsl, int r, int g, int b)
@@ -82,11 +82,9 @@ void	create_hsl(t_vect3d *hsl, int r, int g, int b)
 	hsl->y = 0;
 	hsl->x = 0;
 	if (minmax[0] == minmax[1])
-		return;
-	printf("%i %i %i,	", r, g, b);
+		return ;
 	hsl->y = get_saturation(hsl->z, minmax);
 	hsl->x = get_hue(minmax, r , g , b );
 	if (hsl->x < 0)
 		hsl->x += 360;
-	printf("%f %f %f\n", hsl->x, hsl->y, hsl->z);
 }

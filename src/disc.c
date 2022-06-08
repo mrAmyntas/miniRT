@@ -17,7 +17,6 @@ double	get_di_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 	return (angle);
 }
 
-
 static void	calc_t(t_scene *scene, t_ray *ray, int *num, double *t)
 {
 	t_vect3d	tmp;
@@ -33,12 +32,13 @@ static void	calc_t(t_scene *scene, t_ray *ray, int *num, double *t)
 			*num = *num + 1;
 			continue ;
 		}
-		t[*num] = (dot_product(scene->di[*num].orth_vec, tmp)) / (dot_product(scene->di[*num].orth_vec, ray->dir));
+		t[*num] = (dot_product(scene->di[*num].orth_vec, tmp))
+			/ (dot_product(scene->di[*num].orth_vec, ray->dir));
 		if (t[*num] > 0)
 		{
 			tmp = add_vectors(ray->eye, multiply_vector(ray->dir, t[*num]));
 			tmp2 = subtract_vectors(tmp, scene->di[*num].coord);
-			if (dot_product(tmp2, tmp2) > (scene->di[*num].r * scene->di[*num].r))
+			if (dot_product(tmp2, tmp2) > pow(scene->di[*num].r, 2))
 				t[*num] = -1;
 		}
 		*num = *num + 1;
@@ -54,7 +54,7 @@ double	find_hit_disc(t_scene *scene, t_ray *ray, int *num)
 
 	t = malloc(sizeof(double) * scene->amount[DISC]);
 	calc_t(scene, ray, num, t);
-	*num = find_smallest(scene, t, *num, scene->amount[DISC]);
+	*num = find_smallest(t, *num, scene->amount[DISC]);
 	if (*num != -1)
 	{
 		ret = t[*num];

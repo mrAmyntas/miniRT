@@ -16,8 +16,9 @@ void	read_a(t_scene *scene, char **line)
 	if (strstr_len(colours) != 3)
 		ft_error(1, "Wrong number of colours for ambient lighting\n");
 	create_hsl(&scene->a_hsl, ft_atoi(colours[0]), ft_atoi(colours[1]), ft_atoi(colours[2]));
-	scene->a_rgb = create_rgb(ft_atoi(colours[0]),
-			ft_atoi(colours[1]), ft_atoi(colours[2]), "ambient light\n");
+	scene->a_rgb.x = ft_atoi(colours[0]);
+	scene->a_rgb.y = ft_atoi(colours[1]);
+	scene->a_rgb.z = ft_atoi(colours[2]);
 	free_strstr(colours);
 }
 
@@ -69,13 +70,14 @@ void	read_l(t_scene *scene, char **line)
 	scene->light[i].ori.z = ft_atod(coords[2]);
 	free_strstr(coords);
 	scene->light[i].brightness = ft_atod(line[2]); // kan later weg
-	scene->light[i].Kd = 0.8 * ft_atod(line[2]);
-	scene->light[i].Ks = 0.04 * ft_atod(line[2]);
+	scene->light[i].Kd = 1 * ft_atod(line[2]);
+	scene->light[i].Ks = 0.1 * ft_atod(line[2]);
 	coords = ft_split(line[3], ',');
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of colours for light\n");
-	scene->light[i].color = create_rgb(ft_atoi(coords[0]),
-			ft_atoi(coords[1]), ft_atoi(coords[2]), "light\n");
+	scene->light[i].color.x = ft_atoi(coords[0]);
+	scene->light[i].color.y = ft_atoi(coords[1]);
+	scene->light[i].color.z = ft_atoi(coords[2]);
 	free_strstr(coords);
 	i++;
 }

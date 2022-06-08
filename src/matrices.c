@@ -17,47 +17,25 @@ t_vec4d	matrix44d_x_vert4d(t_matrix44d matrix, t_vec4d vec)
 }
 
 //inverted translation matrix
-void	set_i_t(t_scene *scene, int num)
+void	set_i_t(t_vect3d *world_coord, t_matrix44d *mat)
 {
-	scene->cy[num].I_T.row1.x = 1;
-	scene->cy[num].I_T.row1.y = 0;
-	scene->cy[num].I_T.row1.z = 0;
-	scene->cy[num].I_T.row1.t = scene->cy[num].eye.x * -1;
-	scene->cy[num].I_T.row2.x = 0;
-	scene->cy[num].I_T.row2.y = 1;
-	scene->cy[num].I_T.row2.z = 0;
-	scene->cy[num].I_T.row2.t = scene->cy[num].eye.y * -1;
-	scene->cy[num].I_T.row3.x = 0;
-	scene->cy[num].I_T.row3.y = 0;
-	scene->cy[num].I_T.row3.z = 1;
-	scene->cy[num].I_T.row3.t = scene->cy[num].eye.z * -1;
-	scene->cy[num].I_T.row4.x = 0;
-	scene->cy[num].I_T.row4.y = 0;
-	scene->cy[num].I_T.row4.z = 0;
-	scene->cy[num].I_T.row4.t = 1;
+	mat->row1.x = 1;
+	mat->row1.y = 0;
+	mat->row1.z = 0;
+	mat->row1.t = world_coord->x * -1;
+	mat->row2.x = 0;
+	mat->row2.y = 1;
+	mat->row2.z = 0;
+	mat->row2.t = world_coord->y * -1;
+	mat->row3.x = 0;
+	mat->row3.y = 0;
+	mat->row3.z = 1;
+	mat->row3.t = world_coord->z * -1;
+	mat->row4.x = 0;
+	mat->row4.y = 0;
+	mat->row4.z = 0;
+	mat->row4.t = 1;
 }
-
-//inverted translation matrix for sphere stuff
-void	set_i_t_sp(t_scene *scene, int num)
-{
-	scene->sp[num].I_T.row1.x = 1;
-	scene->sp[num].I_T.row1.y = 0;
-	scene->sp[num].I_T.row1.z = 0;
-	scene->sp[num].I_T.row1.t = 0 - scene->sp[num].C.x;
-	scene->sp[num].I_T.row2.x = 0;
-	scene->sp[num].I_T.row2.y = 1;
-	scene->sp[num].I_T.row2.z = 0;
-	scene->sp[num].I_T.row2.t = 0 - scene->sp[num].C.y;
-	scene->sp[num].I_T.row3.x = 0;
-	scene->sp[num].I_T.row3.y = 0;
-	scene->sp[num].I_T.row3.z = 1;
-	scene->sp[num].I_T.row3.t = 0 - scene->sp[num].C.z;
-	scene->sp[num].I_T.row4.x = 0;
-	scene->sp[num].I_T.row4.y = 0;
-	scene->sp[num].I_T.row4.z = 0;
-	scene->sp[num].I_T.row4.t = 1;
-}
-
 
 //rotation matrix (only inverted because we change cylinder vector
 //values)
@@ -88,7 +66,7 @@ void	set_i_r_val(double a, t_vect3d axis, t_matrix44d *R)
 	R->row3.t = 0;
 }
 
-void	set_i_r(t_scene *scene, int num)
+void	set_i_r(t_vect3d *obj_dir, t_matrix44d *mat)
 {
 	t_vect3d	axis;
 	t_vect3d	dir;
@@ -98,20 +76,30 @@ void	set_i_r(t_scene *scene, int num)
 	o.x = 0;
 	o.y = 0;
 	o.z = 1;
-	dir.x = scene->cy[num].dir.x * -1;
-	dir.y = scene->cy[num].dir.y * -1;
-	dir.z = scene->cy[num].dir.z;
+	dir.x = obj_dir->x * -1;
+	dir.y = obj_dir->y * -1;
+	dir.z = obj_dir->z;
 	a = acos(dot_product(o, dir));
 	axis = normalize_vector(cross_product(o, dir));
-	set_i_r_val(a, axis, &scene->cy[num].I_R);
+	set_i_r_val(a, axis, mat);
 }
 
-void	printf_matrix44d(t_matrix44d m)
+void	set_r_tor(t_scene *scene, int num)
 {
-	printf("----------------------\n");
-	printf("|%f %f %f %f|\n", m.row1.x, m.row1.y, m.row1.z, m.row1.t);
-	printf("|%f %f %f %f|\n", m.row2.x, m.row2.y, m.row2.z, m.row2.t);
-	printf("|%f %f %f %f|\n", m.row3.x, m.row3.y, m.row3.z, m.row3.t);
-	printf("|%f %f %f %f|\n", m.row4.x, m.row4.y, m.row4.z, m.row4.t);
-	printf("----------------------\n");
+	scene->tor[num].r.row1.x = scene->tor[num].i_r.row1.x;
+	scene->tor[num].r.row1.y = scene->tor[num].i_r.row2.x;
+	scene->tor[num].r.row1.z = scene->tor[num].i_r.row3.x;
+	scene->tor[num].r.row1.t = scene->tor[num].i_r.row4.x;
+	scene->tor[num].r.row2.x = scene->tor[num].i_r.row1.y;
+	scene->tor[num].r.row2.y = scene->tor[num].i_r.row2.y;
+	scene->tor[num].r.row2.z = scene->tor[num].i_r.row3.y;
+	scene->tor[num].r.row2.t = scene->tor[num].i_r.row4.y;
+	scene->tor[num].r.row3.x = scene->tor[num].i_r.row1.z;
+	scene->tor[num].r.row3.y = scene->tor[num].i_r.row2.z;
+	scene->tor[num].r.row3.z = scene->tor[num].i_r.row3.z;
+	scene->tor[num].r.row3.t = scene->tor[num].i_r.row4.z;
+	scene->tor[num].r.row4.x = scene->tor[num].i_r.row1.t;
+	scene->tor[num].r.row4.y = scene->tor[num].i_r.row2.t;
+	scene->tor[num].r.row4.z = scene->tor[num].i_r.row3.t;
+	scene->tor[num].r.row4.t = scene->tor[num].i_r.row4.t;
 }

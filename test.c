@@ -9,33 +9,94 @@ bool	incr(int *num)
 int main(void)
 {
 
-	t_vect3d vec2 = {1, 1, 1};
-	t_vect3d vec1 = {0, 0, 0.1};
+	double a[2] = {10.0, 1.00};
+	double b = 2.5;
 
-	printf("%f %f %f\n", vec1.x, vec1.y, vec1.z);
+	double c = b * -4.*a[0];
+	printf("%f\n", c); 
 
-	vec1 = normalize_vector(vec1);
-	//vec2 = normalize_vector(vec2);
-	printf("%f %f %f\n", vec1.x, vec1.y, vec1.z);
+// 	t_vect3d vec2 = {1, 1, 1};
+// 	t_vect3d vec1 = {0, 0, 0.1};
 
-	double dot = dot_product(vec1, vec2);
-	double magf = magnitude(vec1) * magnitude(vec2);
+// 	printf("%f %f %f\n", vec1.x, vec1.y, vec1.z);
+
+// 	vec1 = normalize_vector(vec1);
+// 	//vec2 = normalize_vector(vec2);
+// 	printf("%f %f %f\n", vec1.x, vec1.y, vec1.z);
+
+// 	double dot = dot_product(vec1, vec2);
+// 	double magf = magnitude(vec1) * magnitude(vec2);
 
 
-//	double angle = acos(dot / magf);
-	double angle = acos(dot_product(vec1, vec2) / (magnitude(vec1) * magnitude(vec2)));
+// //	double angle = acos(dot / magf);
+// 	double angle = acos(dot_product(vec1, vec2) / (magnitude(vec1) * magnitude(vec2)));
 
-	printf(":%f\n", angle);
-	return 0;
+// 	printf(":%f\n", angle);
+// 	return 0;
 }
 
 //gcc test.c src/vectorstuff.c MLX42/libmlx42.a -lft -L ./libft -lglfw -L "/Users/bhoitzin/.brew/opt/glfw/lib/" -I./inc && ./a.out
 
 
+// static void	calc_t_val(t_scene *scene, t_ray *ray, t_vect3d *tmp, double *t)
+// {
+// 	t[0] = (dot_product(scene->ori_dir, tmp[0]))
+// 		/ (dot_product(scene->ori_dir, ray->dir));
+// 	t[1] = (dot_product(scene->ori_dir, tmp[1]))
+// 		/ (dot_product(scene->ori_dir, ray->dir));
+// }
 
 
 
 
+	// t_quatric	val;
+
+	// set_values(scene, ray, num, &val);
+	// a[0] = pow(val.xD, 4) + pow(val.yD, 4) + pow(val.zD, 4) + 2 * val.xD2 * val.yD2 + 2 * val.xD2 * val.zD2 + 2 * val.yD2 * val.zD2;
+	// if (comp_d(a[0], 0))
+	// 	return (-1);
+	// a[1] = (4 * pow(val.xD, 3) * val.xE + 4 * pow(val.yD, 3) * val.yE + 4 * pow(val.zD, 3) * val.zE + 4 * val.xD2 * val.yD * val.yE + 4 * val.xD2
+	// 	* val.zD * val.zE + 4 * val.xD * val.xE * val.yD2 + 4 * val.yD2 * val.zD * val.zE + 4 * val.xD * val.xE * val.zD2 + 4 * val.yD * val.yE * val.zD2) / a[0];
+
+	// a[2] = (-2 * val.Rsq * val.xD2 - 2 * val.Rsq * val.yD2 + 2 * val.Rsq * val.zD2 - 2 * val.rsq * val.xD2 - 2 * val.rsq * val.yD2 - 2 * val.rsq * val.zD2 + 6 * val.xD2 * val.xE2 + 2 * val.xE2 * val.yD2
+	// 	+ 8 * val.xD * val.xE * val.yD * val.yE + 2 * val.xD2 * val.yE2 + 6 * val.yD2 * val.yE2 + 2 * val.xE2 * val.zD2 + 2 * val.yE2 * val.zD2 + 8 * val.xD * val.xE * val.zD * val.zE
+	// 	+ 8 * val.yD * val.yE * val.zD * val.zE + 2 * val.xD2 * val.zE2 + 2 * val.yD2 * val.zE2 + 6 * val.zD2 * val.zE2) / a[0];
+	// a[3] = (-4 * val.Rsq * val.xD * val.xE - 4 * val.Rsq * val.yD * val.yE + 4 * val.Rsq * val.zD * val.zE - 4 * val.rsq * val.xD * val.xE - 4 * val.rsq * val.yD * val.yE - 4 * val.rsq * val.zD * val.zE + 4 * val.xD * pow(val.xE, 3)
+	// 	+ 4 * val.xE2 * val.yD * val.yE + 4 * val.xD * val.xE * val.yE2 + 4 * val.yD * pow(val.yE, 3) + 4 * val.xE2 * val.zD * val.zE + 4 * val.yE2 * val.zD * val.zE + 4 * val.xD * val.xE * val.zE2
+	// 	+ 4 * val.yD * val.yE * val.zE2 + 4 * val.zD * pow(val.zE, 3)) / a[0];
+	// a[4] = (pow(val.Rsq, 2) - 2 * val.Rsq * val.xE2 - 2 * val.Rsq * val.yE2 + 2 * val.Rsq * val.zE2 + pow(val.rsq, 2) - 2 * val.rsq * val.Rsq - 2 * val.rsq * val.xE2 - 2 * val.rsq * val.yE2 - 2 * val.rsq * val.zE2 + pow(val.xE, 4) + pow(val.yE, 4)
+	// 	+ pow(val.zE, 4) + 2 * val.xE2 * val.yE2 + 2 * val.xE2 * val.zE2 + 2 * val.yE2 * val.zE2) / a[0];
+	// return (0);
+
+
+
+
+//both t_values are outside the z_range of the finite sphere here
+//but there might still be legit intersect points, because it could be
+//that the rays go through a cap.
+//------*-> O=====O ---*--->(goes through and hits sides outside z min/max)
+// double	find_intersect_cap(t_ray *ray, t_cy_data cy, int *cap, int set_cap)
+// {
+// 	if (set_cap == 1)
+// 		*cap = BOT;
+// 	if ((cy.z[0] < cy.z_m[0] && cy.z[1] > cy.z_m[0])
+// 		|| (cy.z[1] < cy.z_m[0] && cy.z[0] > cy.z_m[0]))
+// 		cy.t[2] = (cy.z_m[0] - ray->eye.z) / ray->dir.z;
+// 	if ((cy.z[0] < cy.z_m[1] && cy.z[1] > cy.z_m[1])
+// 		|| (cy.z[1] < cy.z_m[1] && cy.z[0] > cy.z_m[1]))
+// 		cy.t[3] = (cy.z_m[1] - ray->eye.z) / ray->dir.z;
+// 	if (cy.t[2] > 0 && (cy.t[2] < cy.t[3] || cy.t[3] < 0))
+// 		return (cy.t[2]);
+// 	else if (cy.t[3] > 0)
+// 	{
+// 		if (set_cap == 1)
+// 			*cap = TOP;			
+// 		return (cy.t[3]);
+// 	}
+// 	if (set_cap == 1)
+// 		*cap = NOT;
+// 	return (-1);
+// }
 
 
 
