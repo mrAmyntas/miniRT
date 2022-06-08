@@ -22,15 +22,18 @@ double  scale_value(double num)
         return (num);
 }
 
-int     hsl_to_rgb(t_vect3d hsl)
+t_vect3d     hsl_to_rgb(t_vect3d hsl)
 {
-    double  temp[2];
-    double  t_rgb[3];
-    int     rgb[3];
-    double  hue;
+    double      temp[2];
+    double      t_rgb[3];
+    t_vect3d    rgb;
+    double      hue;
 
+    rgb.x = hsl.z * 255;
+    rgb.y = hsl.z * 255;
+    rgb.z = hsl.z * 255;
     if (!hsl.y)
-        return(create_rgb(hsl.z * 255, hsl.z * 255, hsl.z * 255, "converting hsl to rgb\n"));
+        return(rgb);
     temp[0] = hsl.z + hsl.y - (hsl.z * hsl.y);
     if (hsl.z < 0.5)
         temp[0] = hsl.z * (1 + hsl.y);
@@ -39,26 +42,44 @@ int     hsl_to_rgb(t_vect3d hsl)
     t_rgb[0] = scale_value(hue + 0.333);
     t_rgb[1] = scale_value(hue);
     t_rgb[2] = scale_value(hue - 0.333);
-    rgb[0] = test_t_rgb(temp, t_rgb[0]) * 255;
-    rgb[1] = test_t_rgb(temp, t_rgb[1]) * 255;
-    rgb[2] = test_t_rgb(temp, t_rgb[2]) * 255;
-    return (create_rgb(rgb[0], rgb[1], rgb[2], "converting hsl to rgb 2\n"));
+    rgb.x = test_t_rgb(temp, t_rgb[0]) * 255;
+    rgb.y = test_t_rgb(temp, t_rgb[1]) * 255;
+    rgb.z = test_t_rgb(temp, t_rgb[2]) * 255;
+    return (rgb);
 }
 
+// doe nu van alles door elkaar en heb geen flauw idee meer wat klopt :)
 int    calculate_light(t_vect3d hsl, t_scene *scene)
 {
-    double  bright;
-    int     i;
+    double      bright;
+    t_vect3d    colour;
+    t_vect3d    hsl2;
+    int         i;
 
     i = 0;
     bright = 0;
+    colour.x = 0;
+    colour.y = 0;
+    colour.z = 0;
     while (i < scene->amount[LIGHT])
     {
         bright += scene->light[i].strength;
+        colour = add_vectors(colour, multiply_vector(scene->light[i].color, scene->light[i].strength)); 
         i++;
     }
-    hsl.z = bright + scene->a_ratio + (hsl.z / 2); // zoiets???
-	if (hsl.z > 1)
-		hsl.z = 1;
-    return (hsl_to_rgb(hsl));
+    colour = divide_vec_scalar(colour, i + 1);
+    colour = add_vectors(colour, hsl_to_rgb(hsl));
+    colour = add_vectors(colour, multiply_vector(scene->a_rgb, scene->a_ratio));
+    colour = divide_vec_scalar(colour, 3);
+    create_hsl(&hsl, colour.x, colour.y, colour.z);
+    hsl.z = bright + scene->a_ratio + (hsl.z / 2);
+    hsl.z /= 2;
+    if (hsl.z > 1)
+        hsl.z = 1;
+    colour = hsl_to_rgb(hsl);
+    return(create_rgb(colour.x, colour.y, colour.z, "combined colours for pixel\n"));
+    //hsl.z = bright + scene->a_ratio + (hsl.z / 2); // zoiets???
+	//if (hsl.z > 1)
+	//	hsl.z = 1;
+    //return (hsl_to_rgb(hsl));
 }

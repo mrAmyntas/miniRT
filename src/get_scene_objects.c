@@ -17,8 +17,9 @@ void	read_pl2(t_scene *scene, char **line, int i, char **coords)
 		ft_error(1, "Wrong number of colours for a plane\n");
 	create_hsl(&scene->pl[i].hsl, ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
 	create_hsl(&scene->pl[i].lsh, 255 - ft_atoi(coords[0]), 255 - ft_atoi(coords[1]), 255 - ft_atoi(coords[2]));
-	scene->pl[i].rgb = create_rgb(ft_atoi(coords[0]),
-			ft_atoi(coords[1]), ft_atoi(coords[2]), ft_strjoin("plane ", ft_itoa(i)));
+	scene->pl[i].rgb.x = ft_atoi(coords[0]);
+	scene->pl[i].rgb.y = ft_atoi(coords[1]);
+	scene->pl[i].rgb.z = ft_atoi(coords[2]);
 	free_strstr(coords);
 }
 
@@ -65,8 +66,9 @@ void	read_sp(t_scene *scene, char **line)
 	create_hsl(&scene->sp[i].lsh, 255 - ft_atoi(coords[0]), 255 - ft_atoi(coords[1]), 255 - ft_atoi(coords[2]));
 	//printf("%i %i, %i %i %i\n", hsl_to_rgb(scene->sp[i].hsl), hsl_to_rgb(scene->sp[i].lsh), 255 - ft_atoi(coords[0]), 255 - ft_atoi(coords[1]), 255 - ft_atoi(coords[2]));
 	// printf("%i %i %i\n", 255 - ft_atoi(coords[0]), 255 - ft_atoi(coords[1]), 255 - ft_atoi(coords[2]));
-	scene->sp[i].rgb = create_rgb(ft_atoi(coords[0]),
-			ft_atoi(coords[1]), ft_atoi(coords[2]), ft_strjoin("sphere ", ft_itoa(i)));
+	scene->sp[i].rgb.x = ft_atoi(coords[0]);
+	scene->sp[i].rgb.y = ft_atoi(coords[1]);
+	scene->sp[i].rgb.z = ft_atoi(coords[2]);
 	i++;
 }
 
@@ -89,8 +91,9 @@ void	read_cy2(t_scene *scene, char **line, int i, char **coords)
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of colours for a cylinder\n");
 	create_hsl(&scene->cy[i].hsl, ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
-	scene->cy[i].rgb = create_rgb(ft_atoi(coords[0]),
-			ft_atoi(coords[1]), ft_atoi(coords[2]), ft_strjoin("cylinder ", ft_itoa(i)));
+	scene->cy[i].rgb.x = ft_atoi(coords[0]);
+	scene->cy[i].rgb.y = ft_atoi(coords[1]);
+	scene->cy[i].rgb.z = ft_atoi(coords[2]);
 	set_i_t(scene, i);
 	set_i_r(scene, i);
 }
@@ -133,8 +136,9 @@ void	read_di2(t_scene *scene, char **line, int i, char **coords)
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of colours for a disc\n");
 	create_hsl(&scene->di[i].hsl, ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
-	scene->di[i].rgb = create_rgb(ft_atoi(coords[0]),
-			ft_atoi(coords[1]), ft_atoi(coords[2]), ft_strjoin("disc ", ft_itoa(i)));
+	scene->di[i].rgb.x = ft_atoi(coords[0]);
+	scene->di[i].rgb.y = ft_atoi(coords[1]);
+	scene->di[i].rgb.z = ft_atoi(coords[2]);
 	free_strstr(coords);
 }
 
@@ -187,8 +191,9 @@ void	read_tor2(t_scene *scene, char **line, int i, char **coords)
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of colours for a torus\n");
 	create_hsl(&scene->tor[i].hsl, ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
-	scene->tor[i].rgb = create_rgb(ft_atoi(coords[0]),
-			ft_atoi(coords[1]), ft_atoi(coords[2]), ft_strjoin("torus ", ft_itoa(i)));
+	scene->tor[i].rgb.x = ft_atoi(coords[0]);
+	scene->tor[i].rgb.y = ft_atoi(coords[1]);
+	scene->tor[i].rgb.z = ft_atoi(coords[2]);
 	free_strstr(coords);
 }
 

@@ -121,6 +121,8 @@ void	calc_light_strength(t_scene *scene, t_vect3d Phit[2], int num[2])
 	scene->light[scene->i].strength = x.specular + x.diffuse;
 	if (scene->light[scene->i].strength < 0)
 		scene->light[scene->i].strength = 0;
+	if (scene->light[scene->i].strength > 1)
+		scene->light[scene->i].strength = 1;
 	x.ray.eye = Phit[0];
 	x.ray.dir = normalize_vector(subtract_vectors(
 				scene->light[scene->i].ori, x.ray.eye));
@@ -152,16 +154,18 @@ int	get_color(t_scene *scene, int num[2], double t, t_vect3d Phit[2])
 		calc_light_strength(scene, Phit, num);
 		scene->i++;
 	}
-	// if (num[0] == SPHERE)
-	// {
-	// 	if (!checkers(scene, Phit[0], num[1]))
-	// 		return (calculate_light(scene->sp[num[1]].lsh, scene));
-	// }
-	if (num[0] == PLANE)
+	if (num[0] == SPHERE)
 	{
-		if (!(((((int)Phit[0].x % 1) * scene->checker[1]) + ((1 - ((int)Phit[0].z % 1)) * scene->checker[0])) % 2))
-			return (calculate_light(scene->pl[num[1]].lsh, scene));
+		if (!checkers(scene, Phit[0], num[1]))
+			return (calculate_light(scene->sp[num[1]].lsh, scene));
 	}
+	//if (num[0] == PLANE)
+	//{
+	//	if (Phit[0].x <= 0 && ((!(((int)Phit[0].x / scene->checker[1]) % 2) && (((int)Phit[0].z / scene->checker[0]) % 2)) || ((((int)Phit[0].x / scene->checker[1]) % 2) && !(((int)Phit[0].z / scene->checker[0]) % 2))))
+	//		return (calculate_light(scene->pl[num[1]].lsh, scene));
+	//	if (Phit[0].x > 0 && (((((int)Phit[0].x / scene->checker[1]) % 2) && (((int)Phit[0].z / scene->checker[0]) % 2)) || (!(((int)Phit[0].x / scene->checker[1]) % 2) && !(((int)Phit[0].z / scene->checker[0]) % 2))))
+	//		return (calculate_light(scene->pl[num[1]].lsh, scene));
+	//}
 	if (num[0] == PLANE)
 		return (calculate_light(scene->pl[num[1]].hsl, scene));
 	else if (num[0] == SPHERE)

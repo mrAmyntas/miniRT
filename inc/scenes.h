@@ -7,7 +7,8 @@ typedef struct s_light
 {
 	double		brightness;
 	t_vect3d	ori;
-	int			color;
+	t_vect3d	color;
+	t_vect3d	hsl;
 	double		Kd;
 	double		Ks;
 	double		strength;
@@ -19,7 +20,7 @@ typedef struct s_cy
 	t_vect3d	dir;
     double  	r;
     double  	height;
-    int     	rgb;
+    t_vect3d	rgb;
 	t_vect3d	hsl;
 	t_matrix44d	I_T;
 	t_matrix44d	I_R;
@@ -32,7 +33,7 @@ typedef struct s_tor
 	t_vect3d	dir;
     double  	R_cir;
     double  	r_tube;
-    int     	rgb;
+    t_vect3d	rgb;
 	t_vect3d	hsl;
 	t_matrix44d	I_T;
 	t_matrix44d	I_R;
@@ -44,7 +45,7 @@ typedef struct s_pl
 {
 	t_vect3d	orth_vec;
 	t_vect3d	coord;
-    int			rgb;
+    t_vect3d	rgb;
 	t_vect3d	hsl;
 	t_vect3d	lsh;
 }				t_pl;
@@ -53,7 +54,7 @@ typedef struct s_di
 {
 	t_vect3d	orth_vec;
 	t_vect3d	coord;
-    int			rgb;
+    t_vect3d	rgb;
 	t_vect3d	hsl;
 	double		r;
 }				t_di;
@@ -61,7 +62,7 @@ typedef struct s_di
 typedef struct s_sp
 {
 	t_vect3d	C;
-    int     	rgb;
+    t_vect3d	rgb;
 	t_vect3d	coord;
 	double		size;
 	t_vect3d	lsh;
@@ -109,7 +110,7 @@ typedef struct s_scene
     int     	amount[6];
     int    		state[3];
 	double 		a_ratio;
-    int    		a_rgb;
+    t_vect3d	a_rgb;
 	t_vect3d	a_hsl;
     double  	c_fov;
 	t_vect3d	current_dir;

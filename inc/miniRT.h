@@ -80,7 +80,7 @@ int			check_if_plane_between_cam_and_light(t_scene *scene, t_vect3d Phit[2]);
 
 // *** COLOUR STUFF *** \\
 
-int    		hsl_to_rgb(t_vect3d hsl);
+t_vect3d    hsl_to_rgb(t_vect3d hsl);
 double		get_saturation(double l, double minmax[2]);
 double 		get_hue(double minmax[2], double r, double g, double b);
 int     	check_shadow(t_ray ray, t_scene *scene);
