@@ -1,7 +1,8 @@
 #include "../inc/miniRT.h"
 
-#define epsil 0.000001
-//compare vectors
+#define EPSIL 0.000001
+
+//compare vectors. if same, true
 bool	compare_vectors(t_vect3d vec1, t_vect3d vec2)
 {
 	double	x;
@@ -17,7 +18,7 @@ bool	compare_vectors(t_vect3d vec1, t_vect3d vec2)
 	z = vec1.z - vec2.z;
 	if (vec1.z < vec2.z)
 		z = vec2.z - vec1.z;
-	if (x < epsil && y < epsil && z < epsil)
+	if (x < EPSIL && y < EPSIL && z < EPSIL)
 		return (true);
 	return (false);
 }
@@ -29,7 +30,7 @@ bool	comp_d(double x, double y)
 		x = x - y;
 	else
 		x = y - x;
-	if (x < epsil)
+	if (x < EPSIL)
 		return (true);
 	return (false);
 }

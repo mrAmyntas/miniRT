@@ -1,11 +1,14 @@
 #include "../inc/miniRT.h"
 #include "../inc/vectors.h"
 
+//calculated the magnitude of a vector
+//(the length of the arrow)
 double	magnitude(t_vect3d vec)
 {
-	return(sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z));
+	return (sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z));
 }
 
+//rotates a ray with the inverted rotation matrix
 void	rotate_ray(t_ray *ray, t_matrix44d I_R)
 {
 	t_vec4d	new_ray_eye;
@@ -30,7 +33,11 @@ void	rotate_ray(t_ray *ray, t_matrix44d I_R)
 	normalize_vector(ray->dir);
 }
 
-void	rotate_normal(t_vect3d *N, t_matrix44d I_R)
+//for torus the normal is calculated with the torus being
+//in the origin, aligned along the x-z-axis
+//so it needs to be rotated to get the normal in 3d space
+//it uses the non-inverted rotation matrix
+void	rotate_normal(t_vect3d *N, t_matrix44d R)
 {
 	t_vec4d	new_ray_dir;
 
@@ -38,13 +45,14 @@ void	rotate_normal(t_vect3d *N, t_matrix44d I_R)
 	new_ray_dir.y = N->y;
 	new_ray_dir.z = N->z;
 	new_ray_dir.t = 0;
-	new_ray_dir = matrix44d_x_vert4d(I_R, new_ray_dir);
+	new_ray_dir = matrix44d_x_vert4d(R, new_ray_dir);
 	N->x = new_ray_dir.x;
 	N->y = new_ray_dir.y;
 	N->z = new_ray_dir.z;
 	normalize_vector(*N);
 }
 
+//coordinate translation of the ray
 void	translate_ray(t_vect3d *eye, t_matrix44d I_T)
 {
 	t_vec4d	new_eye;
@@ -59,32 +67,16 @@ void	translate_ray(t_vect3d *eye, t_matrix44d I_T)
 	eye->z = new_eye.z;
 }
 
-//translation and rotation of ray and set z-min and z-max.
-//the cylinder intersect points are calculated as if it's 
-//origin is in the world origin, aligned along the z-axis
-//so the ray which comes from the camera in world space
-//needs to be translated and rotated with the inverse of
-//the translation and rotation that the cylinder has compared
-//to its origin position.
-//z_m[0] is z_min is 0, z_m[1] is z_max is the height
-void	transform_ray(t_scene *scene, t_ray *ray, int *num, double z_m[2])
-{
-	z_m[0] = 0;
-	z_m[1] = scene->cy[*num].height;
-	translate_ray(&ray->eye, scene->cy[*num].I_T);
-	rotate_ray(ray, scene->cy[*num].I_R);
-}
-
 //returns a ray with its eye same as the camera and
 //direction towards the pixelcoords x and y
-t_ray	get_ray(t_scene *scene, t_data *data, double x, double y)
+t_ray	get_ray(t_scene *scene, double x, double y)
 {
-	scene->r.tmp = add_vectors(scene->r.viewPlaneBottomLeftPoint,
-			multiply_vector(scene->r.xIncVector, x));
-	scene->r.ViewPlanePoint = add_vectors(
-			scene->r.tmp, multiply_vector(scene->r.yIncVector, y));
+	scene->r.tmp = add_vectors(scene->r.viewplanebottomleftpoint,
+			multiply_vector(scene->r.x_inc_vector, x));
+	scene->r.viewplanepoint = add_vectors(
+			scene->r.tmp, multiply_vector(scene->r.y_inc_vector, y));
 	scene->r.ray.eye = scene->cam->eye;
 	scene->r.ray.dir = normalize_vector(
-			subtract_vectors(scene->r.ViewPlanePoint, scene->cam->eye));
+			subtract_vectors(scene->r.viewplanepoint, scene->cam->eye));
 	return (scene->r.ray);
 }

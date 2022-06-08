@@ -65,7 +65,7 @@ double	find_intersect(t_ray *ray, t_cy_data cy, int *cap, int set_cap)
 		if (cy.t[3] < cy.t[0] && cy.t[3] > 0)
 		{
 			if (set_cap == 1)
-				*cap = TOP;			
+				*cap = TOP;
 			return (cy.t[3]);
 		}
 	}
@@ -74,29 +74,57 @@ double	find_intersect(t_ray *ray, t_cy_data cy, int *cap, int set_cap)
 	return (cy.t[0]);
 }
 
-//both t_values are outside the z_range of the finite sphere here
-//but there might still be legit intersect points, because it could be
-//that the rays go through a cap.
-//------*-> O=====O ---*--->(goes through and hits sides outside z min/max)
-double	find_intersect_cap(t_ray *ray, t_cy_data cy, int *cap, int set_cap)
+//calculates t_values for top cap and bot cap(which is in ori)
+//(P - Q) dot (P - Q) <= r^2 for hitting cap so calculating
+//P-Q for both t_values in tmp0 and tmp1
+static int	calc_t(t_scene *scene, double *t, t_vect3d *tmp, t_ray *ray)
 {
-	if (set_cap == 1)
-		*cap = BOT;
-	if ((cy.z[0] < cy.z_m[0] && cy.z[1] > cy.z_m[0])
-		|| (cy.z[1] < cy.z_m[0] && cy.z[0] > cy.z_m[0]))
-		cy.t[2] = (cy.z_m[0] - ray->eye.z) / ray->dir.z;
-	if ((cy.z[0] < cy.z_m[1] && cy.z[1] > cy.z_m[1])
-		|| (cy.z[1] < cy.z_m[1] && cy.z[0] > cy.z_m[1]))
-		cy.t[3] = (cy.z_m[1] - ray->eye.z) / ray->dir.z;
-	if (cy.t[2] > 0 && (cy.t[2] < cy.t[3] || cy.t[3] < 0))
-		return (cy.t[2]);
-	else if (cy.t[3] > 0)
+	t_vect3d	top;
+
+	top = scene->origin;
+	if (dot_product(scene->ori_dir, ray->dir) == 0)
+		return (-1);
+	tmp[0] = subtract_vectors(top, ray->eye);
+	top.z = t[0];
+	tmp[1] = subtract_vectors(top, ray->eye);
+	t[0] = (dot_product(scene->ori_dir, tmp[0]))
+		/ (dot_product(scene->ori_dir, ray->dir));
+	t[1] = (dot_product(scene->ori_dir, tmp[1]))
+		/ (dot_product(scene->ori_dir, ray->dir));
+	tmp[0] = add_vectors(ray->eye, multiply_vector(ray->dir, t[0]));
+	tmp[0] = subtract_vectors(tmp[0], scene->origin);
+	tmp[1] = add_vectors(ray->eye, multiply_vector(ray->dir, t[1]));
+	tmp[1] = subtract_vectors(tmp[1], top);
+	return (0);
+}
+
+//calculates if ray hits the cap (basically a disc)
+//this would be missed if ray doesnt hit sides within
+//valid z ranges
+//setting t[2] to radius squared for convenience/norm
+double	find_caps(t_scene *scene, int *num, t_ray *ray, int cap)
+{
+	t_vect3d	tmp[2];
+	double		t[3];
+
+	t[0] = scene->cy[*num].height;
+	t[2] = pow(scene->cy[*num].r, 2);
+	if (calc_t(scene, t, tmp, ray) == -1)
+		return (-1);
+	if ((t[0] > 0 && dot_product(tmp[0], tmp[0]) <= t[2] && (t[0] < t[1]
+				|| t[1] < 0 || (dot_product(tmp[1], tmp[1]) > t[2]))))
 	{
-		if (set_cap == 1)
-			*cap = TOP;			
-		return (cy.t[3]);
+		if (cap == 1)
+			scene->cy[*num].cap = BOT;
+		return (t[0]);
 	}
-	if (set_cap == 1)
-		*cap = NOT;
+	if (t[1] > 0 && dot_product(tmp[1], tmp[1]) <= t[2])
+	{
+		if (cap == 1)
+			scene->cy[*num].cap = TOP;
+		return (t[1]);
+	}
+	if (cap == 1)
+		scene->cy[*num].cap = NOT;
 	return (-1);
 }
