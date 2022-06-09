@@ -141,7 +141,7 @@ int	set_scene(t_scene *scene, char *name)
 	scene->ori_dir.y = 0;
 	scene->ori_dir.z = 1;
 	scene->checker[0] = 5;
-	scene->checker[1] = 2 * scene->checker[0];
+	scene->checker[1] = 1 * scene->checker[0];
 	fd = open(name, O_RDONLY);
 	if (fd < 0)
 		ft_error(-1, "Open failed");
