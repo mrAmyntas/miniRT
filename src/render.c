@@ -75,82 +75,6 @@ bool	checkers(t_scene *scene, t_vect3d Phit, int num)
 		return (true);
 }
 
-int	checkers3(t_scene *scene, t_vect3d Phit, int num)
-{
-	t_vect3d	B;
-	t_vect3d	A;
-	t_vect3d	u2;
-	t_vect3d	v2;
-	t_vect3d	l;
-	double		u;
-	double		v;
-	double		angle;
-	int			c = 0;
-	double		angle2;
-
-	A = scene->pl[num].orth_vec;
-	B = A;
-	if (comp_d(B.x, 0.0))
-		B.x = B.x + 0.1;
-	else if (comp_d(B.y, 0.0))
-		B.y = B.y + 0.1;
-	else if (comp_d(B.z, 0.0))
-		B.z = B.z + 0.1;
-	else
-		B.x = B.x + 1;
-	u2 = normalize_vector(cross_product(A, B));
-	v2 = normalize_vector(cross_product(u2, A));
-	l = subtract_vectors(Phit, scene->pl[num].coord);
-	angle = acos(dot_product(l, u2) / magnitude(l));
-	angle2 = acos(dot_product(l, v2) / magnitude(l));
-	if (comp_d(angle, 0.0))
-	{
-		u = magnitude(l);
-		v = 0;
-	}
-	else if (comp_d(angle, 1.5707963268))
-	{
-		u = 0;
-		v = magnitude(l);
-	}
-	else
-	{
-		if (angle > 1.5707963268)
-		{
-			u2 = multiply_vector(u2, -1);
-			angle = acos(dot_product(l, u2) / magnitude(l));
-			c = 1;
-		}
-		if (angle2 < 1.5707963268)
-		{
-			if (c == 1)
-				c = 0;
-			else
-				c = 1;			
-		}
-		u = cos(angle) * magnitude(l);
-		v = sin(angle) * magnitude(l);
-	}
-	int u1 = u / scene->checker[1];
-	u1 = u1 % 2;
-	int v0 = v / scene->checker[0];
-	v0 = v0 % 2;
-
-	if (c == 0)
-	{
-		if ((u1 && v0) || (!u1 && !v0))
-			return (calculate_light(scene->pl[num].lsh, scene));
-		return (calculate_light(scene->pl[num].hsl, scene));
-	}
-	else
-	{
-		if ((u1 && v0) || (!u1 && !v0))
-			return (calculate_light(scene->pl[num].hsl, scene));
-		return (calculate_light(scene->pl[num].lsh, scene));
-	}
-}
-
-
 // sets the ray from Phit to light
 // and returns the colour of the  pixel with the right lumination
 int	get_color(t_scene *scene, int num[2], t_vect3d Phit[2])
@@ -167,7 +91,7 @@ int	get_color(t_scene *scene, int num[2], t_vect3d Phit[2])
 			return (calculate_light(scene->sp[num[1]].lsh, scene));
 	}
 	if (num[0] == PLANE)
-		return (checkers3(scene, Phit[0], num[1]));
+		return (checkerboard_pl(scene, Phit[0], num[1]));
 	else if (num[0] == SPHERE)
 		return (calculate_light(scene->sp[num[1]].hsl, scene));
 	else if (num[0] == CYLINDER)
@@ -175,7 +99,11 @@ int	get_color(t_scene *scene, int num[2], t_vect3d Phit[2])
 	else if (num[0] == DISC)
 		return (calculate_light(scene->di[num[1]].hsl, scene));
 	else if (num[0] == TORUS)
-		return (calculate_light(scene->tor[num[1]].hsl, scene));
+	{
+		if (scene->tor[num[1]].checker == 0)
+			return (calculate_light(scene->tor[num[1]].hsl, scene));
+		return (calculate_light(scene->tor[num[1]].lsh, scene));
+	}
 	return (-1);
 }
 
@@ -199,6 +127,7 @@ void	set_pixel(t_data *data, t_scene *scene, int x, int y)
 		color = get_color(scene, num, phit);
 		if (isnan(color))
 			color = 0xFFFFFFFF;
+		// memset(data->mlx_img->pixels, color, data->mlx_img->width * data->mlx_img->height * sizeof(int));
 		mlx_put_pixel(data->mlx_img, (data->width - x),
 			(data->height - y), color);
 	}

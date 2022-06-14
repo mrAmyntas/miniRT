@@ -182,10 +182,13 @@ void	read_tor2(t_scene *scene, char **line, int i, char **coords)
 	free_strstr(coords);
 	scene->tor[i].R_cir = ft_atod(line[3]);
 	scene->tor[i].r_tube = ft_atod(line[4]);
+	if (scene->tor[i].R_cir < scene->tor[i].r_tube)
+		ft_error(1, "Radius of circle has to be bigger then radius of tube\n");
 	coords = ft_split(line[5], ',');
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of colours for a torus\n");
 	create_hsl(&scene->tor[i].hsl, ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
+	create_hsl(&scene->tor[i].lsh, 255 - ft_atoi(coords[0]), 255 - ft_atoi(coords[1]), 255 - ft_atoi(coords[2]));
 	scene->tor[i].rgb.x = ft_atoi(coords[0]);
 	scene->tor[i].rgb.y = ft_atoi(coords[1]);
 	scene->tor[i].rgb.z = ft_atoi(coords[2]);
@@ -213,5 +216,6 @@ void	read_tor(t_scene *scene, char **line)
 	set_i_t(&scene->tor[i].coord, &scene->tor[i].i_t);
 	set_i_r(&scene->tor[i].dir, &scene->tor[i].i_r);
 	set_r_tor(scene, i);
+	scene->tor[i].checker = 0;
 	i++;
 }

@@ -35,10 +35,12 @@ typedef struct s_tor
     double  	r_tube;
     t_vect3d	rgb;
 	t_vect3d	hsl;
+	t_vect3d	lsh;
 	t_matrix44d	i_t;
 	t_matrix44d	i_r;
 	t_matrix44d	r;
 	t_vect3d	n;
+	int			checker;
 }				t_tor;
 
 typedef struct s_pl

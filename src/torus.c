@@ -46,18 +46,79 @@ static int	calc_t(t_scene *scene, t_ray *ray, int *num, double *t)
 	return (0);
 }
 
-static void	set_values(t_ray *ori_ray, t_ray *ray, double *t)
+//finds which points are on/off checker pattern
+//takes inner circle (r = centre to side of tube)
+//starts from middle top, and takes the length
+//from there anti-clockwise around the circle to
+//decide in/out pattern.
+static int	big_circle(t_scene *scene, t_ray *ray, int *num,
+	t_vect3d phit)
 {
-	ori_ray->dir.x = ray->dir.x;
-	ori_ray->dir.y = ray->dir.y;
-	ori_ray->dir.z = ray->dir.z;
-	ori_ray->eye.x = ray->eye.x;
-	ori_ray->eye.y = ray->eye.y;
-	ori_ray->eye.z = ray->eye.z;
-	t[0] = -1;
-	t[1] = -1;
-	t[2] = -1;
-	t[3] = -1;
+	t_vect3d	up;
+	double		angle;
+	double		arclen;
+	double		radius;
+
+	up.x = 0.0;
+	up.y = 1.0;
+	up.z = 0.0;
+	radius = scene->tor[*num].R_cir - scene->tor[*num].r_tube;
+	angle = acos(dot_product(up, ray->dir) / magnitude(ray->dir));
+	if (comp_d(angle, 0.0))
+		return (0);
+	if (phit.x >= 0)
+		angle = M_PI * 2 - angle;
+	arclen = angle * radius;
+	if ((int)(arclen / (2 * M_PI * radius / scene->checker[0])) % 2)
+		return (1);
+	return (0);
+}
+
+static int	tube_circle(t_scene *scene, int *num,
+	t_ray *ray, t_vect3d phit)
+{
+	t_vect3d	side;
+	double		angle;
+	double		arclen;
+
+	side = ray->dir;
+	ray->dir = normalize_vector(ray->dir);
+	ray->eye = add_vectors(scene->origin,
+			multiply_vector(ray->dir, scene->tor[*num].R_cir));
+	ray->dir = subtract_vectors(phit, ray->eye);
+	// printf("side:%f %f %f    dir:%f %f %f\n", side.x, side.y, side.z, ray->dir.x, ray->dir.y, ray->dir.z);
+	angle = acos(dot_product(side, ray->dir) / (magnitude(side) * magnitude(ray->dir)));
+	// if (angle < 3)
+	// printf("angle:%f\n", angle);
+	if (comp_d(angle, 0.0))
+		return (0);
+	if (phit.z <= 0.0)
+		angle = M_PI * 2 - angle;
+	arclen = angle * scene->tor[*num].r_tube;
+	// printf("len:%f    angle:%f\n", arclen, angle);
+	if ((int)(arclen / (2 * M_PI * scene->tor[*num].r_tube / scene->checker[1])) % 2)
+		return (1);
+	return (0);
+}
+
+static void	set_checkerboard(t_scene *scene, t_ray *ray, int *num,
+	t_vect3d phit)
+{
+	int	check;
+
+	ray->eye = scene->origin;
+	ray->dir = subtract_vectors(phit, ray->eye);
+	ray->dir.z = 0;
+	check = big_circle(scene, ray, num, phit);
+	if (check == 1)
+		scene->tor[*num].checker = 1;
+	else
+		scene->tor[*num].checker = 0;
+	check = tube_circle(scene, num, ray, phit);
+	if ((check == 1 && scene->tor[*num].checker == 1) || (check == 0 && scene->tor[*num].checker == 0))
+		scene->tor[*num].checker = 1;
+	else
+		scene->tor[*num].checker = 0;
 }
 
 static double	find_closest_tor(t_scene *scene, t_ray *ray,
@@ -65,9 +126,12 @@ static double	find_closest_tor(t_scene *scene, t_ray *ray,
 {
 	double		t[4];
 	int			ret;
-	t_ray		ori_ray;
+	t_vect3d	phit;
 
-	set_values(&ori_ray, ray, t);
+	t[0] = -1;
+	t[1] = -1;
+	t[2] = -1;
+	t[3] = -1;
 	translate_ray(&ray->eye, scene->tor[*num].i_t);
 	rotate_ray(ray, scene->tor[*num].i_r);
 	if (calc_t(scene, ray, num, t) == -1)
@@ -75,8 +139,13 @@ static double	find_closest_tor(t_scene *scene, t_ray *ray,
 	ret = find_smallest(t, 1, 4);
 	if (ret < 0)
 		return (-1);
+	phit = add_vectors(ray->eye, multiply_vector(ray->dir, t[ret]));
 	if (set_N == 1)
-		set_normal(scene, ray, num, t[ret]);
+	{
+		// printf("e:%f %f %f    d:%f %f %f\n", ray->eye.x, ray->eye.y, ray->eye.z, ray->dir.x, ray->dir.y, ray->dir.z);
+		set_checkerboard(scene, ray, num, phit);
+		set_normal(scene, num, phit);
+	}
 	return (t[ret]);
 }
 
