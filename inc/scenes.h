@@ -22,9 +22,11 @@ typedef struct s_cy
     double  	height;
     t_vect3d	rgb;
 	t_vect3d	hsl;
+	t_vect3d	lsh;
 	t_matrix44d	i_t;
 	t_matrix44d	i_r;
 	int			cap;
+	int			checker;
 }				t_cy;
 
 typedef struct s_tor
@@ -50,6 +52,7 @@ typedef struct s_pl
     t_vect3d	rgb;
 	t_vect3d	hsl;
 	t_vect3d	lsh;
+	int			checker;
 }				t_pl;
 
 typedef struct s_di
@@ -58,7 +61,9 @@ typedef struct s_di
 	t_vect3d	coord;
     t_vect3d	rgb;
 	t_vect3d	hsl;
+	t_vect3d	lsh;
 	double		r;
+	int			checker;
 }				t_di;
 
 typedef struct s_sp
@@ -69,6 +74,7 @@ typedef struct s_sp
 	double		size;
 	t_vect3d	lsh;
 	t_vect3d	hsl;
+	int			checker;
 }				t_sp;
 
 typedef struct s_ray {
@@ -143,7 +149,7 @@ typedef struct s_scene
 	t_vect3d	origin;
 	t_vect3d	ori_dir;
 	t_ray_data	r;
-	int			checker[2];
+	int			checkerboard[3];
 }				t_scene;
 
 enum	e_cy_cap
@@ -151,6 +157,13 @@ enum	e_cy_cap
 	NOT,
 	BOT,
 	TOP
+};
+
+enum	e_checkerboard
+{
+	ON,
+	WIDTH,
+	HEIGHT
 };
 
 // read objects

@@ -1,6 +1,42 @@
 #include "inc/miniRT.h"
 
 
+typedef struct s_obj1
+{
+	t_pl		*pl;
+	t_sp		*sp;
+	t_cy		*cy;
+	t_di		*di;
+	t_tor		*tor;
+}				t_obj1;
+
+typedef struct s_scene1
+{
+	int			i;
+    int     	amount[6];
+    int    		state[3];
+	double 		a_ratio;
+    t_vect3d	a_rgb;
+	t_vect3d	a_hsl;
+	double		c_fov;
+	t_vect3d	current_dir;
+	t_ray		*cam;
+	t_ray		ray_cam;
+	t_obj		**obj;
+	t_pl		*pl;
+	t_sp		*sp;
+	t_cy		*cy;
+	t_di		*di;
+	t_tor		*tor;
+	t_light		*light;
+	t_vect3d	origin;
+	t_vect3d	ori_dir;
+	t_ray_data	r;
+	int			checkerboard[3];
+}				t_scene1;
+
+
+
 bool	incr(int *num)
 {
 	*num = *num + 1;
@@ -31,6 +67,12 @@ void	hook(void *param)
 
 int32_t	main(void)
 {
+
+
+
+
+
+
 	mlx_t	*mlx;
 
 	mlx = mlx_init(WIDTH, HEIGHT, "MLX42", true);

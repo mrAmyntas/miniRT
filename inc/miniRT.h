@@ -73,12 +73,12 @@ void	rotate_normal(t_vect3d *N, t_matrix44d I_R);
 
 // *** SPHERE STUFF *** 
 
-int		find_hit_sphere(t_scene *scene, t_ray *ray, int count, double *close_t);
+double	find_hit_sphere(t_scene *scene, t_ray *ray, int *num, int set);
 double	get_sp_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N);
 
 // *** PLANE STUFF *** 
 
-double	find_hit_pl(t_scene *scene, t_ray *ray, int *num);
+double	find_hit_pl(t_scene *scene, t_ray *ray, int *num, int set);
 double	get_pl_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N);
 int		check_if_plane_between_cam_and_light(t_scene *scene, t_vect3d Phit[2]);
 int		checkerboard_pl(t_scene *scene, t_vect3d Phit, int num);

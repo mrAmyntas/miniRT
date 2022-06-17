@@ -69,7 +69,7 @@ static int	big_circle(t_scene *scene, t_ray *ray, int *num,
 	if (phit.x >= 0)
 		angle = M_PI * 2 - angle;
 	arclen = angle * radius;
-	if ((int)(arclen / (2 * M_PI * radius / scene->checker[0])) % 2)
+	if ((int)(arclen / (2 * M_PI * radius / scene->checkerboard[HEIGHT])) % 2)
 		return (1);
 	return (0);
 }
@@ -86,17 +86,13 @@ static int	tube_circle(t_scene *scene, int *num,
 	ray->eye = add_vectors(scene->origin,
 			multiply_vector(ray->dir, scene->tor[*num].R_cir));
 	ray->dir = subtract_vectors(phit, ray->eye);
-	// printf("side:%f %f %f    dir:%f %f %f\n", side.x, side.y, side.z, ray->dir.x, ray->dir.y, ray->dir.z);
 	angle = acos(dot_product(side, ray->dir) / (magnitude(side) * magnitude(ray->dir)));
-	// if (angle < 3)
-	// printf("angle:%f\n", angle);
 	if (comp_d(angle, 0.0))
 		return (0);
 	if (phit.z <= 0.0)
 		angle = M_PI * 2 - angle;
 	arclen = angle * scene->tor[*num].r_tube;
-	// printf("len:%f    angle:%f\n", arclen, angle);
-	if ((int)(arclen / (2 * M_PI * scene->tor[*num].r_tube / scene->checker[1])) % 2)
+	if ((int)(arclen / (2 * M_PI * scene->tor[*num].r_tube / scene->checkerboard[WIDTH])) % 2)
 		return (1);
 	return (0);
 }
@@ -115,7 +111,8 @@ static void	set_checkerboard(t_scene *scene, t_ray *ray, int *num,
 	else
 		scene->tor[*num].checker = 0;
 	check = tube_circle(scene, num, ray, phit);
-	if ((check == 1 && scene->tor[*num].checker == 1) || (check == 0 && scene->tor[*num].checker == 0))
+	if ((check == 1 && scene->tor[*num].checker == 1)
+		|| (check == 0 && scene->tor[*num].checker == 0))
 		scene->tor[*num].checker = 1;
 	else
 		scene->tor[*num].checker = 0;
@@ -142,8 +139,8 @@ static double	find_closest_tor(t_scene *scene, t_ray *ray,
 	phit = add_vectors(ray->eye, multiply_vector(ray->dir, t[ret]));
 	if (set_N == 1)
 	{
-		// printf("e:%f %f %f    d:%f %f %f\n", ray->eye.x, ray->eye.y, ray->eye.z, ray->dir.x, ray->dir.y, ray->dir.z);
-		set_checkerboard(scene, ray, num, phit);
+		if (scene->checkerboard[ON] == true)
+			set_checkerboard(scene, ray, num, phit);
 		set_normal(scene, num, phit);
 	}
 	return (t[ret]);

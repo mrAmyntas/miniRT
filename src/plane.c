@@ -9,10 +9,10 @@ int	check_if_plane_between_cam_and_light(t_scene *scene, t_vect3d Phit[2])
 
 	ray.eye = scene->light->ori;
 	ray.dir = normalize_vector(subtract_vectors(Phit[0], ray.eye));
-	t2[0] = find_hit_pl(scene, &ray, &num2);
+	t2[0] = find_hit_pl(scene, &ray, &num2, 0);
 	ray.eye = scene->cam->eye;
 	ray.dir = normalize_vector(subtract_vectors(scene->light->ori, ray.eye));
-	t2[1] = find_hit_pl(scene, &ray, &num3);
+	t2[1] = find_hit_pl(scene, &ray, &num3, 0);
 	if (t2[1] > 0 && num2 == num3 && t2[1]
 		< distance_two_points(scene->cam->eye, scene->light->ori))
 		return (0);
@@ -86,10 +86,11 @@ static void	calc_t(t_scene *scene, t_ray *ray, int *num, double *t)
 
 //check if the camera ray will hit with the plane[num]
 //num is set to closest planes num, distance is returned.
-double	find_hit_pl(t_scene *scene, t_ray *ray, int *num)
+double	find_hit_pl(t_scene *scene, t_ray *ray, int *num, int set)
 {
 	double		*t;
 	double		ret;
+	t_vect3d	phit;
 
 	t = malloc(sizeof(double) * scene->amount[PLANE]);
 	calc_t(scene, ray, num, t);
@@ -98,6 +99,12 @@ double	find_hit_pl(t_scene *scene, t_ray *ray, int *num)
 	{
 		ret = t[*num];
 		free (t);
+		if (scene->checkerboard[ON] == true && set == 1)
+		{
+			phit = add_vectors(scene->ray_cam.eye,
+					multiply_vector(scene->ray_cam.dir, ret));
+			scene->pl[*num].checker = checkerboard_pl(scene, phit, *num);
+		}
 		return (ret);
 	}
 	free (t);
@@ -160,20 +167,20 @@ int	checkerboard_pl(t_scene *scene, t_vect3d Phit, int num)
 		u = cos(angle) * magnitude(l);
 		v = sin(angle) * magnitude(l);
 	}
-	int u1 = u / scene->checker[1];
+	int u1 = u / scene->checkerboard[HEIGHT];
 	u1 = u1 % 2;
-	int v0 = v / scene->checker[0];
+	int v0 = v / scene->checkerboard[WIDTH];
 	v0 = v0 % 2;
 	if (c == 0)
 	{
 		if ((u1 && v0) || (!u1 && !v0))
-			return (calculate_light(scene->pl[num].lsh, scene));
-		return (calculate_light(scene->pl[num].hsl, scene));
+			return (0);
+		return (1);
 	}
 	else
 	{
 		if ((u1 && v0) || (!u1 && !v0))
-			return (calculate_light(scene->pl[num].hsl, scene));
-		return (calculate_light(scene->pl[num].lsh, scene));
+			return (1);
+		return (0);
 	}
 }
