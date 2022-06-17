@@ -32,7 +32,7 @@ typedef struct s_scene1
 	t_vect3d	origin;
 	t_vect3d	ori_dir;
 	t_ray_data	r;
-	int			checkerboard[3];
+	int			cb[3];
 }				t_scene1;
 
 

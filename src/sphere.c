@@ -52,8 +52,8 @@ int	checkers(t_scene *scene, double t, int num)
 	phit = subtract_vectors(phit, scene->sp[num].C);
 	u = 1 - (atan2(phit.x, phit.z) / (2 * M_PI) + 0.5);
 	v = 1 - (acos(phit.y / (scene->sp[num].size / 2)) / M_PI);
-	if (!(((int)(u * scene->checkerboard[WIDTH])
-			+ (int)(v * scene->checkerboard[HEIGHT])) % 2))
+	if (!(((int)(u * scene->cb[W])
+			+ (int)(v * scene->cb[H])) % 2))
 		return (0);
 	else
 		return (1);
@@ -80,7 +80,7 @@ double	find_hit_sphere(t_scene *scene, t_ray *ray, int *num, int set)
 		}
         i++;
 	}
-	if (scene->checkerboard[ON] == true && set == 1 && close_t != -1)
+	if (scene->cb[ON] == true && set == 1 && close_t != -1)
 		scene->sp[*num].checker = checkers(scene, close_t, *num);
 	return (close_t);
 }

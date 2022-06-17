@@ -69,9 +69,9 @@ int	main(int argc, char **argv)
 	if (argc != 2)
 		ft_error(1, "Invalid amount of arguments\n");
 	read_scene(&scene, argv[1]);
-	scene.checkerboard[ON] = true;
-	scene.checkerboard[WIDTH] = 6;
-	scene.checkerboard[HEIGHT] = 6;
+	scene.cb[ON] = true;
+	scene.cb[W] = 6;
+	scene.cb[H] = 6;
 	data.mlx = mlx_init(data.width, data.height, "MiniRT", true);
 	if (!data.mlx)
 		exit(EXIT_FAILURE);

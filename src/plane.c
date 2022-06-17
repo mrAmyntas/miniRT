@@ -99,7 +99,7 @@ double	find_hit_pl(t_scene *scene, t_ray *ray, int *num, int set)
 	{
 		ret = t[*num];
 		free (t);
-		if (scene->checkerboard[ON] == true && set == 1)
+		if (scene->cb[ON] == true && set == 1)
 		{
 			phit = add_vectors(scene->ray_cam.eye,
 					multiply_vector(scene->ray_cam.dir, ret));
@@ -111,76 +111,121 @@ double	find_hit_pl(t_scene *scene, t_ray *ray, int *num, int set)
 	return (-1);
 }
 
+void	set_axis(t_vect3d *axis, t_scene *scene, int num)
+{
+	t_vect3d	a;
+	t_vect3d	b;
+	t_vect3d	l;
+
+	a = scene->pl[num].orth_vec;
+	b = a;
+	if (comp_d(b.x, 0.0))
+		b.x = b.x + 0.1;
+	else if (comp_d(b.y, 0.0))
+		b.y = b.y + 0.1;
+	else if (comp_d(b.z, 0.0))
+		b.z = b.z + 0.1;
+	else
+		b.x = b.x + 1;
+	axis[0] = normalize_vector(cross_product(a, b));
+	axis[1] = normalize_vector(cross_product(axis[0], a));
+}
+
+void	find_angles(double *angle, t_vect3d l, t_vect3d *axis)
+{
+	angle[0] = acos(dot_product(l, axis[0]) / magnitude(l));
+	angle[1] = acos(dot_product(l, axis[1]) / magnitude(l));
+}
+
+//u len 0
+// v len 1
+int	find_lenghts(t_vect3d l, t_vect3d *axis, double *angle, double *len)
+{
+	int	c;
+
+	c = 0;
+	if (angle[0] > 1.5707963268)
+	{
+		axis[0] = multiply_vector(axis[0], -1);
+		angle[0] = acos(dot_product(l, axis[0]) / magnitude(l));
+		c = 1;
+	}
+	if (angle[1] < 1.5707963268)
+		c = c + 2;
+	len[0] = cos(angle[0]) * magnitude(l);
+	len[1] = sin(angle[0]) * magnitude(l);
+	if (c == 0 || c == 3)
+		return (1);
+	return (0);
+}
+
+//checks which color pattern the current Phit has
+//either returns 1 or 0
+//the distances in 2 perpendicular directions are calculated
+//both those directions are also perpendicular to the plane 
+//vector, so it is like a 3d axis system.
+//Based on the distance the point is in these 2 directions
+//relative to the original plane coordinates,
+//it is either part of a normal or reversed color pattern.
 int	checkerboard_pl(t_scene *scene, t_vect3d Phit, int num)
 {
-	t_vect3d	B;
-	t_vect3d	A;
-	t_vect3d	u2;
-	t_vect3d	v2;
 	t_vect3d	l;
-	double		u;
-	double		v;
-	double		angle;
-	int			c = 0;
-	double		angle2;
+	t_vect3d	axis[2];
+	double		angle[2];
+	double		len[2];
 
-	A = scene->pl[num].orth_vec;
-	B = A;
-	if (comp_d(B.x, 0.0))
-		B.x = B.x + 0.1;
-	else if (comp_d(B.y, 0.0))
-		B.y = B.y + 0.1;
-	else if (comp_d(B.z, 0.0))
-		B.z = B.z + 0.1;
-	else
-		B.x = B.x + 1;
-	u2 = normalize_vector(cross_product(A, B));
-	v2 = normalize_vector(cross_product(u2, A));
+	len[0] = 0;
+	len[1] = 0;
+	set_axis(axis, scene, num);
 	l = subtract_vectors(Phit, scene->pl[num].coord);
-	angle = acos(dot_product(l, u2) / magnitude(l));
-	angle2 = acos(dot_product(l, v2) / magnitude(l));
-	if (comp_d(angle, 0.0))
+	find_angles(angle, l, axis);
+	if (find_lenghts(l, axis, angle, len) == 1)
 	{
-		u = magnitude(l);
-		v = 0;
-	}
-	else if (comp_d(angle, 1.5707963268))
-	{
-		u = 0;
-		v = magnitude(l);
-	}
-	else
-	{
-		if (angle > 1.5707963268)
-		{
-			u2 = multiply_vector(u2, -1);
-			angle = acos(dot_product(l, u2) / magnitude(l));
-			c = 1;
-		}
-		if (angle2 < 1.5707963268)
-		{
-			if (c == 1)
-				c = 0;
-			else
-				c = 1;			
-		}
-		u = cos(angle) * magnitude(l);
-		v = sin(angle) * magnitude(l);
-	}
-	int u1 = u / scene->checkerboard[HEIGHT];
-	u1 = u1 % 2;
-	int v0 = v / scene->checkerboard[WIDTH];
-	v0 = v0 % 2;
-	if (c == 0)
-	{
-		if ((u1 && v0) || (!u1 && !v0))
+		if ((((int)(len[0] / scene->cb[H]) % 2) && ((int)(len[1] / scene->cb[W])
+			% 2)) || (!((int)(len[0] / scene->cb[H]) % 2) && !((int)(len[1]
+			/ scene->cb[W]) % 2)))
 			return (0);
 		return (1);
 	}
-	else
-	{
-		if ((u1 && v0) || (!u1 && !v0))
-			return (1);
-		return (0);
-	}
+	if ((((int)(len[0] / scene->cb[H]) % 2) && ((int)(len[1] / scene->cb[W])
+		% 2)) || (!((int)(len[0] / scene->cb[H]) % 2) && !((int)(len[1]
+			/ scene->cb[W]) % 2)))
+		return (1);
+	return (0);
 }
+
+	// if (comp_d(angle[0], 0.0))
+	// {
+	// 	u = magnitude(l);
+	// 	v = 0;
+	// }
+	// else if (comp_d(angle[0], 1.5707963268))
+	// {
+	// 	u = 0;
+	// 	v = magnitude(l);
+	// }
+	// else
+	// {
+	// 	if (angle[0] > 1.5707963268)
+	// 	{
+	// 		axis[0] = multiply_vector(axis[0], -1);
+	// 		angle[0] = acos(dot_product(l, axis[0]) / magnitude(l));
+	// 		c = 1;
+	// 	}
+	// 	if (angle[1] < 1.5707963268)
+	// 	{
+	// 		if (c == 1)
+	// 			c = 0;
+	// 		else
+	// 			c = 1;
+	// 	}
+	// 	u = cos(angle[0]) * magnitude(l);
+	// 	v = sin(angle[0]) * magnitude(l);
+	// }
+
+
+	// if (comp_d(angle[0], 0.0))
+	// 	len[0] = magnitude(l);
+	// else if (comp_d(angle[0], 1.5707963268))
+	// 	len[1] = magnitude(l);
+	// else

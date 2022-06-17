@@ -131,10 +131,10 @@ typedef struct s_solve_quartic
 typedef struct s_scene
 {
 	int			i;
-    int     	amount[6];
-    int    		state[3];
-	double 		a_ratio;
-    t_vect3d	a_rgb;
+	int			amount[6];
+	int			state[3];
+	double		a_ratio;
+	t_vect3d	a_rgb;
 	t_vect3d	a_hsl;
 	double		c_fov;
 	t_vect3d	current_dir;
@@ -149,7 +149,7 @@ typedef struct s_scene
 	t_vect3d	origin;
 	t_vect3d	ori_dir;
 	t_ray_data	r;
-	int			checkerboard[3];
+	int			cb[3];
 }				t_scene;
 
 enum	e_cy_cap
@@ -162,8 +162,8 @@ enum	e_cy_cap
 enum	e_checkerboard
 {
 	ON,
-	WIDTH,
-	HEIGHT
+	W,
+	H
 };
 
 // read objects

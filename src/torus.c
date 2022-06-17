@@ -69,7 +69,7 @@ static int	big_circle(t_scene *scene, t_ray *ray, int *num,
 	if (phit.x >= 0)
 		angle = M_PI * 2 - angle;
 	arclen = angle * radius;
-	if ((int)(arclen / (2 * M_PI * radius / scene->checkerboard[HEIGHT])) % 2)
+	if ((int)(arclen / (2 * M_PI * radius / scene->cb[H])) % 2)
 		return (1);
 	return (0);
 }
@@ -92,7 +92,7 @@ static int	tube_circle(t_scene *scene, int *num,
 	if (phit.z <= 0.0)
 		angle = M_PI * 2 - angle;
 	arclen = angle * scene->tor[*num].r_tube;
-	if ((int)(arclen / (2 * M_PI * scene->tor[*num].r_tube / scene->checkerboard[WIDTH])) % 2)
+	if ((int)(arclen / (2 * M_PI * scene->tor[*num].r_tube / scene->cb[W])) % 2)
 		return (1);
 	return (0);
 }
@@ -139,7 +139,7 @@ static double	find_closest_tor(t_scene *scene, t_ray *ray,
 	phit = add_vectors(ray->eye, multiply_vector(ray->dir, t[ret]));
 	if (set_N == 1)
 	{
-		if (scene->checkerboard[ON] == true)
+		if (scene->cb[ON] == true)
 			set_checkerboard(scene, ray, num, phit);
 		set_normal(scene, num, phit);
 	}
