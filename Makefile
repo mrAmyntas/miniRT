@@ -30,8 +30,8 @@ SRC =	src/main.c\
 		src/torus.c\
 		src/torus_calc.c\
 		src/torus_calc2.c\
-		src/checkerboard_pl_tor.c\
-		src/checkerboard_cy.c
+		src/checkerboard_pl_di.c\
+		src/checkerboard_cy_tor.c
 
 INC = 	inc/miniRT.h\
 		libft/libft.h\

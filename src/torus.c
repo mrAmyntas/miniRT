@@ -46,27 +46,6 @@ static int	calc_t(t_scene *scene, t_ray *ray, int *num, double *t)
 	return (0);
 }
 
-static void	set_checkerboard(t_scene *scene, t_ray *ray, int *num,
-	t_vect3d phit)
-{
-	int	check;
-
-	ray->eye = scene->origin;
-	ray->dir = subtract_vectors(phit, ray->eye);
-	ray->dir.z = 0;
-	check = big_circle(scene, ray, num, phit);
-	if (check == 1)
-		scene->tor[*num].checker = 1;
-	else
-		scene->tor[*num].checker = 0;
-	check = tube_circle(scene, num, ray, phit);
-	if ((check == 1 && scene->tor[*num].checker == 1)
-		|| (check == 0 && scene->tor[*num].checker == 0))
-		scene->tor[*num].checker = 1;
-	else
-		scene->tor[*num].checker = 0;
-}
-
 static double	find_closest_tor(t_scene *scene, t_ray *ray,
 	int *num, int set_N)
 {
@@ -89,7 +68,7 @@ static double	find_closest_tor(t_scene *scene, t_ray *ray,
 	if (set_N == 1)
 	{
 		if (scene->cb[ON] == true)
-			set_checkerboard(scene, ray, num, phit);
+			checkerboard_tor(scene, ray, num, phit);
 		set_normal(scene, num, phit);
 	}
 	return (t[ret]);

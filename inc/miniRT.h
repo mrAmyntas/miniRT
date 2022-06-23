@@ -106,6 +106,7 @@ int		checkerboard_cy(t_scene *scene, t_vect3d phit, int num);
 
 double	find_hit_disc(t_scene *scene, t_ray *ray, int *num, int set);
 double	get_di_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N);
+int		checkerboard_di(t_scene *scene, t_vect3d Phit, int num);
 
 // *** TORUS STUFF *** 
 
@@ -116,7 +117,6 @@ int		get_a(t_scene *scene, t_ray *ray, long double *a, int *num);
 int		solve_cubic(t_solve_quartic_var *d);
 void	set_normal(t_scene *scene, int *num, t_vect3d phit);
 void	solve_quartic(t_solve_quartic_var *d);
-int		big_circle(t_scene *scene, t_ray *ray, int *num, t_vect3d phit);
-int		tube_circle(t_scene *scene, int *num, t_ray *ray, t_vect3d phit);
+void	checkerboard_tor(t_scene *scene, t_ray *ray, int *num, t_vect3d phit);
 
 #endif
