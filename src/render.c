@@ -1,17 +1,19 @@
 #include "../inc/miniRT.h"
 
 // finds the closest object and sets num to the id of the object
-double	find_closest_object(t_scene *scene, t_ray *ray, int num[2], int cap)
+//num[0] is type of object
+//num[1] the number of the specific objecy (e.g. plane #3)
+double	find_closest_object(t_scene *scene, t_ray *ray, int num[2], int set)
 {
 	double	t[5];
 	int		i;
 	int		numb[5];
 
-	t[0] = find_hit_pl(scene, ray, &numb[0]);
-	t[1] = find_hit_cy(scene, ray, &numb[1], cap);
-	numb[2] = find_hit_sphere(scene, ray, scene->amount[SPHERE], &t[2]);
+	t[0] = find_hit_pl(scene, ray, &numb[0], set);
+	t[1] = find_hit_cy(scene, ray, &numb[1], set);
+	t[2] = find_hit_sphere(scene, ray, &numb[2], set);
 	t[3] = find_hit_disc(scene, ray, &numb[3]);
-	t[4] = find_hit_torus(scene, ray, &numb[4], cap);
+	t[4] = find_hit_torus(scene, ray, &numb[4], set);
 	i = find_smallest(t, 1, 5);
 	if (i != -1)
 	{
@@ -61,59 +63,52 @@ void	calc_light_strength(t_scene *scene, t_vect3d Phit[2], int num[2])
 	scene->light[scene->i].strength *= check_shadows(x.ray, scene, x.t, Phit);
 }
 
-bool	checkers(t_scene *scene, t_vect3d Phit, int num)
+t_vect3d	get_hsl(t_scene *scene, int *num)
 {
-	double 		u;
-	double 		v;
+	t_vect3d	hsl;
 
-	Phit = subtract_vectors(Phit, scene->sp[num].C);
-	u = 1 - (atan2(Phit.x, Phit.z) / (2 * M_PI) + 0.5);
-	v = 1 - (acos(Phit.y / (scene->sp[num].size / 2)) / M_PI);
-	if (!(((int)(u * scene->checker[1]) + (int)(v * scene->checker[0])) % 2))
-		return (false);
-	else
-		return (true);
+	if (num[0] == PLANE && scene->pl[num[1]].checker == 0)
+		hsl = scene->pl[num[1]].hsl;
+	else if (num[0] == PLANE)
+		hsl = scene->pl[num[1]].lsh;
+	else if (num[0] == SPHERE && scene->sp[num[1]].checker == 0)
+		hsl = scene->sp[num[1]].hsl;
+	else if (num[0] == SPHERE)
+		hsl = scene->sp[num[1]].lsh;
+	else if (num[0] == CYLINDER && scene->cy[num[1]].checker == 0)
+		hsl = scene->cy[num[1]].hsl;
+	else if (num[0] == CYLINDER)
+		hsl = scene->cy[num[1]].lsh;	
+	else if (num[0] == DISC && scene->di[num[1]].checker == 0)
+		hsl = scene->di[num[1]].hsl;
+	else if (num[0] == DISC)
+		hsl = scene->di[num[1]].lsh;	
+	else if (num[0] == TORUS && scene->tor[num[1]].checker == 0)
+		hsl = scene->tor[num[1]].hsl;
+	else if (num[0] == TORUS)
+		hsl = scene->tor[num[1]].lsh;
+	return (hsl);
 }
 
-// sets the ray from Phit to light
-// and returns the colour of the  pixel with the right lumination
+//returns the colour of the  pixel with the right lumination
 int	get_color(t_scene *scene, int num[2], t_vect3d Phit[2])
 {
+	t_vect3d	hsl;
+
 	scene->i = 0;
 	while (scene->i < scene->amount[LIGHT])
 	{
 		calc_light_strength(scene, Phit, num);
 		scene->i++;
 	}
-	if (num[0] == SPHERE)
-	{
-		if (!checkers(scene, Phit[0], num[1]))
-			return (calculate_light(scene->sp[num[1]].lsh, scene));
-	}
-	//if (num[0] == PLANE)
-	//{
-	//	if (Phit[0].x <= 0 && ((!(((int)Phit[0].x / scene->checker[1]) % 2) && (((int)Phit[0].z / scene->checker[0]) % 2)) || ((((int)Phit[0].x / scene->checker[1]) % 2) && !(((int)Phit[0].z / scene->checker[0]) % 2))))
-	//		return (calculate_light(scene->pl[num[1]].lsh, scene));
-	//	if (Phit[0].x > 0 && (((((int)Phit[0].x / scene->checker[1]) % 2) && (((int)Phit[0].z / scene->checker[0]) % 2)) || (!(((int)Phit[0].x / scene->checker[1]) % 2) && !(((int)Phit[0].z / scene->checker[0]) % 2))))
-	//		return (calculate_light(scene->pl[num[1]].lsh, scene));
-	//}
-	if (num[0] == PLANE)
-		return (calculate_light(scene->pl[num[1]].hsl, scene));
-	else if (num[0] == SPHERE)
-		return (calculate_light(scene->sp[num[1]].hsl, scene));
-	else if (num[0] == CYLINDER)
-		return (calculate_light(scene->cy[num[1]].hsl, scene));
-	else if (num[0] == DISC)
-		return (calculate_light(scene->di[num[1]].hsl, scene));
-	else if (num[0] == TORUS)
-		return (calculate_light(scene->tor[num[1]].hsl, scene));
-	return (-1);
+	hsl = get_hsl(scene, num);
+	return (calculate_light(hsl, scene));
 }
 
-// gets the ray from cam to pixel, 
-// finds the closest hit to an object and sets its colour.
-// 	num[0] is type: 0=pl, 1=cy, 2 = sp
-// 	num[1] = number of that type that has been hit by ray
+//gets the ray from cam to pixel, 
+//finds the closest hit to an object and sets its colour.
+//num[0] is type: 0=pl, 1=cy, 2 = sp
+//num[1] = number of that type that has been hit by ray
 void	set_pixel(t_data *data, t_scene *scene, int x, int y)
 {
 	double		t;

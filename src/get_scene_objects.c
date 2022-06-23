@@ -41,6 +41,7 @@ void	read_pl(t_scene *scene, char **line)
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of vectors for a plane\n");
 	read_pl2(scene, line, i, coords);
+	scene->pl[i].checker = 0;
 	i++;
 }
 
@@ -69,6 +70,8 @@ void	read_sp(t_scene *scene, char **line)
 	scene->sp[i].rgb.x = ft_atoi(coords[0]);
 	scene->sp[i].rgb.y = ft_atoi(coords[1]);
 	scene->sp[i].rgb.z = ft_atoi(coords[2]);
+	scene->sp[i].checker = 0;
+
 	i++;
 }
 
@@ -91,6 +94,7 @@ void	read_cy2(t_scene *scene, char **line, int i, char **coords)
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of colours for a cylinder\n");
 	create_hsl(&scene->cy[i].hsl, ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
+	create_hsl(&scene->cy[i].lsh, 255 - ft_atoi(coords[0]), 255 - ft_atoi(coords[1]), 255 - ft_atoi(coords[2]));
 	scene->cy[i].rgb.x = ft_atoi(coords[0]);
 	scene->cy[i].rgb.y = ft_atoi(coords[1]);
 	scene->cy[i].rgb.z = ft_atoi(coords[2]);
@@ -117,6 +121,7 @@ void	read_cy(t_scene *scene, char **line)
 	read_cy2(scene, line, i, coords);
 	set_i_t(&scene->cy[i].eye, &scene->cy[i].i_t);
 	set_i_r(&scene->cy[i].dir, &scene->cy[i].i_r);
+	scene->cy[i].checker = 0;
 	i++;
 }
 
@@ -136,6 +141,7 @@ void	read_di2(t_scene *scene, char **line, int i, char **coords)
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of colours for a disc\n");
 	create_hsl(&scene->di[i].hsl, ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
+	create_hsl(&scene->di[i].lsh, 255 - ft_atoi(coords[0]), 255 - ft_atoi(coords[1]), 255 - ft_atoi(coords[2]));
 	scene->di[i].rgb.x = ft_atoi(coords[0]);
 	scene->di[i].rgb.y = ft_atoi(coords[1]);
 	scene->di[i].rgb.z = ft_atoi(coords[2]);
@@ -160,6 +166,7 @@ void	read_di(t_scene *scene, char **line)
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of vectors for a disc\n");
 	read_di2(scene, line, i, coords);
+	scene->di[i].checker = 0;
 	i++;
 }
 
@@ -182,10 +189,13 @@ void	read_tor2(t_scene *scene, char **line, int i, char **coords)
 	free_strstr(coords);
 	scene->tor[i].R_cir = ft_atod(line[3]);
 	scene->tor[i].r_tube = ft_atod(line[4]);
+	if (scene->tor[i].R_cir < scene->tor[i].r_tube)
+		ft_error(1, "Radius of circle has to be bigger then radius of tube\n");
 	coords = ft_split(line[5], ',');
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of colours for a torus\n");
 	create_hsl(&scene->tor[i].hsl, ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
+	create_hsl(&scene->tor[i].lsh, 255 - ft_atoi(coords[0]), 255 - ft_atoi(coords[1]), 255 - ft_atoi(coords[2]));
 	scene->tor[i].rgb.x = ft_atoi(coords[0]);
 	scene->tor[i].rgb.y = ft_atoi(coords[1]);
 	scene->tor[i].rgb.z = ft_atoi(coords[2]);
@@ -213,5 +223,6 @@ void	read_tor(t_scene *scene, char **line)
 	set_i_t(&scene->tor[i].coord, &scene->tor[i].i_t);
 	set_i_r(&scene->tor[i].dir, &scene->tor[i].i_r);
 	set_r_tor(scene, i);
+	scene->tor[i].checker = 0;
 	i++;
 }

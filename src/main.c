@@ -5,6 +5,9 @@ static void	background(t_data *data)
 	int	i;
 	int	j;
 
+	// memset(data->mlx_img->pixels, 255, data->mlx_img->width * data->mlx_img->height * sizeof(int));
+
+
 	data->mlx_img = mlx_new_image(data->mlx,
 			data->width, data->height);
 	i = 0;
@@ -63,10 +66,12 @@ int	main(int argc, char **argv)
 
 	data.height = 600;
 	data.width = 600;
-	//uv_checkers(6, 4, 0xFFFFFFFF, 0x000000FF);
 	if (argc != 2)
 		ft_error(1, "Invalid amount of arguments\n");
 	read_scene(&scene, argv[1]);
+	scene.cb[ON] = true;
+	scene.cb[W] = 6;
+	scene.cb[H] = 6;
 	data.mlx = mlx_init(data.width, data.height, "MiniRT", true);
 	if (!data.mlx)
 		exit(EXIT_FAILURE);

@@ -1,19 +1,98 @@
 #include "inc/miniRT.h"
 
+
+typedef struct s_obj1
+{
+	t_pl		*pl;
+	t_sp		*sp;
+	t_cy		*cy;
+	t_di		*di;
+	t_tor		*tor;
+}				t_obj1;
+
+typedef struct s_scene1
+{
+	int			i;
+    int     	amount[6];
+    int    		state[3];
+	double 		a_ratio;
+    t_vect3d	a_rgb;
+	t_vect3d	a_hsl;
+	double		c_fov;
+	t_vect3d	current_dir;
+	t_ray		*cam;
+	t_ray		ray_cam;
+	t_obj		**obj;
+	t_pl		*pl;
+	t_sp		*sp;
+	t_cy		*cy;
+	t_di		*di;
+	t_tor		*tor;
+	t_light		*light;
+	t_vect3d	origin;
+	t_vect3d	ori_dir;
+	t_ray_data	r;
+	int			cb[3];
+}				t_scene1;
+
+
+
 bool	incr(int *num)
 {
 	*num = *num + 1;
 	return true;
 }
 
-int main(void)
+#define WIDTH 256
+#define HEIGHT 256
+
+mlx_image_t	*g_img;
+
+void	hook(void *param)
+{
+	mlx_t	*mlx;
+
+	mlx = param;
+	if (mlx_is_key_down(param, MLX_KEY_ESCAPE))
+		mlx_close_window(param);
+	if (mlx_is_key_down(param, MLX_KEY_UP))
+		g_img->instances[0].y -= 5;
+	if (mlx_is_key_down(param, MLX_KEY_DOWN))
+		g_img->instances[0].y += 5;
+	if (mlx_is_key_down(param, MLX_KEY_LEFT))
+		g_img->instances[0].x -= 5;
+	if (mlx_is_key_down(param, MLX_KEY_RIGHT))
+		g_img->instances[0].x += 5;
+}
+
+int32_t	main(void)
 {
 
-	double a[2] = {10.0, 1.00};
-	double b = 2.5;
 
-	double c = b * -4.*a[0];
-	printf("%f\n", c); 
+
+
+
+
+	mlx_t	*mlx;
+
+	mlx = mlx_init(WIDTH, HEIGHT, "MLX42", true);
+	if (!mlx)
+		exit(EXIT_FAILURE);
+	g_img = mlx_new_image(mlx, WIDTH, HEIGHT);
+	memset(g_img->pixels, 255, g_img->width * g_img->height * sizeof(int));
+	mlx_image_to_window(mlx, g_img, 0, 0);
+	printf("instance[0].x:%d y:%d z:%hhu\n", g_img->instances[0].x,  g_img->instances[0].y,  *g_img->pixels);
+
+	memset(g_img->pixels, 25, 10 * sizeof(int));
+	memset(g_img->pixels, 25, 10 * sizeof(int));
+
+	printf("instance[0].x:%d y:%d z:%hhu\n", g_img->instances[0].x,  g_img->instances[0].y,  *g_img->pixels);
+	mlx_loop_hook(mlx, &hook, mlx);
+	mlx_loop(mlx);
+	mlx_terminate(mlx);
+	return (EXIT_SUCCESS);
+}
+
 
 // 	t_vect3d vec2 = {1, 1, 1};
 // 	t_vect3d vec1 = {0, 0, 0.1};
@@ -33,7 +112,6 @@ int main(void)
 
 // 	printf(":%f\n", angle);
 // 	return 0;
-}
 
 //gcc test.c src/vectorstuff.c MLX42/libmlx42.a -lft -L ./libft -lglfw -L "/Users/bhoitzin/.brew/opt/glfw/lib/" -I./inc && ./a.out
 

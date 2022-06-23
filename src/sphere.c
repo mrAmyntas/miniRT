@@ -41,28 +41,48 @@ void    calc_b_c(t_scene *scene, t_ray *ray, double bc[2], int count)
     bc[1] = power - pow(scene->sp[count].size / 2, 2);
 }
 
-int find_hit_sphere(t_scene *scene, t_ray *ray, int count, double *close_t)
+int	checkers(t_scene *scene, double t, int num)
 {
-    double      bc[2];
-    double      t;
-    int         i;
-    int         save_i;
+	double		u;
+	double		v;
+	t_vect3d	phit;
+
+	phit = add_vectors(scene->ray_cam.eye,
+			multiply_vector(scene->ray_cam.dir, t));
+	phit = subtract_vectors(phit, scene->sp[num].C);
+	u = 1 - (atan2(phit.x, phit.z) / (2 * M_PI) + 0.5);
+	v = 1 - (acos(phit.y / (scene->sp[num].size / 2)) / M_PI);
+	if (!(((int)(u * scene->cb[W])
+			+ (int)(v * scene->cb[H])) % 2))
+		return (0);
+	else
+		return (1);
+}
+
+double	find_hit_sphere(t_scene *scene, t_ray *ray, int *num, int set)
+{
+	double		bc[2];
+	double		t;
+	double		close_t;
+	t_vect3d	phit;
+	int			i;
 
     i = 0;
-    *close_t = -1;
-    while (i < count)
-    {    
-        calc_b_c(scene, ray, bc, i);
-        t = calc_t0(bc[0], bc[1]);
-        //printf("%f\n", t);
-        if ((t < *close_t && t > 0) || (*close_t < 0 && t > 0))
-        {
-            *close_t = t;
-            save_i = i;
-        }
+	close_t = -1;
+	while (i < scene->amount[SPHERE])
+	{
+		calc_b_c(scene, ray, bc, i);
+		t = calc_t0(bc[0], bc[1]);
+		if ((t < close_t && t > 0) || (close_t < 0 && t > 0))
+		{
+			close_t = t;
+			*num = i;
+		}
         i++;
-    }
-    return (save_i);
+	}
+	if (scene->cb[ON] == true && set == 1 && close_t != -1)
+		scene->sp[*num].checker = checkers(scene, close_t, *num);
+	return (close_t);
 }
 
 //int     check_shadow(t_ray ray, t_scene *scene)
