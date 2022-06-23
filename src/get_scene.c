@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   get_scene.c                                        :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
+/*   Updated: 2022/06/23 18:57:26 by mgroen        ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../inc/miniRT.h"
 
-void	    ft_error(int num, char *msg)
+void	ft_error(int num, char *msg)
 {
 	write(2, "Error\n", 6);
 	if (num == -1)
@@ -107,9 +119,11 @@ void	count_objects(t_scene *scene, char *str, int fd)
 			scene->amount[TORUS]++;
 		else if (!strncmp(splitted_str[0], "di", 3))
 			scene->amount[DISC]++;
-		else if (strncmp(splitted_str[0], "A", 2)
-			&& strncmp(splitted_str[0], "C", 2)
-			&& strncmp(splitted_str[0], "cb", 2)
+		else if (!strncmp(splitted_str[0], "A", 2))
+			scene->amount[6]++;
+		else if (!strncmp(splitted_str[0], "C", 2))
+			scene->amount[7]++;
+		else if (strncmp(splitted_str[0], "cb", 3)
 			&& strncmp(splitted_str[0], "#", 2)
 			&& strncmp(splitted_str[0], "\n", 2))
 			ft_error(1, "Invalid element(s)\n");
@@ -125,16 +139,17 @@ int	set_scene(t_scene *scene, char *name)
 {
 	int		fd;
 	char	*str;
+	int		i;
 
-	scene->state[0] = 0;
-	scene->state[1] = 0;
-	scene->state[2] = 0;
-	scene->amount[0] = 0;
-	scene->amount[1] = 0;
-	scene->amount[2] = 0;
-	scene->amount[3] = 0;
-	scene->amount[4] = 0;
-	scene->amount[5] = 0;
+	i = 0;
+	scene->cb[ON] = false;
+	while (i < 8)
+	{
+		if (i < 3)
+			scene->state[i] = 0;
+		scene->amount[i] = 0;
+		i++;
+	}
 	scene->origin.x = 0;
 	scene->origin.y = 0;
 	scene->origin.z = 0;
@@ -153,23 +168,20 @@ int	set_scene(t_scene *scene, char *name)
 	scene->di = (t_di *)malloc(sizeof(t_di) * (scene->amount[DISC] + 2));
 	scene->tor = (t_tor *)malloc(sizeof(t_tor) * (scene->amount[TORUS] + 2));
 	scene->cam = (t_ray *)malloc(sizeof(t_ray));
-	scene->light = (t_light *)malloc(sizeof(t_light) * (scene->amount[LIGHT] + 2));
+	scene->light = (t_light *)malloc(sizeof(t_light)
+			* (scene->amount[LIGHT] + 2));
 	if (!scene->pl || !scene->sp || !scene->cy)
 		ft_error(1, "Malloc error\n");
 	return (fd);
 }
 
-void	cb(t_scene *scene, char	**splitted_str)
+void	cb(t_scene *scene, char	**str)
 {
-	char **str;
-
-	str = ft_split(splitted_str[1], ',');
 	if (strstr_len(str) != 3)
 		ft_error(1, "Wrong number of arguments for cb\n");
-	scene->cb[ON] = ft_atoi(str[0]);
+	scene->cb[ON] = true;
 	scene->cb[W] = ft_atoi(str[1]);
 	scene->cb[H] = ft_atoi(str[2]);
-	free(str);
 }
 
 void	find_element(t_scene *scene, char **splitted_str)
@@ -213,4 +225,6 @@ void	read_scene(t_scene *scene, char *name)
 	}
 	free(str);
 	str = NULL;
+	if (!scene->amount[LIGHT] || !scene->amount[6] || !scene->amount[7])
+		ft_error(1, "Element missing\n");
 }

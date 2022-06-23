@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   plane.c                                            :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
+/*   Updated: 2022/06/23 18:50:19 by mgroen        ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../inc/miniRT.h"
 
 int	check_if_plane_between_cam_and_light(t_scene *scene, t_vect3d Phit[2])

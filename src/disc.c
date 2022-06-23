@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   disc.c                                             :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
+/*   Updated: 2022/06/23 18:58:41 by mgroen        ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../inc/miniRT.h"
 
 static void	set_axis(t_vect3d *axis, t_scene *scene, int num)
@@ -79,7 +91,6 @@ int	checkerboard_di(t_scene *scene, t_vect3d Phit, int num)
 	return (0);
 }
 
-
 // calculates the angle light hits Phit on a disc
 double	get_di_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 {
@@ -145,7 +156,6 @@ double	find_hit_disc(t_scene *scene, t_ray *ray, int *num, int set)
 					multiply_vector(scene->ray_cam.dir, ret));
 			scene->di[*num].checker = checkerboard_pl(scene, phit, *num);
 		}
-
 		free (t);
 		return (ret);
 	}

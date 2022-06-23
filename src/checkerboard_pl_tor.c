@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   checkerboard_pl_tor.c                              :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
+/*   Updated: 2022/06/23 18:49:50 by mgroen        ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../inc/miniRT.h"
 
 //finds which points are on/off checker pattern

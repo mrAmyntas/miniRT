@@ -1,5 +1,16 @@
-#include "../inc/miniRT.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   vector_math2.c                                     :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
+/*   Updated: 2022/06/23 18:50:58 by mgroen        ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
 
+#include "../inc/miniRT.h"
 #define EPSIL 0.000001
 
 //compare vectors. if same, true

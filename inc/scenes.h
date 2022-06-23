@@ -5,7 +5,6 @@
 
 typedef struct s_light
 {
-	double		brightness;
 	t_vect3d	ori;
 	t_vect3d	color;
 	t_vect3d	hsl;
@@ -131,7 +130,7 @@ typedef struct s_solve_quartic
 typedef struct s_scene
 {
 	int			i;
-	int			amount[6];
+	int			amount[8];
 	int			state[3];
 	double		a_ratio;
 	t_vect3d	a_rgb;
