@@ -46,57 +46,6 @@ static int	calc_t(t_scene *scene, t_ray *ray, int *num, double *t)
 	return (0);
 }
 
-//finds which points are on/off checker pattern
-//takes inner circle (r = centre to side of tube)
-//starts from middle top, and takes the length
-//from there anti-clockwise around the circle to
-//decide in/out pattern.
-static int	big_circle(t_scene *scene, t_ray *ray, int *num,
-	t_vect3d phit)
-{
-	t_vect3d	up;
-	double		angle;
-	double		arclen;
-	double		radius;
-
-	up.x = 0.0;
-	up.y = 1.0;
-	up.z = 0.0;
-	radius = scene->tor[*num].R_cir - scene->tor[*num].r_tube;
-	angle = acos(dot_product(up, ray->dir) / magnitude(ray->dir));
-	if (comp_d(angle, 0.0))
-		return (0);
-	if (phit.x >= 0)
-		angle = M_PI * 2 - angle;
-	arclen = angle * radius;
-	if ((int)(arclen / (2 * M_PI * radius / scene->cb[H])) % 2)
-		return (1);
-	return (0);
-}
-
-static int	tube_circle(t_scene *scene, int *num,
-	t_ray *ray, t_vect3d phit)
-{
-	t_vect3d	side;
-	double		angle;
-	double		arclen;
-
-	side = ray->dir;
-	ray->dir = normalize_vector(ray->dir);
-	ray->eye = add_vectors(scene->origin,
-			multiply_vector(ray->dir, scene->tor[*num].R_cir));
-	ray->dir = subtract_vectors(phit, ray->eye);
-	angle = acos(dot_product(side, ray->dir) / (magnitude(side) * magnitude(ray->dir)));
-	if (comp_d(angle, 0.0))
-		return (0);
-	if (phit.z <= 0.0)
-		angle = M_PI * 2 - angle;
-	arclen = angle * scene->tor[*num].r_tube;
-	if ((int)(arclen / (2 * M_PI * scene->tor[*num].r_tube / scene->cb[W])) % 2)
-		return (1);
-	return (0);
-}
-
 static void	set_checkerboard(t_scene *scene, t_ray *ray, int *num,
 	t_vect3d phit)
 {

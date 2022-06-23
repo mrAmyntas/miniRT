@@ -72,27 +72,37 @@ double	find_closest_cy(t_scene *scene, t_ray *ray, int *num, int cap)
 		return (find_caps(scene, num, ray, cap));
 }
 
+static void	set_values(double *ret, int *num)
+{
+	*ret = -1;
+	*num = 0;
+}
+
 double	find_hit_cy(t_scene *scene, t_ray *ray, int *num, int cap)
 {
 	double	*t;
-	t_ray	new_ray;
+	t_ray	*new_ray;
 	double	ret;
 
+	new_ray = malloc(sizeof(t_ray) * scene->amount[CYLINDER]);
 	t = malloc(sizeof(double) * scene->amount[CYLINDER]);
-	*num = 0;
+	set_values(&ret, num);
 	while (*num < scene->amount[CYLINDER])
 	{
-		new_ray = *ray;
-		t[*num] = find_closest_cy(scene, &new_ray, num, cap);
+		new_ray[*num] = *ray;
+		t[*num] = find_closest_cy(scene, &new_ray[*num], num, cap);
 		*num = *num + 1;
 	}
 	*num = find_smallest(t, *num, scene->amount[CYLINDER]);
-	if (*num == -1)
+	if (*num != -1)
 	{
-		free (t);
-		return (-1);
+		ret = t[*num];
+		if (scene->cb[ON] == true && cap == 1 && ret != -1)
+			scene->cy[*num].checker = checkerboard_cy(scene,
+					add_vectors(new_ray[*num].eye,
+						multiply_vector(new_ray[*num].dir, ret)), *num);
 	}
-	ret = t[*num];
+	free(new_ray);
 	free (t);
 	return (ret);
 }

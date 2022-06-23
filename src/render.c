@@ -12,7 +12,7 @@ double	find_closest_object(t_scene *scene, t_ray *ray, int num[2], int set)
 	t[0] = find_hit_pl(scene, ray, &numb[0], set);
 	t[1] = find_hit_cy(scene, ray, &numb[1], set);
 	t[2] = find_hit_sphere(scene, ray, &numb[2], set);
-	t[3] = find_hit_disc(scene, ray, &numb[3]);
+	t[3] = find_hit_disc(scene, ray, &numb[3], set);
 	t[4] = find_hit_torus(scene, ray, &numb[4], set);
 	i = find_smallest(t, 1, 5);
 	if (i != -1)

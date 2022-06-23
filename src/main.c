@@ -70,8 +70,8 @@ int	main(int argc, char **argv)
 		ft_error(1, "Invalid amount of arguments\n");
 	read_scene(&scene, argv[1]);
 	scene.cb[ON] = true;
-	scene.cb[W] = 6;
-	scene.cb[H] = 6;
+	scene.cb[W] = 12;
+	scene.cb[H] = 12;
 	data.mlx = mlx_init(data.width, data.height, "MiniRT", true);
 	if (!data.mlx)
 		exit(EXIT_FAILURE);
