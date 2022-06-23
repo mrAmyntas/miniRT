@@ -72,6 +72,19 @@ double	find_closest_cy(t_scene *scene, t_ray *ray, int *num, int cap)
 		return (find_caps(scene, num, ray, cap));
 }
 
+bool	checkers2(t_scene *scene, t_vect3d Phit, int num)
+{
+	double 		u;
+	double 		v;
+
+	u = 1 - (atan2(Phit.x, Phit.y) / (2 * M_PI) + 0.5);
+	v = Phit.z;// * (scene->cy[num].r * 2);
+	if (!(((int)(u * scene->cb[W]) + (int)(v * scene->cb[H])) % 2))
+		return (false);
+	else
+		return (true);
+}
+
 double	find_hit_cy(t_scene *scene, t_ray *ray, int *num, int cap)
 {
 	double	*t;
@@ -94,5 +107,7 @@ double	find_hit_cy(t_scene *scene, t_ray *ray, int *num, int cap)
 	}
 	ret = t[*num];
 	free (t);
+	if (scene->cb[ON] && cap)
+		scene->cy[*num].checker = checkers2(scene, multiply_vector(new_ray.dir, ret), *num);
 	return (ret);
 }

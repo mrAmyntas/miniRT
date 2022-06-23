@@ -63,7 +63,6 @@ int	main(int argc, char **argv)
 
 	data.height = 600;
 	data.width = 600;
-	//uv_checkers(6, 4, 0xFFFFFFFF, 0x000000FF);
 	if (argc != 2)
 		ft_error(1, "Invalid amount of arguments\n");
 	read_scene(&scene, argv[1]);
@@ -80,8 +79,6 @@ int	main(int argc, char **argv)
 	free(scene.pl);
 	free(scene.cy);
 	free(scene.sp);
-	// free(scene.light);
 	free(scene.cam);
-	//system("leaks miniRT");
 	return (EXIT_SUCCESS);
 }

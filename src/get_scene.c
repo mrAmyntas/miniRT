@@ -109,6 +109,7 @@ void	count_objects(t_scene *scene, char *str, int fd)
 			scene->amount[DISC]++;
 		else if (strncmp(splitted_str[0], "A", 2)
 			&& strncmp(splitted_str[0], "C", 2)
+			&& strncmp(splitted_str[0], "cb", 2)
 			&& strncmp(splitted_str[0], "#", 2)
 			&& strncmp(splitted_str[0], "\n", 2))
 			ft_error(1, "Invalid element(s)\n");
@@ -140,8 +141,6 @@ int	set_scene(t_scene *scene, char *name)
 	scene->ori_dir.x = 0;
 	scene->ori_dir.y = 0;
 	scene->ori_dir.z = 1;
-	scene->checker[0] = 1;
-	scene->checker[1] = 2;
 	fd = open(name, O_RDONLY);
 	if (fd < 0)
 		ft_error(-1, "Open failed");
@@ -158,6 +157,19 @@ int	set_scene(t_scene *scene, char *name)
 	if (!scene->pl || !scene->sp || !scene->cy)
 		ft_error(1, "Malloc error\n");
 	return (fd);
+}
+
+void	cb(t_scene *scene, char	**splitted_str)
+{
+	char **str;
+
+	str = ft_split(splitted_str[1], ',');
+	if (strstr_len(str) != 3)
+		ft_error(1, "Wrong number of arguments for cb\n");
+	scene->cb[ON] = ft_atoi(str[0]);
+	scene->cb[W] = ft_atoi(str[1]);
+	scene->cb[H] = ft_atoi(str[2]);
+	free(str);
 }
 
 void	find_element(t_scene *scene, char **splitted_str)
@@ -178,7 +190,8 @@ void	find_element(t_scene *scene, char **splitted_str)
 		read_di(scene, splitted_str);
 	else if (!strncmp(splitted_str[0], "tor", 4))
 		read_tor(scene, splitted_str);
-
+	else if (!strncmp(splitted_str[0], "cb", 3))
+		cb(scene, splitted_str);
 }
 
 void	read_scene(t_scene *scene, char *name)

@@ -1,13 +1,11 @@
 #include "../inc/miniRT.h"
 
-void	set_normal(t_scene *scene, t_ray *ray, int *num, double t)
+void	set_normal(t_scene *scene, int *num, t_vect3d phit)
 {
 	t_vect3d	centre_to_phit;
-	t_vect3d	phit;
 	t_vect3d	centre_to_middle_of_tube;
 	t_vect3d	middle_of_tube;
 
-	phit = add_vectors(ray->eye, multiply_vector(ray->dir, t));
 	centre_to_phit = normalize_vector(subtract_vectors(phit, scene->origin));
 	centre_to_middle_of_tube.x = centre_to_phit.x;
 	centre_to_middle_of_tube.y = centre_to_phit.y;
