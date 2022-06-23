@@ -71,12 +71,12 @@ int    calculate_light(t_vect3d hsl, t_scene *scene)
     colour = add_vectors(colour, hsl_to_rgb(hsl));
     colour = add_vectors(colour, multiply_vector(scene->a_rgb, scene->a_ratio));
     colour = divide_vec_scalar(colour, 3);
-    create_hsl(&hsl, colour.x, colour.y, colour.z);
-    hsl.z = bright + scene->a_ratio + (hsl.z / 2);
-    hsl.z /= 2;
-    if (hsl.z > 1)
-        hsl.z = 1;
-    colour = hsl_to_rgb(hsl);
+    create_hsl(&hsl2, colour.x, colour.y, colour.z);
+    hsl2.z = bright + scene->a_ratio + (hsl2.z / 2);
+    hsl2.z /= 2;
+    if (hsl2.z > 1)
+        hsl2.z = 1;
+    colour = hsl_to_rgb(hsl2);
     return(create_rgb(colour.x, colour.y, colour.z, "combined colours for pixel\n"));
     //hsl.z = bright + scene->a_ratio + (hsl.z / 2); // zoiets???
 	//if (hsl.z > 1)

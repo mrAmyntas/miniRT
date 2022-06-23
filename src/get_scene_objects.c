@@ -91,6 +91,7 @@ void	read_cy2(t_scene *scene, char **line, int i, char **coords)
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of colours for a cylinder\n");
 	create_hsl(&scene->cy[i].hsl, ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
+	create_hsl(&scene->cy[i].lsh, 255 - ft_atoi(coords[0]), 255 - ft_atoi(coords[1]), 255 - ft_atoi(coords[2]));
 	scene->cy[i].rgb.x = ft_atoi(coords[0]);
 	scene->cy[i].rgb.y = ft_atoi(coords[1]);
 	scene->cy[i].rgb.z = ft_atoi(coords[2]);

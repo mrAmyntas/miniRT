@@ -75,6 +75,28 @@ bool	checkers(t_scene *scene, t_vect3d Phit, int num)
 		return (true);
 }
 
+bool	checkers2(t_scene *scene, t_vect3d Phit, int num)
+{
+	double 		u;
+	double 		v;
+	t_vect3d	test[3];
+
+	test[0].x = 0;
+	test[0].y = 1;
+	test[0].z = 0;
+	Phit = subtract_vectors(Phit, scene->cy[num].eye);
+	test[1] = multiply_vector(test[0], sqrt(fabs(pow(magnitude(Phit), 2) - pow(scene->cy[num].r, 2))));
+	test[2] = multiply_vector(scene->cy[num].dir, sqrt(fabs(pow(magnitude(Phit), 2) - pow(scene->cy[num].r, 2))));
+	Phit = add_vectors(Phit, subtract_vectors(test[1], test[2]));
+	printf("%i:	%f %f %f\n", num, Phit.x, Phit.y, Phit.z);
+	u = 1 - (atan2(Phit.x, Phit.z) / (2 * M_PI) + 0.5);
+	v = Phit.y;// * (scene->cy[num].r * 2);
+	if (!(((int)(u * scene->checker[1]) + (int)(v * scene->checker[0])) % 2))
+		return (false);
+	else
+		return (true);
+}
+
 // sets the ray from Phit to light
 // and returns the colour of the  pixel with the right lumination
 int	get_color(t_scene *scene, int num[2], t_vect3d Phit[2])
@@ -89,6 +111,11 @@ int	get_color(t_scene *scene, int num[2], t_vect3d Phit[2])
 	{
 		if (!checkers(scene, Phit[0], num[1]))
 			return (calculate_light(scene->sp[num[1]].lsh, scene));
+	}
+	if (num[0] == CYLINDER)
+	{
+		if (!checkers2(scene, Phit[0], num[1]))
+			return (calculate_light(scene->cy[num[1]].lsh, scene));
 	}
 	//if (num[0] == PLANE)
 	//{

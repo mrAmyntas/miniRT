@@ -22,6 +22,7 @@ typedef struct s_cy
     double  	height;
     t_vect3d	rgb;
 	t_vect3d	hsl;
+	t_vect3d	lsh;
 	t_matrix44d	i_t;
 	t_matrix44d	i_r;
 	int			cap;
