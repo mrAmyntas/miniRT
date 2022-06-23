@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   render.c                                           :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
+/*   Updated: 2022/06/23 18:13:29 by mgroen        ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../inc/miniRT.h"
 
 // finds the closest object and sets num to the id of the object
-//num[0] is type of object
-//num[1] the number of the specific objecy (e.g. plane #3)
+//	num[0] is type of object
+//	num[1] the number of the specific objecy (e.g. plane #3)
 double	find_closest_object(t_scene *scene, t_ray *ray, int num[2], int set)
 {
 	double	t[5];
@@ -24,26 +36,8 @@ double	find_closest_object(t_scene *scene, t_ray *ray, int num[2], int set)
 	return (-1);
 }
 
-void	calc_light_strength(t_scene *scene, t_vect3d Phit[2], int num[2])
+void	light_strength2(t_scene *scene, t_variable x, t_vect3d Phit[2])
 {
-	t_variable	x;
-	int			num2[2];
-
-	scene->light[scene->i].strength = 0;
-	x.ray.eye = scene->light[scene->i].ori;
-	x.ray.dir = normalize_vector(subtract_vectors(Phit[0], x.ray.eye));
-	x.t = find_closest_object(scene, &x.ray, num2, 0);
-	Phit[1] = add_vectors(x.ray.eye, multiply_vector(x.ray.dir, x.t));
-	x.angle = get_angle(scene, num, Phit[1], &x.n);
-	if ((inside_object(scene, Phit, num) && x.angle < 90.0 && x.angle != -1))
-		return ;
-	else if ((!inside_object(scene, Phit, num) && x.angle > 90.0) || (x.angle == -1 && !(inside_object(scene, Phit, num) && x.angle < 90.0)))
-		return ;
-	if (inside_object(scene, Phit, num) && (x.angle > 90.0 || x.angle == -1))
-	{
-		x.n = multiply_vector(x.n, -1);
-		x.angle = 180 - x.angle;
-	}
 	x.r = subtract_vectors(multiply_vector(x.n, 2
 				* dot_product(x.n, x.ray.dir)), x.ray.dir);
 	x.specular = pow(dot_product(multiply_vector(
@@ -63,6 +57,31 @@ void	calc_light_strength(t_scene *scene, t_vect3d Phit[2], int num[2])
 	scene->light[scene->i].strength *= check_shadows(x.ray, scene, x.t, Phit);
 }
 
+void	light_strength(t_scene *scene, t_vect3d Phit[2], int num[2])
+{
+	t_variable	x;
+	int			num2[2];
+
+	scene->light[scene->i].strength = 0;
+	x.ray.eye = scene->light[scene->i].ori;
+	x.ray.dir = normalize_vector(subtract_vectors(Phit[0], x.ray.eye));
+	x.t = find_closest_object(scene, &x.ray, num2, 0);
+	Phit[1] = add_vectors(x.ray.eye, multiply_vector(x.ray.dir, x.t));
+	x.angle = get_angle(scene, num, Phit[1], &x.n);
+	if ((inside_object(scene, Phit, num) && x.angle < 90.0 && x.angle != -1))
+		return ;
+	else if ((!inside_object(scene, Phit, num) && x.angle > 90.0)
+		|| (x.angle == -1
+			&& !(inside_object(scene, Phit, num) && x.angle < 90.0)))
+		return ;
+	if (inside_object(scene, Phit, num) && (x.angle > 90.0 || x.angle == -1))
+	{
+		x.n = multiply_vector(x.n, -1);
+		x.angle = 180 - x.angle;
+	}
+	light_strength2(scene, x, Phit);
+}
+
 t_vect3d	get_hsl(t_scene *scene, int *num)
 {
 	t_vect3d	hsl;
@@ -78,11 +97,11 @@ t_vect3d	get_hsl(t_scene *scene, int *num)
 	else if (num[0] == CYLINDER && scene->cy[num[1]].checker == 0)
 		hsl = scene->cy[num[1]].hsl;
 	else if (num[0] == CYLINDER)
-		hsl = scene->cy[num[1]].lsh;	
+		hsl = scene->cy[num[1]].lsh;
 	else if (num[0] == DISC && scene->di[num[1]].checker == 0)
 		hsl = scene->di[num[1]].hsl;
 	else if (num[0] == DISC)
-		hsl = scene->di[num[1]].lsh;	
+		hsl = scene->di[num[1]].lsh;
 	else if (num[0] == TORUS && scene->tor[num[1]].checker == 0)
 		hsl = scene->tor[num[1]].hsl;
 	else if (num[0] == TORUS)
@@ -90,7 +109,7 @@ t_vect3d	get_hsl(t_scene *scene, int *num)
 	return (hsl);
 }
 
-//returns the colour of the  pixel with the right lumination
+// returns the colour of the  pixel with the right lumination
 int	get_color(t_scene *scene, int num[2], t_vect3d Phit[2])
 {
 	t_vect3d	hsl;
@@ -98,17 +117,17 @@ int	get_color(t_scene *scene, int num[2], t_vect3d Phit[2])
 	scene->i = 0;
 	while (scene->i < scene->amount[LIGHT])
 	{
-		calc_light_strength(scene, Phit, num);
+		light_strength(scene, Phit, num);
 		scene->i++;
 	}
 	hsl = get_hsl(scene, num);
 	return (calculate_light(hsl, scene));
 }
 
-//gets the ray from cam to pixel, 
-//finds the closest hit to an object and sets its colour.
-//num[0] is type: 0=pl, 1=cy, 2 = sp
-//num[1] = number of that type that has been hit by ray
+// gets the ray from cam to pixel, 
+// finds the closest hit to an object and sets its colour.
+// num[0] is type: 0=pl, 1=cy, 2 = sp
+// num[1] = number of that type that has been hit by ray
 void	set_pixel(t_data *data, t_scene *scene, int x, int y)
 {
 	double		t;

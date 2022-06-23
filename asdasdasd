@@ -1,0 +1,4 @@
+		if (u <= 0 && ((!(((int)u / scene->checker[1]) % 2) && (((int)v / scene->checker[0]) % 2)) || ((((int)u / scene->checker[1]) % 2) && !(((int)v / scene->checker[0]) % 2))))
+			return (calculate_light(scene->pl[num[1]].lsh, scene));
+		if (u > 0 && (((((int)u / scene->checker[1]) % 2) && (((int)v / scene->checker[0]) % 2)) || (!(((int)u / scene->checker[1]) % 2) && !(((int)v / scene->checker[0]) % 2))))
+			return (calculate_light(scene->pl[num[1]].lsh, scene));

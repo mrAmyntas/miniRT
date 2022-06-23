@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   calculate_hsl.c                                    :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
+/*   Updated: 2022/06/23 19:02:59 by mgroen        ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../inc/vectors.h"
 
 double	get_max(int r, int g, int b)
@@ -10,14 +22,19 @@ double	get_max(int r, int g, int b)
 	num[1] /= 255;
 	num[2] = b;
 	num[2] /= 255;
-
-	if ((num[0] > num[1] && num[0] > num[2]) || (num[0] == num[1] && num[0] > num[2]) || (num[0] == num[2] && num[0] > num[1]))
-		return(num[0]);
-	else if ((num[1] > num[0] && num[1] > num[2]) || (num[1] == num[0] && num[1] > num[2]) || (num[1] == num[2] && num[1] > num[0]))
-		return(num[1]);
-	else if ((num[2] > num[0] && num[2] > num[1]) || (num[2] == num[0] && num[2] > num[1]) || (num[2] == num[1] && num[2] > num[0]))
-		return(num[2]);
-	return(num[0]);
+	if ((num[0] > num[1] && num[0] > num[2])
+		|| (num[0] == num[1] && num[0] > num[2])
+		|| (num[0] == num[2] && num[0] > num[1]))
+		return (num[0]);
+	else if ((num[1] > num[0] && num[1] > num[2])
+		|| (num[1] == num[0] && num[1] > num[2])
+		|| (num[1] == num[2] && num[1] > num[0]))
+		return (num[1]);
+	else if ((num[2] > num[0] && num[2] > num[1])
+		|| (num[2] == num[0] && num[2] > num[1])
+		|| (num[2] == num[1] && num[2] > num[0]))
+		return (num[2]);
+	return (num[0]);
 }
 
 double	get_min(int r, int g, int b)
@@ -30,14 +47,19 @@ double	get_min(int r, int g, int b)
 	num[1] /= 255;
 	num[2] = b;
 	num[2] /= 255;
-
-	if ((num[0] < num[1] && num[0] < num[2]) || (num[0] == num[1] && num[0] < num[2]) || (num[0] == num[2] && num[0] < num[1]))
-		return(num[0]);
-	else if ((num[1] < num[0] && num[1] < num[2]) || (num[1] == num[0] && num[1] < num[2]) || (num[1] == num[2] && num[1] < num[0]))
-		return(num[1]);
-	else if ((num[2] < num[0] && num[2] < num[1]) || (num[2] == num[0] && num[2] < num[1]) || (num[2] == num[1] && num[2] < num[0]))
-		return(num[2]);
-	return(num[0]);
+	if ((num[0] < num[1] && num[0] < num[2])
+		|| (num[0] == num[1] && num[0] < num[2])
+		|| (num[0] == num[2] && num[0] < num[1]))
+		return (num[0]);
+	else if ((num[1] < num[0] && num[1] < num[2])
+		|| (num[1] == num[0] && num[1] < num[2])
+		|| (num[1] == num[2] && num[1] < num[0]))
+		return (num[1]);
+	else if ((num[2] < num[0] && num[2] < num[1])
+		|| (num[2] == num[0] && num[2] < num[1])
+		|| (num[2] == num[1] && num[2] < num[0]))
+		return (num[2]);
+	return (num[0]);
 }
 
 double	get_saturation(double l, double minmax[2])
@@ -75,7 +97,6 @@ void	create_hsl(t_vect3d *hsl, int r, int g, int b)
 {
 	double	minmax[2];
 
-
 	minmax[0] = get_min(r, g, b);
 	minmax[1] = get_max(r, g, b);
 	hsl->z = (minmax[0] + minmax[1]) / 2;
@@ -84,7 +105,7 @@ void	create_hsl(t_vect3d *hsl, int r, int g, int b)
 	if (minmax[0] == minmax[1])
 		return ;
 	hsl->y = get_saturation(hsl->z, minmax);
-	hsl->x = get_hue(minmax, r , g , b );
+	hsl->x = get_hue(minmax, r, g, b);
 	if (hsl->x < 0)
 		hsl->x += 360;
 }

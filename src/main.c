@@ -1,12 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   main.c                                             :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
+/*   Updated: 2022/06/23 18:49:17 by mgroen        ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../inc/miniRT.h"
 
 static void	background(t_data *data)
 {
 	int	i;
 	int	j;
-
-	// memset(data->mlx_img->pixels, 255, data->mlx_img->width * data->mlx_img->height * sizeof(int));
-
 
 	data->mlx_img = mlx_new_image(data->mlx,
 			data->width, data->height);
@@ -69,9 +78,6 @@ int	main(int argc, char **argv)
 	if (argc != 2)
 		ft_error(1, "Invalid amount of arguments\n");
 	read_scene(&scene, argv[1]);
-	scene.cb[ON] = true;
-	scene.cb[W] = 12;
-	scene.cb[H] = 12;
 	data.mlx = mlx_init(data.width, data.height, "MiniRT", true);
 	if (!data.mlx)
 		exit(EXIT_FAILURE);
@@ -85,8 +91,6 @@ int	main(int argc, char **argv)
 	free(scene.pl);
 	free(scene.cy);
 	free(scene.sp);
-	// free(scene.light);
 	free(scene.cam);
-	//system("leaks miniRT");
 	return (EXIT_SUCCESS);
 }

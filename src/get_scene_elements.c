@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   get_scene_elements.c                               :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
+/*   Updated: 2022/06/23 18:53:52 by mgroen        ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../inc/scenes.h"
 
 void	read_a(t_scene *scene, char **line)
@@ -15,7 +27,8 @@ void	read_a(t_scene *scene, char **line)
 	colours = ft_split(line[2], ',');
 	if (strstr_len(colours) != 3)
 		ft_error(1, "Wrong number of colours for ambient lighting\n");
-	create_hsl(&scene->a_hsl, ft_atoi(colours[0]), ft_atoi(colours[1]), ft_atoi(colours[2]));
+	create_hsl(&scene->a_hsl,
+		ft_atoi(colours[0]), ft_atoi(colours[1]), ft_atoi(colours[2]));
 	scene->a_rgb.x = ft_atoi(colours[0]);
 	scene->a_rgb.y = ft_atoi(colours[1]);
 	scene->a_rgb.z = ft_atoi(colours[2]);
@@ -43,11 +56,13 @@ void	read_c(t_scene *scene, char **line)
 	scene->cam->dir.x = ft_atod(coords[0]);
 	scene->cam->dir.y = ft_atod(coords[1]);
 	scene->cam->dir.z = ft_atod(coords[2]);
-	if (scene->cam->dir.x < -1 || scene->cam->dir.x > 1 || scene->cam->dir.y < -1
-		|| scene->cam->dir.y > 1 || scene->cam->dir.z < -1 || scene->cam->dir.z > 1)
+	if (scene->cam->dir.x < -1 || scene->cam->dir.x > 1
+		|| scene->cam->dir.y < -1 || scene->cam->dir.y > 1
+		|| scene->cam->dir.z < -1 || scene->cam->dir.z > 1)
 		ft_error(1, "One of the vectors for camera is out of range\n");
 	scene->cam->dir = normalize_vector(scene->cam->dir);
-	if (scene->cam->dir.x < 0.00001 && fabs(scene->cam->dir.y) > 0.9999 && scene->cam->dir.z < 0.00001)
+	if (scene->cam->dir.x < 0.00001
+		&& fabs(scene->cam->dir.y) > 0.9999 && scene->cam->dir.z < 0.00001)
 			scene->cam->dir.z = 0.0001;
 	free_strstr(coords);
 	scene->c_fov = ft_atoi(line[3]);
@@ -55,7 +70,7 @@ void	read_c(t_scene *scene, char **line)
 
 void	read_l(t_scene *scene, char **line)
 {
-	char	**coords;
+	char		**coords;
 	static int	i = 0;
 
 	if (scene->state[2])
@@ -69,7 +84,6 @@ void	read_l(t_scene *scene, char **line)
 	scene->light[i].ori.y = ft_atod(coords[1]);
 	scene->light[i].ori.z = ft_atod(coords[2]);
 	free_strstr(coords);
-	scene->light[i].brightness = ft_atod(line[2]); // kan later weg
 	scene->light[i].Kd = 0.4 * ft_atod(line[2]);
 	scene->light[i].Ks = 0.8 * ft_atod(line[2]);
 	coords = ft_split(line[3], ',');
