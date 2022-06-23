@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/23 18:53:52 by mgroen        ########   odam.nl         */
+/*   Updated: 2022/06/23 19:43:36 by mgroen        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,23 @@ void	read_a(t_scene *scene, char **line)
 	free_strstr(colours);
 }
 
+void	read_c2(t_scene *scene, char **line, char **coords)
+{
+	scene->cam->dir.x = ft_atod(coords[0]);
+	scene->cam->dir.y = ft_atod(coords[1]);
+	scene->cam->dir.z = ft_atod(coords[2]);
+	if (scene->cam->dir.x < -1 || scene->cam->dir.x > 1
+		|| scene->cam->dir.y < -1 || scene->cam->dir.y > 1
+		|| scene->cam->dir.z < -1 || scene->cam->dir.z > 1)
+		ft_error(1, "One of the vectors for camera is out of range\n");
+	scene->cam->dir = normalize_vector(scene->cam->dir);
+	if (scene->cam->dir.x < 0.00001
+		&& fabs(scene->cam->dir.y) > 0.9999 && scene->cam->dir.z < 0.00001)
+			scene->cam->dir.z = 0.0001;
+	free_strstr(coords);
+	scene->c_fov = ft_atoi(line[3]);
+}
+
 void	read_c(t_scene *scene, char **line)
 {
 	char	**coords;
@@ -53,19 +70,7 @@ void	read_c(t_scene *scene, char **line)
 	coords = ft_split(line[2], ',');
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of vectors for camera\n");
-	scene->cam->dir.x = ft_atod(coords[0]);
-	scene->cam->dir.y = ft_atod(coords[1]);
-	scene->cam->dir.z = ft_atod(coords[2]);
-	if (scene->cam->dir.x < -1 || scene->cam->dir.x > 1
-		|| scene->cam->dir.y < -1 || scene->cam->dir.y > 1
-		|| scene->cam->dir.z < -1 || scene->cam->dir.z > 1)
-		ft_error(1, "One of the vectors for camera is out of range\n");
-	scene->cam->dir = normalize_vector(scene->cam->dir);
-	if (scene->cam->dir.x < 0.00001
-		&& fabs(scene->cam->dir.y) > 0.9999 && scene->cam->dir.z < 0.00001)
-			scene->cam->dir.z = 0.0001;
-	free_strstr(coords);
-	scene->c_fov = ft_atoi(line[3]);
+	read_c2(scene, line, coords);
 }
 
 void	read_l(t_scene *scene, char **line)

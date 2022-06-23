@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/23 18:57:26 by mgroen        ########   odam.nl         */
+/*   Updated: 2022/06/23 19:43:25 by mgroen        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,30 @@ double	ft_atod(char *str)
 	return (digit);
 }
 
+void	count_objects2(t_scene *scene, char **splitted_str)
+{
+	if (!strncmp(splitted_str[0], "pl", 3))
+		scene->amount[PLANE]++;
+	else if (!strncmp(splitted_str[0], "cy", 3))
+		scene->amount[CYLINDER]++;
+	else if (!strncmp(splitted_str[0], "sp", 3))
+		scene->amount[SPHERE]++;
+	else if (!strncmp(splitted_str[0], "L", 2))
+		scene->amount[LIGHT]++;
+	else if (!strncmp(splitted_str[0], "tor", 4))
+		scene->amount[TORUS]++;
+	else if (!strncmp(splitted_str[0], "di", 3))
+		scene->amount[DISC]++;
+	else if (!strncmp(splitted_str[0], "A", 2))
+		scene->amount[6]++;
+	else if (!strncmp(splitted_str[0], "C", 2))
+		scene->amount[7]++;
+	else if (strncmp(splitted_str[0], "cb", 3)
+		&& strncmp(splitted_str[0], "#", 2)
+		&& strncmp(splitted_str[0], "\n", 2))
+		ft_error(1, "Invalid element(s)\n");
+}
+
 void	count_objects(t_scene *scene, char *str, int fd)
 {
 	char	**splitted_str;
@@ -107,27 +131,8 @@ void	count_objects(t_scene *scene, char *str, int fd)
 	while (str)
 	{
 		splitted_str = ft_split(str, ' ');
-		if (!strncmp(splitted_str[0], "pl", 3))
-			scene->amount[PLANE]++;
-		else if (!strncmp(splitted_str[0], "cy", 3))
-			scene->amount[CYLINDER]++;
-		else if (!strncmp(splitted_str[0], "sp", 3))
-			scene->amount[SPHERE]++;
-		else if (!strncmp(splitted_str[0], "L", 2))
-			scene->amount[LIGHT]++;
-		else if (!strncmp(splitted_str[0], "tor", 4))
-			scene->amount[TORUS]++;
-		else if (!strncmp(splitted_str[0], "di", 3))
-			scene->amount[DISC]++;
-		else if (!strncmp(splitted_str[0], "A", 2))
-			scene->amount[6]++;
-		else if (!strncmp(splitted_str[0], "C", 2))
-			scene->amount[7]++;
-		else if (strncmp(splitted_str[0], "cb", 3)
-			&& strncmp(splitted_str[0], "#", 2)
-			&& strncmp(splitted_str[0], "\n", 2))
-			ft_error(1, "Invalid element(s)\n");
 		free(str);
+		count_objects2(scene, splitted_str);
 		free_strstr(splitted_str);
 		str = NULL;
 		str = get_next_line(fd);
@@ -135,10 +140,31 @@ void	count_objects(t_scene *scene, char *str, int fd)
 	close(fd);
 }
 
-int	set_scene(t_scene *scene, char *name)
+int	open_and_malloc(t_scene *scene, char *name)
 {
 	int		fd;
 	char	*str;
+
+	fd = open(name, O_RDONLY);
+	if (fd < 0)
+		ft_error(-1, "Open failed");
+	str = get_next_line(fd);
+	count_objects(scene, str, fd);
+	fd = open(name, O_RDONLY);
+	scene->pl = (t_pl *)malloc(sizeof(t_pl) * (scene->amount[PLANE] + 2));
+	scene->sp = (t_sp *)malloc(sizeof(t_sp) * (scene->amount[SPHERE] + 3));
+	scene->cy = (t_cy *)malloc(sizeof(t_cy) * (scene->amount[CYLINDER] + 2));
+	scene->di = (t_di *)malloc(sizeof(t_di) * (scene->amount[DISC] + 2));
+	scene->tor = (t_tor *)malloc(sizeof(t_tor) * (scene->amount[TORUS] + 2));
+	scene->cam = (t_ray *)malloc(sizeof(t_ray));
+	scene->light = (t_light *)malloc(sizeof(t_light)
+			* (scene->amount[LIGHT] + 2));
+	if (!scene->pl || !scene->sp || !scene->cy)
+		ft_error(1, "Malloc error\n");
+}
+
+int	set_scene(t_scene *scene, char *name)
+{
 	int		i;
 
 	i = 0;
@@ -156,23 +182,7 @@ int	set_scene(t_scene *scene, char *name)
 	scene->ori_dir.x = 0;
 	scene->ori_dir.y = 0;
 	scene->ori_dir.z = 1;
-	fd = open(name, O_RDONLY);
-	if (fd < 0)
-		ft_error(-1, "Open failed");
-	str = get_next_line(fd);
-	count_objects(scene, str, fd);
-	fd = open(name, O_RDONLY);
-	scene->pl = (t_pl *)malloc(sizeof(t_pl) * (scene->amount[PLANE] + 2));
-	scene->sp = (t_sp *)malloc(sizeof(t_sp) * (scene->amount[SPHERE] + 3));
-	scene->cy = (t_cy *)malloc(sizeof(t_cy) * (scene->amount[CYLINDER] + 2));
-	scene->di = (t_di *)malloc(sizeof(t_di) * (scene->amount[DISC] + 2));
-	scene->tor = (t_tor *)malloc(sizeof(t_tor) * (scene->amount[TORUS] + 2));
-	scene->cam = (t_ray *)malloc(sizeof(t_ray));
-	scene->light = (t_light *)malloc(sizeof(t_light)
-			* (scene->amount[LIGHT] + 2));
-	if (!scene->pl || !scene->sp || !scene->cy)
-		ft_error(1, "Malloc error\n");
-	return (fd);
+	return (open_and_malloc(scene, name));
 }
 
 void	cb(t_scene *scene, char	**str)
