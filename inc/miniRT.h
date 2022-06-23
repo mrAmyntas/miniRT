@@ -100,10 +100,11 @@ bool	t_closest(double t1, double t2, double z_m[2], double z);
 double	get_cy_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N);
 bool	inside_cylinder(t_scene *scene);
 double	find_caps(t_scene *scene, int *num, t_ray *ray, int cap);
+int		checkerboard_cy(t_scene *scene, t_vect3d phit, int num);
 
 // *** DISC STUFF *** 
 
-double	find_hit_disc(t_scene *scene, t_ray *ray, int *num);
+double	find_hit_disc(t_scene *scene, t_ray *ray, int *num, int set);
 double	get_di_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N);
 
 // *** TORUS STUFF *** 
@@ -115,5 +116,7 @@ int		get_a(t_scene *scene, t_ray *ray, long double *a, int *num);
 int		solve_cubic(t_solve_quartic_var *d);
 void	set_normal(t_scene *scene, int *num, t_vect3d phit);
 void	solve_quartic(t_solve_quartic_var *d);
+int		big_circle(t_scene *scene, t_ray *ray, int *num, t_vect3d phit);
+int		tube_circle(t_scene *scene, int *num, t_ray *ray, t_vect3d phit);
 
 #endif
