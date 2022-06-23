@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/23 18:57:26 by mgroen        ########   odam.nl         */
+/*   Updated: 2022/06/23 19:37:26 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,7 @@ int	set_scene(t_scene *scene, char *name)
 	fd = open(name, O_RDONLY);
 	scene->pl = (t_pl *)malloc(sizeof(t_pl) * (scene->amount[PLANE] + 2));
 	scene->sp = (t_sp *)malloc(sizeof(t_sp) * (scene->amount[SPHERE] + 3));
-	scene->cy = (t_cy *)malloc(sizeof(t_cy) * (scene->amount[CYLINDER] + 2));
+	scene->cy = (t_cy *)malloc(sizeof(t_cy) * (scene->amount[CYLINDER] + 3));
 	scene->di = (t_di *)malloc(sizeof(t_di) * (scene->amount[DISC] + 2));
 	scene->tor = (t_tor *)malloc(sizeof(t_tor) * (scene->amount[TORUS] + 2));
 	scene->cam = (t_ray *)malloc(sizeof(t_ray));

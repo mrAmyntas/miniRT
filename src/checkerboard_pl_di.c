@@ -1,24 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   checkerboard_pl_tor.c                              :+:    :+:            */
+/*   checkerboard_pl_di.c                               :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/23 18:49:50 by mgroen        ########   odam.nl         */
+/*   Updated: 2022/06/23 20:03:33 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/miniRT.h"
 
-static void	set_axis(t_vect3d *axis, t_scene *scene, int num)
+static void	set_axis(t_vect3d *axis, t_scene *scene, int num, int type)
 {
 	t_vect3d	a;
 	t_vect3d	b;
 	t_vect3d	l;
 
-	a = scene->pl[num].orth_vec;
+	if (type == PLANE)
+		a = scene->pl[num].orth_vec;
+	if (type == DISC)
+		a = scene->di[num].orth_vec;
 	b = a;
 	if (comp_d(b.x, 0.0))
 		b.x = b.x + 0.1;
@@ -72,7 +75,7 @@ int	checkerboard_pl(t_scene *scene, t_vect3d Phit, int num)
 
 	len[0] = 0;
 	len[1] = 0;
-	set_axis(axis, scene, num);
+	set_axis(axis, scene, num, PLANE);
 	l = subtract_vectors(Phit, scene->pl[num].coord);
 	angle[0] = acos(dot_product(l, axis[0]) / magnitude(l));
 	angle[1] = acos(dot_product(l, axis[1]) / magnitude(l));
@@ -109,7 +112,7 @@ int	checkerboard_di(t_scene *scene, t_vect3d Phit, int num)
 
 	len[0] = 0;
 	len[1] = 0;
-	set_axis(axis, scene, num);
+	set_axis(axis, scene, num, DISC);
 	l = subtract_vectors(Phit, scene->di[num].coord);
 	angle[0] = acos(dot_product(l, axis[0]) / magnitude(l));
 	angle[1] = acos(dot_product(l, axis[1]) / magnitude(l));
