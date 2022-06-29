@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/23 20:03:33 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/06/23 20:33:35 by mgroen        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ static void	set_axis(t_vect3d *axis, t_scene *scene, int num, int type)
 {
 	t_vect3d	a;
 	t_vect3d	b;
-	t_vect3d	l;
 
 	if (type == PLANE)
 		a = scene->pl[num].orth_vec;

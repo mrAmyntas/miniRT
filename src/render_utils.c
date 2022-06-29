@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/23 18:50:30 by mgroen        ########   odam.nl         */
+/*   Updated: 2022/06/29 17:47:31 by mgroen        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,33 @@ double	smallest(double t[3])
 	else if (t[2] > 0)
 		return (t[2]);
 	return (-1);
+}
+
+t_vect3d	get_hsl(t_scene *scene, int *num)
+{
+	t_vect3d	hsl;
+
+	if (num[0] == PLANE && scene->pl[num[1]].checker == 0)
+		hsl = scene->pl[num[1]].hsl;
+	else if (num[0] == PLANE)
+		hsl = scene->pl[num[1]].lsh;
+	else if (num[0] == SPHERE && scene->sp[num[1]].checker == 0)
+		hsl = scene->sp[num[1]].hsl;
+	else if (num[0] == SPHERE)
+		hsl = scene->sp[num[1]].lsh;
+	else if (num[0] == CYLINDER && scene->cy[num[1]].checker == 0)
+		hsl = scene->cy[num[1]].hsl;
+	else if (num[0] == CYLINDER)
+		hsl = scene->cy[num[1]].lsh;
+	else if (num[0] == DISC && scene->di[num[1]].checker == 0)
+		hsl = scene->di[num[1]].hsl;
+	else if (num[0] == DISC)
+		hsl = scene->di[num[1]].lsh;
+	else if (num[0] == TORUS && scene->tor[num[1]].checker == 0)
+		hsl = scene->tor[num[1]].hsl;
+	else
+		hsl = scene->tor[num[1]].lsh;
+	return (hsl);
 }
 
 // checks if the light ray hits Phit and is not blocked by another object

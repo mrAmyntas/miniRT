@@ -1,35 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   ft_strdup.c                                        :+:    :+:            */
+/*   free_strstr.c                                      :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: bhoitzin <bhoitzin@student.codam.nl>         +#+                     */
+/*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2020/11/03 13:19:51 by bhoitzin      #+#    #+#                 */
-/*   Updated: 2022/06/29 18:16:55 by mgroen        ########   odam.nl         */
+/*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
+/*   Updated: 2022/06/29 18:17:15 by mgroen        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strdup(const char *s1)
+void	free_strstr(char **str)
 {
-	char	*buff;
-	int		l;
-	int		i;
+	int	i;
 
-	if (s1 == NULL)
-		return (NULL);
-	l = ft_strlen(s1);
-	buff = (char *)malloc((l + 1) * sizeof(char));
-	if (buff == NULL)
-		return (NULL);
 	i = 0;
-	while (s1[i] != '\0')
+	while (str[i])
 	{
-		buff[i] = s1[i];
+		free(str[i]);
+		str[i] = NULL;
 		i++;
 	}
-	buff[i] = '\0';
-	return (buff);
+	if (str)
+	{
+		free(str);
+		str = NULL;
+	}
 }

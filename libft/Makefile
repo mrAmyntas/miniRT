@@ -44,7 +44,9 @@ SRC =	ft_isalnum.c\
 		ft_lstiter.c\
 		ft_lstmap.c\
 		get_next_line.c\
-		get_next_line_utils.c
+		get_next_line_utils.c\
+		ft_atod.c\
+		free_strstr.c
 
 OBJECTS = $(SRC:.c=.o)
 CFLAGS = -Wall -Werror -Wextra #-fsanitize=address

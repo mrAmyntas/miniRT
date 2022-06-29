@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   scenes.h                                           :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
+/*   Updated: 2022/06/29 18:14:45 by mgroen        ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef SCENES_H
 # define SCENES_H
 # include "vectors.h"
@@ -8,8 +20,8 @@ typedef struct s_light
 	t_vect3d	ori;
 	t_vect3d	color;
 	t_vect3d	hsl;
-	double		Kd;
-	double		Ks;
+	double		kd;
+	double		ks;
 	double		strength;
 }				t_light;
 
@@ -17,9 +29,9 @@ typedef struct s_cy
 {
 	t_vect3d	eye;
 	t_vect3d	dir;
-    double  	r;
-    double  	height;
-    t_vect3d	rgb;
+	double		r;
+	double		height;
+	t_vect3d	rgb;
 	t_vect3d	hsl;
 	t_vect3d	lsh;
 	t_matrix44d	i_t;
@@ -32,9 +44,9 @@ typedef struct s_tor
 {
 	t_vect3d	coord;
 	t_vect3d	dir;
-    double  	R_cir;
-    double  	r_tube;
-    t_vect3d	rgb;
+	double		r_cir;
+	double		r_tube;
+	t_vect3d	rgb;
 	t_vect3d	hsl;
 	t_vect3d	lsh;
 	t_matrix44d	i_t;
@@ -48,7 +60,7 @@ typedef struct s_pl
 {
 	t_vect3d	orth_vec;
 	t_vect3d	coord;
-    t_vect3d	rgb;
+	t_vect3d	rgb;
 	t_vect3d	hsl;
 	t_vect3d	lsh;
 	int			checker;
@@ -58,7 +70,7 @@ typedef struct s_di
 {
 	t_vect3d	orth_vec;
 	t_vect3d	coord;
-    t_vect3d	rgb;
+	t_vect3d	rgb;
 	t_vect3d	hsl;
 	t_vect3d	lsh;
 	double		r;
@@ -67,8 +79,8 @@ typedef struct s_di
 
 typedef struct s_sp
 {
-	t_vect3d	C;
-    t_vect3d	rgb;
+	t_vect3d	c;
+	t_vect3d	rgb;
 	t_vect3d	coord;
 	double		size;
 	t_vect3d	lsh;

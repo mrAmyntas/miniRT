@@ -6,7 +6,7 @@
 /*   By: basz <basz@student.codam.nl>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/10/31 11:39:05 by basz          #+#    #+#                 */
-/*   Updated: 2022/04/28 18:38:14 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/06/29 17:58:13 by mgroen        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,8 @@ char				*gnl_strjoin(char const *s1, char const *s2);
 char				*gnl_substr(char const *s, unsigned int start, size_t len);
 char				*gnl_strdup(const char *s1);
 int					gnl_stop_newline(const char *str);
+double				ft_atod(char *str);
+void				free_strstr(char **str);
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 128

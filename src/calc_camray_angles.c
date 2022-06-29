@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/23 18:49:37 by mgroen        ########   odam.nl         */
+/*   Updated: 2022/06/29 18:15:34 by mgroen        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static double	get_angle_sp(t_scene *scene, t_vect3d Phit, int *num)
 	t_ray		ray;
 	t_vect3d	normal;
 
-	normal = normalize_vector(subtract_vectors(Phit, scene->sp[num[1]].C));
+	normal = normalize_vector(subtract_vectors(Phit, scene->sp[num[1]].c));
 	ray.dir = normalize_vector(subtract_vectors(scene->cam->eye, Phit));
 	angle = acos(dot_product(normal, ray.dir)) * (180 / M_PI);
 	return (angle);

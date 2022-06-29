@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/23 18:49:17 by mgroen        ########   odam.nl         */
+/*   Updated: 2022/06/29 17:45:58 by mgroen        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,25 @@ void	set_ray_data(t_data *data, t_scene *scene)
 	scene->r.tmp = multiply_vector(
 			scene->r.v, (2 * scene->r.viewplanehalfheight));
 	scene->r.y_inc_vector = divide_vec_scalar(scene->r.tmp, data->height);
+}
+
+// loops through all the pixels in the window
+void	loop_pixels(t_data *data, t_scene *scene)
+{
+	int	x;
+	int	y;
+
+	x = 1;
+	while (x < data->width + 1)
+	{
+		y = 1;
+		while (y < data->height + 1)
+		{
+			set_pixel(data, scene, x, y);
+			y++;
+		}
+		x++;
+	}
 }
 
 int	main(int argc, char **argv)

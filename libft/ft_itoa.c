@@ -6,7 +6,7 @@
 /*   By: bhoitzin <bhoitzin@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/03 19:27:16 by bhoitzin      #+#    #+#                 */
-/*   Updated: 2022/04/21 19:14:07 by mgroen        ########   odam.nl         */
+/*   Updated: 2022/06/29 18:16:23 by mgroen        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ char	*ft_itoa(int n)
 	z = ft_determine_len(store, y, z);
 	buff = ft_allocmem(z, n);
 	if (buff == NULL)
-		return(NULL);
+		return (NULL);
 	buff = ft_fillbuff(n, buff, z, store);
 	buff = ft_reverse_buff(buff);
 	return (buff);

@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/23 19:02:59 by mgroen        ########   odam.nl         */
+/*   Updated: 2022/06/23 20:33:18 by mgroen        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ double	get_hue(double minmax[2], double r, double g, double b)
 		num = (rgb[1] - rgb[2]) / (minmax[1] - minmax[0]);
 	else if (minmax[1] == rgb[1])
 		num = 2 + (rgb[2] - rgb[0]) / (minmax[1] - minmax[0]);
-	else if (minmax[1] == rgb[2])
+	else
 		num = 4 + (rgb[0] - rgb[1]) / (minmax[1] - minmax[0]);
 	return (num * 60);
 }

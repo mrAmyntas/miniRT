@@ -6,7 +6,7 @@
 /*   By: basz <basz@student.codam.nl>                 +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/11/09 17:43:42 by basz          #+#    #+#                 */
-/*   Updated: 2022/04/21 19:16:26 by mgroen        ########   odam.nl         */
+/*   Updated: 2022/06/29 18:16:41 by mgroen        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ char	**ft_split(char const *s, char c)
 		return (NULL);
 	buff = (char **)malloc(sizeof(char *) * (1 + ft_wordcount(s, c, -1)));
 	if (buff == NULL)
-		return(NULL);
+		return (NULL);
 	j = 0;
 	while (j < ft_wordcount(s, c, -1))
 	{

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   checkerboard_cy_tor.c                              :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
+/*   Updated: 2022/06/29 18:12:19 by mgroen        ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../inc/miniRT.h"
 
 //finds which points are on/off checker pattern
@@ -16,7 +28,7 @@ static int	big_circle(t_scene *scene, t_ray *ray, int *num,
 	up.x = 0.0;
 	up.y = 1.0;
 	up.z = 0.0;
-	radius = scene->tor[*num].R_cir - scene->tor[*num].r_tube;
+	radius = scene->tor[*num].r_cir - scene->tor[*num].r_tube;
 	angle = acos(dot_product(up, ray->dir) / magnitude(ray->dir));
 	if (comp_d(angle, 0.0))
 		return (0);
@@ -38,7 +50,7 @@ static int	tube_circle(t_scene *scene, int *num,
 	side = ray->dir;
 	ray->dir = normalize_vector(ray->dir);
 	ray->eye = add_vectors(scene->origin,
-			multiply_vector(ray->dir, scene->tor[*num].R_cir));
+			multiply_vector(ray->dir, scene->tor[*num].r_cir));
 	ray->dir = subtract_vectors(phit, ray->eye);
 	angle = acos(dot_product(side, ray->dir)
 			/ (magnitude(side) * magnitude(ray->dir)));

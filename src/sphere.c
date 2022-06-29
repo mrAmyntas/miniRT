@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/23 15:54:23 by mgroen        ########   odam.nl         */
+/*   Updated: 2022/06/29 18:15:21 by mgroen        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ double	get_sp_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 	t_ray		ray;
 	t_vect3d	vec;
 
-	*N = normalize_vector(subtract_vectors(Phit, scene->sp[num[1]].C));
+	*N = normalize_vector(subtract_vectors(Phit, scene->sp[num[1]].c));
 	vec = subtract_vectors(scene->light[scene->i].ori, Phit);
 	ray.dir = normalize_vector(vec);
 	angle = acos(dot_product(*N, ray.dir)) * (180 / M_PI);
@@ -49,7 +49,7 @@ void	calc_b_c(t_scene *scene, t_ray *ray, double bc[2], int count)
 	t_vect3d	new_d;
 	double		power;
 
-	new = subtract_vectors(ray->eye, scene->sp[count].C);
+	new = subtract_vectors(ray->eye, scene->sp[count].c);
 	new_d = multiply_vector(ray->dir, 2);
 	bc[0] = dot_product(new, new_d);
 	power = pow(new.x, 2) + pow(new.y, 2) + pow(new.z, 2);
@@ -66,7 +66,7 @@ int	checkers(t_scene *scene, double t, int num)
 
 	phit = add_vectors(scene->ray_cam.eye,
 			multiply_vector(scene->ray_cam.dir, t));
-	phit = subtract_vectors(phit, scene->sp[num].C);
+	phit = subtract_vectors(phit, scene->sp[num].c);
 	u = 1 - (atan2(phit.x, phit.z) / (2 * M_PI) + 0.5);
 	v = 1 - (acos(phit.y / (scene->sp[num].size / 2)) / M_PI);
 	if (!(((int)(u * scene->cb[W])

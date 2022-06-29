@@ -2,7 +2,7 @@ NAME = miniRT
 MLX_NAME = libmlx42.a
 CC = gcc
 LIBFT_NAME = libft/libft.a
-FLAGS = #-Wall -Werror -Wextra
+FLAGS = -Wall -Werror -Wextra
 #FLAGS += -fsanitize=address
 OBJ_DIR = obj/
 SRC_DIR = src/
@@ -31,7 +31,9 @@ SRC =	src/main.c\
 		src/torus_calc.c\
 		src/torus_calc2.c\
 		src/checkerboard_pl_di.c\
-		src/checkerboard_cy_tor.c
+		src/checkerboard_cy_tor.c\
+		src/get_scene_objects2.c\
+		src/utils.c
 
 INC = 	inc/miniRT.h\
 		libft/libft.h\
@@ -60,6 +62,8 @@ $(LIBFT_NAME): $(LIBFT_DIR)*.c $(LIBFT_DIR) libft/libft.h
 
 clean:
 	rm -f obj/*.o
+	rm -f libft/*.o
+
 
 fclean: clean
 	rm -f $(NAME)

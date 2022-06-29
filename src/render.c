@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/23 18:13:29 by mgroen        ########   odam.nl         */
+/*   Updated: 2022/06/29 18:09:23 by mgroen        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,9 @@ void	light_strength2(t_scene *scene, t_variable x, t_vect3d Phit[2])
 				* dot_product(x.n, x.ray.dir)), x.ray.dir);
 	x.specular = pow(dot_product(multiply_vector(
 					scene->ray_cam.dir, -1), x.r), 50);
-	x.specular *= scene->light[scene->i].Ks;
+	x.specular *= scene->light[scene->i].ks;
 	x.diffuse = (((100 - x.t) / 100 + (90 - x.angle)
-				/ 90) / 2) * scene->light[scene->i].Kd;
+				/ 90) / 2) * scene->light[scene->i].kd;
 	scene->light[scene->i].strength = x.specular + x.diffuse;
 	if (scene->light[scene->i].strength < 0)
 		scene->light[scene->i].strength = 0;
@@ -80,33 +80,6 @@ void	light_strength(t_scene *scene, t_vect3d Phit[2], int num[2])
 		x.angle = 180 - x.angle;
 	}
 	light_strength2(scene, x, Phit);
-}
-
-t_vect3d	get_hsl(t_scene *scene, int *num)
-{
-	t_vect3d	hsl;
-
-	if (num[0] == PLANE && scene->pl[num[1]].checker == 0)
-		hsl = scene->pl[num[1]].hsl;
-	else if (num[0] == PLANE)
-		hsl = scene->pl[num[1]].lsh;
-	else if (num[0] == SPHERE && scene->sp[num[1]].checker == 0)
-		hsl = scene->sp[num[1]].hsl;
-	else if (num[0] == SPHERE)
-		hsl = scene->sp[num[1]].lsh;
-	else if (num[0] == CYLINDER && scene->cy[num[1]].checker == 0)
-		hsl = scene->cy[num[1]].hsl;
-	else if (num[0] == CYLINDER)
-		hsl = scene->cy[num[1]].lsh;
-	else if (num[0] == DISC && scene->di[num[1]].checker == 0)
-		hsl = scene->di[num[1]].hsl;
-	else if (num[0] == DISC)
-		hsl = scene->di[num[1]].lsh;
-	else if (num[0] == TORUS && scene->tor[num[1]].checker == 0)
-		hsl = scene->tor[num[1]].hsl;
-	else if (num[0] == TORUS)
-		hsl = scene->tor[num[1]].lsh;
-	return (hsl);
 }
 
 // returns the colour of the  pixel with the right lumination
@@ -146,24 +119,5 @@ void	set_pixel(t_data *data, t_scene *scene, int x, int y)
 			color = 0xFFFFFFFF;
 		mlx_put_pixel(data->mlx_img, (data->width - x),
 			(data->height - y), color);
-	}
-}
-
-// loops through all the pixels in the window
-void	loop_pixels(t_data *data, t_scene *scene)
-{
-	int	x;
-	int	y;
-
-	x = 1;
-	while (x < data->width + 1)
-	{
-		y = 1;
-		while (y < data->height + 1)
-		{
-			set_pixel(data, scene, x, y);
-			y++;
-		}
-		x++;
 	}
 }

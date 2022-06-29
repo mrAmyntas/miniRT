@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/23 18:50:37 by mgroen        ########   odam.nl         */
+/*   Updated: 2022/06/29 18:12:33 by mgroen        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	set_normal(t_scene *scene, int *num, t_vect3d phit)
 	centre_to_middle_of_tube.y = centre_to_phit.y;
 	centre_to_middle_of_tube.z = 0;
 	middle_of_tube = add_vectors(scene->origin,
-			multiply_vector(centre_to_middle_of_tube, scene->tor[*num].R_cir));
+			multiply_vector(centre_to_middle_of_tube, scene->tor[*num].r_cir));
 	scene->tor[*num].n = normalize_vector(
 			subtract_vectors(phit, middle_of_tube));
 	rotate_normal(&scene->tor[*num].n, scene->tor[*num].r);
@@ -48,7 +48,7 @@ double	get_tor_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 static void	set_values(t_scene *scene, t_ray *ray, int *num, t_quartic *val)
 {
 	val->r_t2 = pow(scene->tor[*num].r_tube, 2);
-	val->r_c2 = pow(scene->tor[*num].R_cir, 2);
+	val->r_c2 = pow(scene->tor[*num].r_cir, 2);
 	val->xd = ray->dir.x;
 	val->yd = ray->dir.y;
 	val->zd = ray->dir.z;
