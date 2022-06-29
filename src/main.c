@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/29 17:45:58 by mgroen        ########   odam.nl         */
+/*   Updated: 2022/06/29 19:11:46 by mgroen        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,8 +92,8 @@ int	main(int argc, char **argv)
 	t_data	data;
 	t_scene	scene;
 
-	data.height = 600;
-	data.width = 600;
+	data.height = 1080;
+	data.width = 1920;
 	if (argc != 2)
 		ft_error(1, "Invalid amount of arguments\n");
 	read_scene(&scene, argv[1]);

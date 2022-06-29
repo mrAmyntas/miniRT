@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/23 15:20:26 by mgroen        ########   odam.nl         */
+/*   Updated: 2022/06/29 18:58:05 by mgroen        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,10 @@ t_vect3d	add_light_colours(double bright, t_vect3d colour,
 	colour = divide_vec_scalar(colour, i + 1);
 	colour = add_vectors(colour, hsl_to_rgb(hsl));
 	colour = add_vectors(colour, multiply_vector(scene->a_rgb, scene->a_ratio));
-	colour = divide_vec_scalar(colour, 3);
+	if (scene->a_ratio)
+		colour = divide_vec_scalar(colour, 3);
+	else
+		colour = divide_vec_scalar(colour, 2);
 	create_hsl(&hsl2, colour.x, colour.y, colour.z);
 	hsl2.z = bright + scene->a_ratio + (hsl2.z / 2);
 	return (hsl2);
