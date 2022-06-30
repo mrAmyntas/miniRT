@@ -6,11 +6,11 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 17:08:08 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/06/30 17:10:37 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/miniRT.h"
+#include "inc/miniRT.h"
 
 static void	background(t_data *data)
 {

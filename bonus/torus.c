@@ -6,11 +6,11 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/23 18:50:47 by mgroen        ########   odam.nl         */
+/*   Updated: 2022/06/30 16:36:20 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/miniRT.h"
+#include "inc/miniRT.h"
 #define EPSIL 0.0000001
 
 //find up to 4 intersect points with the torus

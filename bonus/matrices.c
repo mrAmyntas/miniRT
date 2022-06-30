@@ -6,11 +6,11 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 16:58:46 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/06/30 16:35:50 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/miniRT.h"
+#include "inc/miniRT.h"
 
 //Matrix x Vertex = TransformedVertex
 t_vec4d	matrix44d_x_vert4d(t_matrix44d matrix, t_vec4d vec)
@@ -94,4 +94,24 @@ void	set_i_r(t_vect3d *obj_dir, t_matrix44d *mat)
 	a = acos(dot_product(o, dir));
 	axis = normalize_vector(cross_product(o, dir));
 	set_i_r_val(a, axis, mat);
+}
+
+void	set_r_tor(t_scene *scene, int num)
+{
+	scene->tor[num].r.row1.x = scene->tor[num].i_r.row1.x;
+	scene->tor[num].r.row1.y = scene->tor[num].i_r.row2.x;
+	scene->tor[num].r.row1.z = scene->tor[num].i_r.row3.x;
+	scene->tor[num].r.row1.t = scene->tor[num].i_r.row4.x;
+	scene->tor[num].r.row2.x = scene->tor[num].i_r.row1.y;
+	scene->tor[num].r.row2.y = scene->tor[num].i_r.row2.y;
+	scene->tor[num].r.row2.z = scene->tor[num].i_r.row3.y;
+	scene->tor[num].r.row2.t = scene->tor[num].i_r.row4.y;
+	scene->tor[num].r.row3.x = scene->tor[num].i_r.row1.z;
+	scene->tor[num].r.row3.y = scene->tor[num].i_r.row2.z;
+	scene->tor[num].r.row3.z = scene->tor[num].i_r.row3.z;
+	scene->tor[num].r.row3.t = scene->tor[num].i_r.row4.z;
+	scene->tor[num].r.row4.x = scene->tor[num].i_r.row1.t;
+	scene->tor[num].r.row4.y = scene->tor[num].i_r.row2.t;
+	scene->tor[num].r.row4.z = scene->tor[num].i_r.row3.t;
+	scene->tor[num].r.row4.t = scene->tor[num].i_r.row4.t;
 }

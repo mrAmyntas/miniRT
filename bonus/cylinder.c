@@ -6,11 +6,11 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 16:53:23 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/06/30 16:35:30 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/miniRT.h"
+#include "inc/miniRT.h"
 
 static double	get_cy_angle_side(t_scene *scene, int num[2],
 		t_vect3d Phit, t_vect3d *N)
@@ -84,24 +84,37 @@ double	find_closest_cy(t_scene *scene, t_ray *ray, int *num, int cap)
 		return (find_caps(scene, num, ray, cap));
 }
 
+static void	set_values(double *ret, int *num)
+{
+	*ret = -1;
+	*num = 0;
+}
+
 double	find_hit_cy(t_scene *scene, t_ray *ray, int *num, int cap)
 {
 	double	*t;
-	t_ray	new_ray;
+	t_ray	*new_ray;
 	double	ret;
 
-	ret = -1;
-	*num = 0;
+	new_ray = malloc(sizeof(t_ray) * scene->amount[CYLINDER]);
 	t = malloc(sizeof(double) * scene->amount[CYLINDER]);
+	set_values(&ret, num);
 	while (*num < scene->amount[CYLINDER])
 	{
-		new_ray = *ray;
-		t[*num] = find_closest_cy(scene, &new_ray, num, cap);
+		new_ray[*num] = *ray;
+		t[*num] = find_closest_cy(scene, &new_ray[*num], num, cap);
 		*num = *num + 1;
 	}
 	*num = find_smallest(t, *num, scene->amount[CYLINDER]);
 	if (*num != -1)
+	{
 		ret = t[*num];
+		if (scene->cb[ON] == true && cap == 1 && ret != -1)
+			scene->cy[*num].checker = checkerboard_cy(scene,
+					add_vectors(new_ray[*num].eye,
+						multiply_vector(new_ray[*num].dir, ret)), *num);
+	}
+	free(new_ray);
 	free (t);
 	return (ret);
 }

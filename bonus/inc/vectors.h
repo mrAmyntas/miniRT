@@ -6,14 +6,14 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 16:33:17 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/06/30 16:36:46 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef VECTORS_H
 # define VECTORS_H
-# include "../libft/libft.h"
-# include "../mlx42/include/MLX42/MLX42.h"
+# include "../../libft/libft.h"
+# include "../../mlx42/include/MLX42/MLX42.h"
 # include <stdbool.h>
 
 typedef struct s_vect3d {

@@ -6,11 +6,11 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 16:43:34 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/06/30 16:35:42 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/miniRT.h"
+#include "inc/miniRT.h"
 
 void	count_objects2(t_scene *scene, char **splitted_str)
 {
@@ -22,11 +22,16 @@ void	count_objects2(t_scene *scene, char **splitted_str)
 		scene->amount[SPHERE]++;
 	else if (!strncmp(splitted_str[0], "L", 2))
 		scene->amount[LIGHT]++;
+	else if (!strncmp(splitted_str[0], "tor", 4))
+		scene->amount[TORUS]++;
+	else if (!strncmp(splitted_str[0], "di", 3))
+		scene->amount[DISC]++;
 	else if (!strncmp(splitted_str[0], "A", 2))
 		scene->amount[6]++;
 	else if (!strncmp(splitted_str[0], "C", 2))
 		scene->amount[7]++;
-	else if (strncmp(splitted_str[0], "#", 2)
+	else if (strncmp(splitted_str[0], "cb", 3)
+		&& strncmp(splitted_str[0], "#", 2)
 		&& strncmp(splitted_str[0], "\n", 2))
 		ft_error(1, "Invalid element(s)\n");
 }
@@ -52,6 +57,7 @@ int	set_scene(t_scene *scene, char *name)
 	int		i;
 
 	i = 0;
+	scene->cb[ON] = false;
 	while (i < 8)
 	{
 		if (i < 3)
@@ -82,6 +88,18 @@ void	find_element(t_scene *scene, char **splitted_str)
 		read_sp(scene, splitted_str);
 	else if (!strncmp(splitted_str[0], "cy", 3))
 		read_cy(scene, splitted_str);
+	else if (!strncmp(splitted_str[0], "di", 3))
+		read_di(scene, splitted_str);
+	else if (!strncmp(splitted_str[0], "tor", 4))
+		read_tor(scene, splitted_str);
+	else if (!strncmp(splitted_str[0], "cb", 3))
+	{
+		if (strstr_len(splitted_str) != 3)
+			ft_error(1, "Wrong number of arguments for cb\n");
+		scene->cb[ON] = true;
+		scene->cb[W] = ft_atoi(splitted_str[1]);
+		scene->cb[H] = ft_atoi(splitted_str[2]);
+	}
 }
 
 void	read_scene(t_scene *scene, char *name)

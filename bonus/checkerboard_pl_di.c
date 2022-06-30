@@ -6,11 +6,11 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/23 20:33:35 by mgroen        ########   odam.nl         */
+/*   Updated: 2022/06/30 16:35:26 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/miniRT.h"
+#include "inc/miniRT.h"
 
 static void	set_axis(t_vect3d *axis, t_scene *scene, int num, int type)
 {

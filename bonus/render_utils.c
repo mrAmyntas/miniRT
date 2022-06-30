@@ -6,11 +6,11 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 17:01:14 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/06/30 16:36:00 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/miniRT.h"
+#include "inc/miniRT.h"
 
 bool	inside_object(t_scene *scene, t_vect3d *Phit, int *num)
 {
@@ -35,12 +35,29 @@ double	smallest(double t[3])
 
 t_vect3d	get_hsl(t_scene *scene, int *num)
 {
-	if (num[0] == PLANE)
-		return (scene->pl[num[1]].hsl);
+	t_vect3d	hsl;
+
+	if (num[0] == PLANE && scene->pl[num[1]].checker == 0)
+		hsl = scene->pl[num[1]].hsl;
+	else if (num[0] == PLANE)
+		hsl = scene->pl[num[1]].lsh;
+	else if (num[0] == SPHERE && scene->sp[num[1]].checker == 0)
+		hsl = scene->sp[num[1]].hsl;
 	else if (num[0] == SPHERE)
-		return (scene->sp[num[1]].hsl);
+		hsl = scene->sp[num[1]].lsh;
+	else if (num[0] == CYLINDER && scene->cy[num[1]].checker == 0)
+		hsl = scene->cy[num[1]].hsl;
+	else if (num[0] == CYLINDER)
+		hsl = scene->cy[num[1]].lsh;
+	else if (num[0] == DISC && scene->di[num[1]].checker == 0)
+		hsl = scene->di[num[1]].hsl;
+	else if (num[0] == DISC)
+		hsl = scene->di[num[1]].lsh;
+	else if (num[0] == TORUS && scene->tor[num[1]].checker == 0)
+		hsl = scene->tor[num[1]].hsl;
 	else
-		return (scene->cy[num[1]].hsl);
+		hsl = scene->tor[num[1]].lsh;
+	return (hsl);
 }
 
 // checks if the light ray hits Phit and is not blocked by another object
@@ -69,8 +86,12 @@ double	get_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
 		angle = get_pl_angle(scene, num, Phit, N);
 	else if (num[0] == SPHERE)
 		angle = get_sp_angle(scene, num, Phit, N);
-	else
+	else if (num[0] == CYLINDER)
 		angle = get_cy_angle(scene, num, Phit, N);
+	else if (num[0] == DISC)
+		angle = get_di_angle(scene, num, Phit, N);
+	else
+		angle = get_tor_angle(scene, num, Phit, N);
 	if (isnan(angle))
 		angle = -1;
 	return (angle);

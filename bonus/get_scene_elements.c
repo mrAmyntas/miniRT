@@ -6,11 +6,11 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 16:58:27 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/06/30 17:29:53 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/scenes.h"
+#include "inc/scenes.h"
 
 void	read_a(t_scene *scene, char **line)
 {
@@ -80,7 +80,6 @@ void	read_l(t_scene *scene, char **line)
 
 	if (scene->state[2])
 		ft_error(1, "Light can only be declared once\n");
-	scene->state[2] = 1;
 	if (strstr_len(line) != 4)
 		ft_error(1, "Wrong number of arguments for light\n");
 	coords = ft_split(line[1], ',');
@@ -91,6 +90,7 @@ void	read_l(t_scene *scene, char **line)
 	scene->light[i].ori.z = ft_atod(coords[2]);
 	free_strstr(coords);
 	scene->light[i].kd = 0.4 * ft_atod(line[2]);
+	scene->light[i].ks = 0.4 * ft_atod(line[2]);
 	coords = ft_split(line[3], ',');
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of colours for light\n");

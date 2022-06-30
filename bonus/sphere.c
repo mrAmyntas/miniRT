@@ -6,11 +6,11 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 16:50:09 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/06/30 16:36:13 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/miniRT.h"
+#include "inc/miniRT.h"
 
 // calculates the angle light hits Phit on a sphere
 double	get_sp_angle(t_scene *scene, int num[2], t_vect3d Phit, t_vect3d *N)
@@ -56,8 +56,28 @@ void	calc_b_c(t_scene *scene, t_ray *ray, double bc[2], int count)
 	bc[1] = power - pow(scene->sp[count].size / 2, 2);
 }
 
+// calculates if a point needs to be 
+// the opposite colour for a checkerboard pattern
+int	checkers(t_scene *scene, double t, int num)
+{
+	double		u;
+	double		v;
+	t_vect3d	phit;
+
+	phit = add_vectors(scene->ray_cam.eye,
+			multiply_vector(scene->ray_cam.dir, t));
+	phit = subtract_vectors(phit, scene->sp[num].c);
+	u = 1 - (atan2(phit.x, phit.z) / (2 * M_PI) + 0.5);
+	v = 1 - (acos(phit.y / (scene->sp[num].size / 2)) / M_PI);
+	if (!(((int)(u * scene->cb[W])
+			+ (int)(v * scene->cb[H])) % 2))
+		return (0);
+	else
+		return (1);
+}
+
 // calculates the hit point between ray and the closest sphere
-double	find_hit_sphere(t_scene *scene, t_ray *ray, int *num)
+double	find_hit_sphere(t_scene *scene, t_ray *ray, int *num, int set)
 {
 	double		bc[2];
 	double		t;
@@ -77,5 +97,7 @@ double	find_hit_sphere(t_scene *scene, t_ray *ray, int *num)
 		}
 		i++;
 	}
+	if (scene->cb[ON] == true && set == 1 && close_t != -1)
+		scene->sp[*num].checker = checkers(scene, close_t, *num);
 	return (close_t);
 }

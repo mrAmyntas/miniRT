@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 16:58:08 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/06/29 18:14:45 by mgroen        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ typedef struct s_light
 	t_vect3d	color;
 	t_vect3d	hsl;
 	double		kd;
+	double		ks;
 	double		strength;
 }				t_light;
 
@@ -32,10 +33,28 @@ typedef struct s_cy
 	double		height;
 	t_vect3d	rgb;
 	t_vect3d	hsl;
+	t_vect3d	lsh;
 	t_matrix44d	i_t;
 	t_matrix44d	i_r;
 	int			cap;
+	int			checker;
 }				t_cy;
+
+typedef struct s_tor
+{
+	t_vect3d	coord;
+	t_vect3d	dir;
+	double		r_cir;
+	double		r_tube;
+	t_vect3d	rgb;
+	t_vect3d	hsl;
+	t_vect3d	lsh;
+	t_matrix44d	i_t;
+	t_matrix44d	i_r;
+	t_matrix44d	r;
+	t_vect3d	n;
+	int			checker;
+}				t_tor;
 
 typedef struct s_pl
 {
@@ -43,7 +62,20 @@ typedef struct s_pl
 	t_vect3d	coord;
 	t_vect3d	rgb;
 	t_vect3d	hsl;
+	t_vect3d	lsh;
+	int			checker;
 }				t_pl;
+
+typedef struct s_di
+{
+	t_vect3d	orth_vec;
+	t_vect3d	coord;
+	t_vect3d	rgb;
+	t_vect3d	hsl;
+	t_vect3d	lsh;
+	double		r;
+	int			checker;
+}				t_di;
 
 typedef struct s_sp
 {
@@ -51,7 +83,9 @@ typedef struct s_sp
 	t_vect3d	rgb;
 	t_vect3d	coord;
 	double		size;
+	t_vect3d	lsh;
 	t_vect3d	hsl;
+	int			checker;
 }				t_sp;
 
 typedef struct s_ray {
@@ -83,6 +117,28 @@ typedef struct s_cy_data {
 	int		ret;
 }			t_cy_data;
 
+typedef struct s_solve_quartic
+{
+	long double			a[5];
+	long double			b[3];
+	long double			x[3];
+	long unsigned int	ret;
+	long double			q1;
+	long double			q2;
+	long double			p1;
+	long double			p2;
+	long double			d;
+	long double			sqd;
+	long double			a2;
+	long double			q;
+	long double			r;
+	long double			r2;
+	long double			q3;
+	long double			o;
+	long double			o2;
+	long double			y;
+}						t_solve_quartic_var;
+
 typedef struct s_scene
 {
 	int			i;
@@ -98,6 +154,8 @@ typedef struct s_scene
 	t_pl		*pl;
 	t_sp		*sp;
 	t_cy		*cy;
+	t_di		*di;
+	t_tor		*tor;
 	t_light		*light;
 	t_vect3d	origin;
 	t_vect3d	ori_dir;
@@ -112,10 +170,19 @@ enum	e_cy_cap
 	TOP
 };
 
+enum	e_checkerboard
+{
+	ON,
+	W,
+	H
+};
+
 // read objects
 void	read_cy(t_scene *scene, char **line);
 void	read_sp(t_scene *scene, char **line);
 void	read_pl(t_scene *scene, char **line);
+void	read_di(t_scene *scene, char **line);
+void	read_tor(t_scene *scene, char **line);
 
 // read elements
 void	read_a(t_scene *scene, char **line);

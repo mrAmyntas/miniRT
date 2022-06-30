@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 16:48:23 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/06/29 18:07:48 by mgroen        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ enum	e_object_type
 	PLANE,
 	CYLINDER,
 	SPHERE,
+	DISC,
+	TORUS,
 	LIGHT
 };
 
@@ -35,10 +37,29 @@ typedef struct s_variable
 	t_vect3d	r;
 	t_vect3d	n;
 	double		t;
+	double		specular;
 	double		diffuse;
 	double		angle;
 	t_ray		ray;
 }				t_variable;
+
+typedef struct s_quartic
+{
+	double	r_c2;
+	double	r_t2;
+	double	xd;
+	double	yd;
+	double	zd;
+	double	xe;
+	double	ye;
+	double	ze;
+	double	xd2;
+	double	yd2;
+	double	zd2;
+	double	xe2;
+	double	ye2;
+	double	ze2;
+}			t_quartic;
 
 // *** UTILS *** 
 
@@ -66,17 +87,18 @@ void		rotate_normal(t_vect3d *N, t_matrix44d I_R);
 
 // *** SPHERE STUFF *** 
 
-double		find_hit_sphere(t_scene *scene, t_ray *ray, int *num);
+double		find_hit_sphere(t_scene *scene, t_ray *ray, int *num, int set);
 double		get_sp_angle(t_scene *scene, int num[2],
 				t_vect3d Phit, t_vect3d *N);
 
 // *** PLANE STUFF *** 
 
-double		find_hit_pl(t_scene *scene, t_ray *ray, int *num);
+double		find_hit_pl(t_scene *scene, t_ray *ray, int *num, int set);
 double		get_pl_angle(t_scene *scene, int num[2],
 				t_vect3d Phit, t_vect3d *N);
 int			check_if_plane_between_cam_and_light(t_scene *scene,
 				t_vect3d Phit[2]);
+int			checkerboard_pl(t_scene *scene, t_vect3d Phit, int num);
 
 // *** COLOUR STUFF *** 
 
@@ -97,5 +119,25 @@ double		get_cy_angle(t_scene *scene, int num[2],
 				t_vect3d Phit, t_vect3d *N);
 bool		inside_cylinder(t_scene *scene);
 double		find_caps(t_scene *scene, int *num, t_ray *ray, int cap);
+int			checkerboard_cy(t_scene *scene, t_vect3d phit, int num);
+
+// *** DISC STUFF *** 
+
+double		find_hit_disc(t_scene *scene, t_ray *ray, int *num, int set);
+double		get_di_angle(t_scene *scene, int num[2],
+				t_vect3d Phit, t_vect3d *N);
+int			checkerboard_di(t_scene *scene, t_vect3d Phit, int num);
+
+// *** TORUS STUFF *** 
+
+double		find_hit_torus(t_scene *scene, t_ray *ray, int *num, int set_N);
+double		get_tor_angle(t_scene *scene, int *num, t_vect3d Phit, t_vect3d *N);
+void		set_r_tor(t_scene *scene, int num);
+int			get_a(t_scene *scene, t_ray *ray, long double *a, int *num);
+int			solve_cubic(t_solve_quartic_var *d);
+void		set_normal(t_scene *scene, int *num, t_vect3d phit);
+void		solve_quartic(t_solve_quartic_var *d);
+void		checkerboard_tor(t_scene *scene, t_ray *ray,
+				int *num, t_vect3d phit);
 
 #endif

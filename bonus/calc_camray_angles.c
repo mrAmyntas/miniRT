@@ -6,11 +6,11 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 17:01:55 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/06/30 16:34:50 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/miniRT.h"
+#include "inc/miniRT.h"
 
 static double	get_angle_sp(t_scene *scene, t_vect3d Phit, int *num)
 {
@@ -63,6 +63,18 @@ static double	get_angle_cy(t_scene *scene, t_vect3d Phit, int *num)
 	return (angle);
 }
 
+static double	get_angle_tor(t_scene *scene, t_vect3d Phit, int num[2])
+{
+	t_vect3d	tmp;
+	double		t;
+	double		angle;
+
+	tmp = normalize_vector(subtract_vectors(scene->cam->eye, Phit));
+	t = dot_product(scene->tor[num[1]].n, tmp);
+	angle = acos(t) / (M_PI / 180);
+	return (angle);
+}
+
 // finds the right function to calculate the angle between 
 // Phit->cam   and normal
 // if this is > 90, then camera has to be inside the obj 
@@ -72,6 +84,8 @@ double	get_camray_angle(t_scene *scene, t_vect3d *Phit, int *num)
 		return (get_angle_cy(scene, Phit[0], num));
 	if (num[0] == SPHERE)
 		return (get_angle_sp(scene, Phit[0], num));
+	if (num[0] == TORUS)
+		return (get_angle_tor(scene, Phit[0], num));
 	else
 		return (-1);
 }

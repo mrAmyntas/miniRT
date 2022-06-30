@@ -6,11 +6,11 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 16:56:06 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/06/30 16:37:21 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/miniRT.h"
+#include "inc/miniRT.h"
 
 void	read_pl2(t_scene *scene, char **line, int i, char **coords)
 {
@@ -28,6 +28,8 @@ void	read_pl2(t_scene *scene, char **line, int i, char **coords)
 		ft_error(1, "Wrong number of colours for a plane\n");
 	create_hsl(&scene->pl[i].hsl,
 		ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
+	create_hsl(&scene->pl[i].lsh, 255 - ft_atoi(coords[0]),
+		255 - ft_atoi(coords[1]), 255 - ft_atoi(coords[2]));
 	scene->pl[i].rgb.x = ft_atoi(coords[0]);
 	scene->pl[i].rgb.y = ft_atoi(coords[1]);
 	scene->pl[i].rgb.z = ft_atoi(coords[2]);
@@ -52,6 +54,7 @@ void	read_pl(t_scene *scene, char **line)
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of vectors for a plane\n");
 	read_pl2(scene, line, i, coords);
+	scene->pl[i].checker = 0;
 	i++;
 }
 
@@ -75,9 +78,12 @@ void	read_sp(t_scene *scene, char **line)
 		ft_error(1, "Wrong number of vectors for a sphere\n");
 	create_hsl(&scene->sp[i].hsl,
 		ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
+	create_hsl(&scene->sp[i].lsh, 255 - ft_atoi(coords[0]),
+		255 - ft_atoi(coords[1]), 255 - ft_atoi(coords[2]));
 	scene->sp[i].rgb.x = ft_atoi(coords[0]);
 	scene->sp[i].rgb.y = ft_atoi(coords[1]);
 	scene->sp[i].rgb.z = ft_atoi(coords[2]);
+	scene->sp[i].checker = 0;
 	i++;
 }
 
@@ -102,6 +108,8 @@ void	read_cy2(t_scene *scene, char **line, int i, char **coords)
 		ft_error(1, "Wrong number of colours for a cylinder\n");
 	create_hsl(&scene->cy[i].hsl,
 		ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
+	create_hsl(&scene->cy[i].lsh, 255 - ft_atoi(coords[0]),
+		255 - ft_atoi(coords[1]), 255 - ft_atoi(coords[2]));
 	scene->cy[i].rgb.x = ft_atoi(coords[0]);
 	scene->cy[i].rgb.y = ft_atoi(coords[1]);
 	scene->cy[i].rgb.z = ft_atoi(coords[2]);
@@ -128,5 +136,6 @@ void	read_cy(t_scene *scene, char **line)
 	read_cy2(scene, line, i, coords);
 	set_i_t(&scene->cy[i].eye, &scene->cy[i].i_t);
 	set_i_r(&scene->cy[i].dir, &scene->cy[i].i_r);
+	scene->cy[i].checker = 0;
 	i++;
 }

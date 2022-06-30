@@ -6,11 +6,11 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 16:48:46 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/06/30 16:35:53 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/miniRT.h"
+#include "inc/miniRT.h"
 
 int	check_if_plane_between_cam_and_light(t_scene *scene, t_vect3d Phit[2])
 {
@@ -21,10 +21,10 @@ int	check_if_plane_between_cam_and_light(t_scene *scene, t_vect3d Phit[2])
 
 	ray.eye = scene->light->ori;
 	ray.dir = normalize_vector(subtract_vectors(Phit[0], ray.eye));
-	t2[0] = find_hit_pl(scene, &ray, &num2);
+	t2[0] = find_hit_pl(scene, &ray, &num2, 0);
 	ray.eye = scene->cam->eye;
 	ray.dir = normalize_vector(subtract_vectors(scene->light->ori, ray.eye));
-	t2[1] = find_hit_pl(scene, &ray, &num3);
+	t2[1] = find_hit_pl(scene, &ray, &num3, 0);
 	if (t2[1] > 0 && num2 == num3 && t2[1]
 		< distance_two_points(scene->cam->eye, scene->light->ori))
 		return (0);
@@ -98,10 +98,11 @@ static void	calc_t(t_scene *scene, t_ray *ray, int *num, double *t)
 
 //check if the camera ray will hit with the plane[num]
 //num is set to closest planes num, distance is returned.
-double	find_hit_pl(t_scene *scene, t_ray *ray, int *num)
+double	find_hit_pl(t_scene *scene, t_ray *ray, int *num, int set)
 {
-	double	*t;
-	double	ret;
+	double		*t;
+	double		ret;
+	t_vect3d	phit;
 
 	t = malloc(sizeof(double) * scene->amount[PLANE]);
 	calc_t(scene, ray, num, t);
@@ -110,6 +111,12 @@ double	find_hit_pl(t_scene *scene, t_ray *ray, int *num)
 	{
 		ret = t[*num];
 		free (t);
+		if (scene->cb[ON] == true && set == 1)
+		{
+			phit = add_vectors(scene->ray_cam.eye,
+					multiply_vector(scene->ray_cam.dir, ret));
+			scene->pl[*num].checker = checkerboard_pl(scene, phit, *num);
+		}
 		return (ret);
 	}
 	free (t);
