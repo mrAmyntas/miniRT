@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 18:12:30 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/06/30 18:15:20 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,9 @@ void	read_l(t_scene *scene, char **line)
 	i++;
 }
 
+//some edge-cases happen with light and camera
+//at the exact same position, math-stuff
+//so offset a tiny bit
 void	offset_light_from_cam(t_scene *scene)
 {
 	int	i;
