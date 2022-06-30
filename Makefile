@@ -31,32 +31,31 @@ SRC =	src/main.c\
 		src/calc_camray_angles.c\
 		src/utils.c
 
-BONUS =	bonus/main.c\
-		bonus/get_scene.c\
-		bonus/get_scene_objects.c\
-		bonus/get_scene_elements.c\
-		bonus/plane.c\
-		bonus/sphere.c\
-		bonus/vector_math.c\
-		bonus/vector_math2.c\
-		bonus/cylinder.c\
-		bonus/cylinder_calc.c\
-		bonus/matrices.c\
-		bonus/render.c\
-		bonus/render_utils.c\
-		bonus/light.c\
-		bonus/calculate_hsl.c\
-		bonus/ray.c\
-		bonus/calc_camray_angles.c\
-		bonus/disc.c\
-		bonus/torus.c\
-		bonus/torus_calc.c\
-		bonus/torus_calc2.c\
-		bonus/checkerboard_pl_di.c\
-		bonus/checkerboard_cy_tor.c\
-		bonus/get_scene_objects2.c\
-		bonus/utils.c
-
+BONUS =	bonus/main_bonus.c\
+		bonus/get_scene_bonus.c\
+		bonus/get_scene_objects_bonus.c\
+		bonus/get_scene_elements_bonus.c\
+		bonus/plane_bonus.c\
+		bonus/sphere_bonus.c\
+		bonus/vector_math_bonus.c\
+		bonus/vector_math2_bonus.c\
+		bonus/cylinder_bonus.c\
+		bonus/cylinder_calc_bonus.c\
+		bonus/matrices_bonus.c\
+		bonus/render_bonus.c\
+		bonus/render_utils_bonus.c\
+		bonus/light_bonus.c\
+		bonus/calculate_hsl_bonus.c\
+		bonus/ray_bonus.c\
+		bonus/calc_camray_angles_bonus.c\
+		bonus/disc_bonus.c\
+		bonus/torus_bonus.c\
+		bonus/torus_calc_bonus.c\
+		bonus/torus_calc2_bonus.c\
+		bonus/checkerboard_pl_di_bonus.c\
+		bonus/checkerboard_cy_tor_bonus.c\
+		bonus/get_scene_objects2_bonus.c\
+		bonus/utils_bonus.c
 
 INC = 	inc/miniRT.h\
 		libft/libft.h\
