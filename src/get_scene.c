@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 16:43:34 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/06/30 17:52:24 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,4 +105,6 @@ void	read_scene(t_scene *scene, char *name)
 	str = NULL;
 	if (!scene->amount[LIGHT] || !scene->amount[6] || !scene->amount[7])
 		ft_error(1, "Element missing\n");
+	if (compare_vectors(scene->light[0].ori, scene->cam->eye))
+		scene->light[0].ori.x = scene->light[0].ori.x + 0.0001;
 }

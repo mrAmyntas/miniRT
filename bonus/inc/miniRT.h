@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/29 18:07:48 by mgroen        ########   odam.nl         */
+/*   Updated: 2022/06/30 17:55:12 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ void		hook(void *param);
 void		read_scene(t_scene *scene, char *name);
 int			find_smallest(double *t, int num, int amount);
 double		get_camray_angle(t_scene *scene, t_vect3d *Phit, int *num);
+void		offset_light_from_cam(t_scene *scene);
 bool		inside_object(t_scene *scene, t_vect3d *Phit, int *num);
 double		smallest(double t[3]);
 int			check_shadows(t_ray ray, t_scene *scene, double t, t_vect3d *Phit);

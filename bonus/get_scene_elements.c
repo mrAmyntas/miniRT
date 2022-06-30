@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 17:29:53 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/06/30 18:12:30 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,8 +89,8 @@ void	read_l(t_scene *scene, char **line)
 	scene->light[i].ori.y = ft_atod(coords[1]);
 	scene->light[i].ori.z = ft_atod(coords[2]);
 	free_strstr(coords);
-	scene->light[i].kd = 0.4 * ft_atod(line[2]);
-	scene->light[i].ks = 0.4 * ft_atod(line[2]);
+	scene->light[i].kd = 0.1 * ft_atod(line[2]);
+	scene->light[i].ks = 0.3 * ft_atod(line[2]);
 	coords = ft_split(line[3], ',');
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of colours for light\n");
@@ -99,4 +99,19 @@ void	read_l(t_scene *scene, char **line)
 	scene->light[i].color.z = ft_atoi(coords[2]);
 	free_strstr(coords);
 	i++;
+}
+
+void	offset_light_from_cam(t_scene *scene)
+{
+	int	i;
+
+	i = 0;
+	if (compare_vectors(scene->light[i].ori, scene->cam->eye))
+			scene->light[i].ori.x = scene->light[i].ori.x + 0.0001;
+	while (i < scene->amount[5])
+	{
+		if (compare_vectors(scene->light[i].ori, scene->cam->eye))
+			scene->light[i].ori.x = scene->light[i].ori.x + 0.0001;
+		i++;
+	}
 }

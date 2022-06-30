@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 16:35:42 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/06/30 18:00:47 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,4 +123,5 @@ void	read_scene(t_scene *scene, char *name)
 	str = NULL;
 	if (!scene->amount[LIGHT] || !scene->amount[6] || !scene->amount[7])
 		ft_error(1, "Element missing\n");
+	offset_light_from_cam(scene);
 }
