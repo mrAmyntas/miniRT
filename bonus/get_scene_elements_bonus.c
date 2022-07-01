@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 18:31:38 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/07/01 17:53:10 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,11 +110,11 @@ void	offset_light_from_cam(t_scene *scene)
 
 	i = 0;
 	if (compare_vectors(scene->light[i].ori, scene->cam->eye))
-			scene->light[i].ori.x = scene->light[i].ori.x + 0.0001;
+		scene->light[i].ori.x = scene->light[i].ori.x + 0.0001;
 	while (i < scene->amount[5])
 	{
 		if (compare_vectors(scene->light[i].ori, scene->cam->eye))
-			scene->light[i].ori.x = scene->light[i].ori.x + 0.0001;
+			scene->light[i].ori.z = scene->light[i].ori.z + 0.0001;
 		i++;
 	}
 }

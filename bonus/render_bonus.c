@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   render.c                                           :+:    :+:            */
+/*   render_bonus.c                                     :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 16:36:59 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/07/01 17:49:29 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ void	light_strength2(t_scene *scene, t_variable x, t_vect3d Phit[2])
 				* dot_product(x.n, x.ray.dir)), x.ray.dir);
 	x.specular = pow(dot_product(multiply_vector(
 					scene->ray_cam.dir, -1), x.r), 50);
+	if (dot_product(multiply_vector(scene->ray_cam.dir, -1), x.r) > 0)
+		x.specular = 0;
 	x.specular *= scene->light[scene->i].ks;
 	x.diffuse = (((100 - x.t) / 100 + (90 - x.angle)
 				/ 90) / 2) * scene->light[scene->i].kd;
