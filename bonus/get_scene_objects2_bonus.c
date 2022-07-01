@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   get_scene_objects2.c                               :+:    :+:            */
+/*   get_scene_objects2_bonus.c                         :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 16:35:40 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/07/01 15:25:55 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ void	read_di2(t_scene *scene, char **line, int i, char **coords)
 	scene->di[i].orth_vec = normalize_vector(scene->di[i].orth_vec);
 	free_strstr(coords);
 	scene->di[i].r = ft_atod(line[3]);
+	if (scene->di[i].r <= 0)
+		ft_error(1, "illegal height/radius for a disc\n");
 	coords = ft_split(line[4], ',');
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of colours for a disc\n");
@@ -67,6 +69,8 @@ void	read_tor3(t_scene *scene, char **line, int i, char **coords)
 	scene->tor[i].r_tube = ft_atod(line[4]);
 	if (scene->tor[i].r_cir < scene->tor[i].r_tube)
 		ft_error(1, "Radius of circle has to be bigger then radius of tube\n");
+	if (scene->tor[i].r_cir <= 0 || scene->tor[i].r_tube <= 0)
+		ft_error(1, "illegal radius for a torus\n");
 	coords = ft_split(line[5], ',');
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of colours for a torus\n");

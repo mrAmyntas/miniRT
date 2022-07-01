@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   get_scene_objects.c                                :+:    :+:            */
+/*   get_scene_objects_bonus.c                          :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 16:37:21 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/07/01 15:31:58 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,16 +63,16 @@ void	read_sp(t_scene *scene, char **line)
 	char		**coords;
 	static int	i;
 
-	if (strstr_len(line) != 4)
-		ft_error(1, "Wrong number of arguments for a sphere\n");
 	coords = ft_split(line[1], ',');
-	if (strstr_len(coords) != 3)
-		ft_error(1, "Wrong number of coordinates for a sphere\n");
+	if (strstr_len(coords) != 3 || strstr_len(line) != 4)
+		ft_error(1, "Wrong number of coordinates/arguments for a sphere\n");
 	scene->sp[i].c.x = ft_atod(coords[0]);
 	scene->sp[i].c.y = ft_atod(coords[1]);
 	scene->sp[i].c.z = ft_atod(coords[2]);
 	free_strstr(coords);
 	scene->sp[i].size = ft_atod(line[2]);
+	if (scene->sp[i].size <= 0)
+		ft_error(1, "illegal size for a sphere\n");
 	coords = ft_split(line[3], ',');
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of vectors for a sphere\n");
@@ -134,6 +134,8 @@ void	read_cy(t_scene *scene, char **line)
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of vectors for a cylinder\n");
 	read_cy2(scene, line, i, coords);
+	if (scene->cy[i].r <= 0 || scene->cy[i].height <= 0)
+		ft_error(1, "illegal height/radius for a cylinder\n");
 	set_i_t(&scene->cy[i].eye, &scene->cy[i].i_t);
 	set_i_r(&scene->cy[i].dir, &scene->cy[i].i_r);
 	scene->cy[i].checker = 0;

@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 16:56:06 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/07/01 15:22:45 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,8 @@ void	read_sp(t_scene *scene, char **line)
 	scene->sp[i].c.z = ft_atod(coords[2]);
 	free_strstr(coords);
 	scene->sp[i].size = ft_atod(line[2]);
+	if (scene->sp[i].size <= 0)
+		ft_error(1, "illegal size for a sphere\n");
 	coords = ft_split(line[3], ',');
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of vectors for a sphere\n");
@@ -97,6 +99,8 @@ void	read_cy2(t_scene *scene, char **line, int i, char **coords)
 	free_strstr(coords);
 	scene->cy[i].r = ft_atod(line[3]) / 2;
 	scene->cy[i].height = ft_atod(line[4]);
+	if (scene->cy[i].r <= 0 || scene->cy[i].height <= 0)
+		ft_error(1, "illegal height/radius for a cylinder\n");
 	coords = ft_split(line[5], ',');
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of colours for a cylinder\n");
