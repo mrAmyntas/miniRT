@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/29 18:14:45 by mgroen        ########   odam.nl         */
+/*   Updated: 2022/07/01 16:55:16 by mgroen        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,6 @@ typedef struct s_solve_quartic
 	long double			o2;
 	long double			y;
 }						t_solve_quartic_var;
-
 typedef struct s_scene
 {
 	int			i;

@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/07/01 17:53:10 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/07/01 18:02:17 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,8 +89,8 @@ void	read_l(t_scene *scene, char **line)
 	scene->light[i].ori.y = ft_atod(coords[1]);
 	scene->light[i].ori.z = ft_atod(coords[2]);
 	free_strstr(coords);
-	scene->light[i].kd = 0.3 * ft_atod(line[2]);
-	scene->light[i].ks = 0.8 * ft_atod(line[2]);
+	scene->light[i].kd = 1 * ft_atod(line[2]);
+	scene->light[i].ks = 0.4 * ft_atod(line[2]);
 	coords = ft_split(line[3], ',');
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of colours for light\n");
