@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   torus.c                                            :+:    :+:            */
+/*   torus_bonus.c                                      :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 16:36:20 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/09/08 14:25:25 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,8 @@ double	find_hit_torus(t_scene *scene, t_ray *ray,
 	double	ret;
 
 	t = malloc(sizeof(double) * scene->amount[TORUS]);
+	if (t == NULL)
+		ft_error(1, "malloc error in find_hit_torus\n");
 	*num = 0;
 	while (*num < scene->amount[TORUS])
 	{

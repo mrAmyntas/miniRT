@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   disc.c                                             :+:    :+:            */
+/*   disc_bonus.c                                       :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 16:35:32 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/09/08 14:24:31 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,8 @@ double	find_hit_disc(t_scene *scene, t_ray *ray, int *num, int set)
 
 	ret = -1;
 	t = malloc(sizeof(double) * scene->amount[DISC]);
+	if (t == NULL)
+		ft_error(1, "malloc error in find_hit_disc\n");
 	calc_t(scene, ray, num, t);
 	*num = find_smallest(t, *num, scene->amount[DISC]);
 	if (*num != -1)

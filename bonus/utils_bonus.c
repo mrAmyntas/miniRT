@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   utils.c                                            :+:    :+:            */
+/*   utils_bonus.c                                      :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 16:36:23 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/09/08 14:26:18 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,8 @@ int	open_and_malloc(t_scene *scene, char *name)
 	scene->cam = (t_ray *)malloc(sizeof(t_ray));
 	scene->light = (t_light *)malloc(sizeof(t_light)
 			* (scene->amount[LIGHT] + 2));
-	if (!scene->pl || !scene->sp || !scene->cy)
-		ft_error(1, "Malloc error\n");
+	if (!scene->pl || !scene->sp || !scene->cy || !scene->di || !scene->tor
+		|| !scene->cam || !scene->light)
+		ft_error(1, "Malloc error in open_and_malloc\n");
 	return (fd);
 }

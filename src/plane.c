@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 16:48:46 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/09/08 14:09:55 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,8 @@ double	find_hit_pl(t_scene *scene, t_ray *ray, int *num)
 	double	ret;
 
 	t = malloc(sizeof(double) * scene->amount[PLANE]);
+	if (t == NULL)
+		ft_error(1, "malloc error in find_hit_pl\n");
 	calc_t(scene, ray, num, t);
 	*num = find_smallest(t, *num, scene->amount[PLANE]);
 	if (*num != -1)
