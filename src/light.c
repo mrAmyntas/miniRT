@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/07/01 17:59:25 by mgroen        ########   odam.nl         */
+/*   Updated: 2022/09/11 14:29:55 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ t_vect3d	hsl_to_rgb(t_vect3d hsl)
 	rgb.x = hsl.z * 255;
 	rgb.y = hsl.z * 255;
 	rgb.z = hsl.z * 255;
-	if (!hsl.y)
+	if (!(bool)hsl.y)
 		return (rgb);
 	temp[0] = hsl.z + hsl.y - (hsl.z * hsl.y);
 	if (hsl.z < 0.5)
@@ -81,7 +81,7 @@ t_vect3d	add_light_colours(double bright, t_vect3d colour,
 }
 
 // calculate the brightness and colour of the pixel
-int	calculate_light(t_vect3d hsl, t_scene *scene)
+uint32_t	calculate_light(t_vect3d hsl, t_scene *scene)
 {
 	t_vect3d	colour;
 	t_vect3d	hsl2;

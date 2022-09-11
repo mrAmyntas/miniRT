@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/09/08 14:08:48 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/09/11 14:15:19 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ double	find_hit_cy(t_scene *scene, t_ray *ray, int *num, int cap)
 
 	ret = -1;
 	*num = 0;
-	t = malloc(sizeof(double) * scene->amount[CYLINDER]);
+	t = malloc(sizeof(double) * (unsigned long)scene->amount[CYLINDER]);
 	if (t == NULL)
 		ft_error(1, "malloc error in find_hit_cy\n");
 	while (*num < scene->amount[CYLINDER])

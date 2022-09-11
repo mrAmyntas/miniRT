@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/09/08 14:26:18 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/09/11 15:51:55 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	ft_error(int num, char *msg)
 		exit(1);
 	}
 	else
-		write(2, msg, ft_strlen(msg));
+		write(2, msg, (size_t)ft_strlen(msg));
 	exit(num);
 }
 

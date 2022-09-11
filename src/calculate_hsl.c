@@ -6,13 +6,13 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/23 20:33:18 by mgroen        ########   odam.nl         */
+/*   Updated: 2022/09/11 14:34:03 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/vectors.h"
 
-double	get_max(int r, int g, int b)
+double	get_max(double r, double g, double b)
 {
 	double	num[3];
 
@@ -37,7 +37,7 @@ double	get_max(int r, int g, int b)
 	return (num[0]);
 }
 
-double	get_min(int r, int g, int b)
+double	get_min(double r, double g, double b)
 {
 	double	num[3];
 
@@ -93,7 +93,7 @@ double	get_hue(double minmax[2], double r, double g, double b)
 	return (num * 60);
 }
 
-void	create_hsl(t_vect3d *hsl, int r, int g, int b)
+void	create_hsl(t_vect3d *hsl, double r, double g, double b)
 {
 	double	minmax[2];
 

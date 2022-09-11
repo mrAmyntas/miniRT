@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/09/08 14:24:31 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/09/11 15:15:28 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ double	find_hit_disc(t_scene *scene, t_ray *ray, int *num, int set)
 	t_vect3d	phit;
 
 	ret = -1;
-	t = malloc(sizeof(double) * scene->amount[DISC]);
+	t = malloc(sizeof(double) * (unsigned long)scene->amount[DISC]);
 	if (t == NULL)
 		ft_error(1, "malloc error in find_hit_disc\n");
 	calc_t(scene, ray, num, t);
