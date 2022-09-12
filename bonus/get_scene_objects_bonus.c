@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/07/01 15:31:58 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/09/12 13:14:17 by mgroen        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,32 +58,33 @@ void	read_pl(t_scene *scene, char **line)
 	i++;
 }
 
+// c == coords
 void	read_sp(t_scene *scene, char **line)
 {
-	char		**coords;
+	char		**c;
 	static int	i;
 
-	coords = ft_split(line[1], ',');
-	if (strstr_len(coords) != 3 || strstr_len(line) != 4)
+	c = ft_split(line[1], ',');
+	if (strstr_len(c) != 3 || strstr_len(line) != 4)
 		ft_error(1, "Wrong number of coordinates/arguments for a sphere\n");
-	scene->sp[i].c.x = ft_atod(coords[0]);
-	scene->sp[i].c.y = ft_atod(coords[1]);
-	scene->sp[i].c.z = ft_atod(coords[2]);
-	free_strstr(coords);
+	scene->sp[i].c.x = ft_atod(c[0]);
+	scene->sp[i].c.y = ft_atod(c[1]);
+	scene->sp[i].c.z = ft_atod(c[2]);
+	free_strstr(c);
 	scene->sp[i].size = ft_atod(line[2]);
-	if (scene->sp[i].size <= 0)
+	if (scene->sp[i].size <= 0 || scene->sp[i].size >= INT_MAX)
 		ft_error(1, "illegal size for a sphere\n");
-	coords = ft_split(line[3], ',');
-	if (strstr_len(coords) != 3)
+	c = ft_split(line[3], ',');
+	if (strstr_len(c) != 3)
 		ft_error(1, "Wrong number of vectors for a sphere\n");
-	create_hsl(&scene->sp[i].hsl,
-		ft_atoi(coords[0]), ft_atoi(coords[1]), ft_atoi(coords[2]));
-	create_hsl(&scene->sp[i].lsh, 255 - ft_atoi(coords[0]),
-		255 - ft_atoi(coords[1]), 255 - ft_atoi(coords[2]));
-	scene->sp[i].rgb.x = ft_atoi(coords[0]);
-	scene->sp[i].rgb.y = ft_atoi(coords[1]);
-	scene->sp[i].rgb.z = ft_atoi(coords[2]);
+	create_hsl(&scene->sp[i].hsl, ft_atoi(c[0]), ft_atoi(c[1]), ft_atoi(c[2]));
+	create_hsl(&scene->sp[i].lsh, 255 - ft_atoi(c[0]),
+		255 - ft_atoi(c[1]), 255 - ft_atoi(c[2]));
+	scene->sp[i].rgb.x = ft_atoi(c[0]);
+	scene->sp[i].rgb.y = ft_atoi(c[1]);
+	scene->sp[i].rgb.z = ft_atoi(c[2]);
 	scene->sp[i].checker = 0;
+	free_strstr(c);
 	i++;
 }
 
@@ -113,6 +114,7 @@ void	read_cy2(t_scene *scene, char **line, int i, char **coords)
 	scene->cy[i].rgb.x = ft_atoi(coords[0]);
 	scene->cy[i].rgb.y = ft_atoi(coords[1]);
 	scene->cy[i].rgb.z = ft_atoi(coords[2]);
+	free_strstr(coords);
 }
 
 void	read_cy(t_scene *scene, char **line)
@@ -134,7 +136,8 @@ void	read_cy(t_scene *scene, char **line)
 	if (strstr_len(coords) != 3)
 		ft_error(1, "Wrong number of vectors for a cylinder\n");
 	read_cy2(scene, line, i, coords);
-	if (scene->cy[i].r <= 0 || scene->cy[i].height <= 0)
+	if (scene->cy[i].r <= 0 || scene->cy[i].height <= 0
+		|| scene->cy[i].r >= INT_MAX || scene->cy[i].height >= INT_MAX)
 		ft_error(1, "illegal height/radius for a cylinder\n");
 	set_i_t(&scene->cy[i].eye, &scene->cy[i].i_t);
 	set_i_r(&scene->cy[i].dir, &scene->cy[i].i_r);

@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/07/01 15:22:45 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/09/12 12:59:46 by mgroen        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ void	read_sp(t_scene *scene, char **line)
 	scene->sp[i].rgb.x = ft_atoi(coords[0]);
 	scene->sp[i].rgb.y = ft_atoi(coords[1]);
 	scene->sp[i].rgb.z = ft_atoi(coords[2]);
+	free_strstr(coords);
 	i++;
 }
 
@@ -109,6 +110,7 @@ void	read_cy2(t_scene *scene, char **line, int i, char **coords)
 	scene->cy[i].rgb.x = ft_atoi(coords[0]);
 	scene->cy[i].rgb.y = ft_atoi(coords[1]);
 	scene->cy[i].rgb.z = ft_atoi(coords[2]);
+	free_strstr(coords);
 }
 
 void	read_cy(t_scene *scene, char **line)
