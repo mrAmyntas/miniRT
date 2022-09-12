@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 16:48:23 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/09/11 14:18:47 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ t_vect3d	hsl_to_rgb(t_vect3d hsl);
 double		get_saturation(double l, double minmax[2]);
 double		get_hue(double minmax[2], double r, double g, double b);
 int			check_shadow(t_ray ray, t_scene *scene);
-int			calculate_light(t_vect3d hsl, t_scene *scene);
+uint32_t	calculate_light(t_vect3d hsl, t_scene *scene);
 t_vect3d	get_hsl(t_scene *scene, int *num);
 
 // *** CYLINDER STUFF *** 

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   plane.c                                            :+:    :+:            */
+/*   plane_bonus.c                                      :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 16:35:53 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/09/11 14:44:47 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,9 @@ double	find_hit_pl(t_scene *scene, t_ray *ray, int *num, int set)
 	double		ret;
 	t_vect3d	phit;
 
-	t = malloc(sizeof(double) * scene->amount[PLANE]);
+	t = malloc(sizeof(double) * (unsigned long)scene->amount[PLANE]);
+	if (t == NULL)
+		ft_error(1, "malloc error in find_hit_pl\n");
 	calc_t(scene, ray, num, t);
 	*num = find_smallest(t, *num, scene->amount[PLANE]);
 	if (*num != -1)

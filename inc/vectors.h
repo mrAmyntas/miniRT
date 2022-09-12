@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 16:33:17 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/09/11 14:12:32 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,8 @@ typedef struct s_data {
 	mlx_image_t	*mlx_img;
 	mlx_t		*mlx;
 	int			color;
-	double		width;
-	double		height;
+	int32_t	width;
+	int32_t	height;
 }				t_data;
 
 t_vect3d	add_vectors(t_vect3d vec1, t_vect3d vec2);

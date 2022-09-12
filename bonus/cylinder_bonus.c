@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   cylinder.c                                         :+:    :+:            */
+/*   cylinder_bonus.c                                   :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 16:35:30 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/09/11 14:46:40 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,8 +84,10 @@ double	find_closest_cy(t_scene *scene, t_ray *ray, int *num, int cap)
 		return (find_caps(scene, num, ray, cap));
 }
 
-static void	set_values(double *ret, int *num)
+static void	set_values(double *ret, int *num, double *t)
 {
+	if (t == NULL)
+		ft_error(1, "malloc error in find_hit_cy\n");
 	*ret = -1;
 	*num = 0;
 }
@@ -96,9 +98,9 @@ double	find_hit_cy(t_scene *scene, t_ray *ray, int *num, int cap)
 	t_ray	*new_ray;
 	double	ret;
 
-	new_ray = malloc(sizeof(t_ray) * scene->amount[CYLINDER]);
-	t = malloc(sizeof(double) * scene->amount[CYLINDER]);
-	set_values(&ret, num);
+	new_ray = malloc(sizeof(t_ray) * (unsigned long)scene->amount[CYLINDER]);
+	t = malloc(sizeof(double) * (unsigned long)scene->amount[CYLINDER]);
+	set_values(&ret, num, t);
 	while (*num < scene->amount[CYLINDER])
 	{
 		new_ray[*num] = *ray;

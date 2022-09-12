@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 17:08:08 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/09/11 14:13:17 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 
 static void	background(t_data *data)
 {
-	int	i;
-	int	j;
+	int32_t	i;
+	int32_t	j;
 
 	data->mlx_img = mlx_new_image(data->mlx,
-			data->width, data->height);
+			(uint32_t)data->width, (uint32_t)data->height);
 	i = 0;
 	while (i < data->width)
 	{
@@ -71,8 +71,8 @@ void	set_ray_data(t_data *data, t_scene *scene)
 // loops through all the pixels in the window
 void	loop_pixels(t_data *data, t_scene *scene)
 {
-	int	x;
-	int	y;
+	int32_t	x;
+	int32_t	y;
 
 	x = 1;
 	while (x < data->width + 1)

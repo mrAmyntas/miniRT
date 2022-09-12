@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/09/12 13:03:28 by mgroen        ########   odam.nl         */
+/*   Updated: 2022/09/12 13:16:16 by mgroen        ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static void	background(t_data *data)
 	int	j;
 
 	data->mlx_img = mlx_new_image(data->mlx,
-			data->width, data->height);
+			(uint32_t)data->width, (uint32_t)data->height);
 	i = 0;
 	while (i < data->width)
 	{

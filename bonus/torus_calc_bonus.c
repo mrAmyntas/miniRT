@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   torus_calc.c                                       :+:    :+:            */
+/*   torus_calc_bonus.c                                 :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 16:36:15 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/09/11 15:42:50 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ int	get_a(t_scene *scene, t_ray *ray, long double *a, int *num)
 	set_values(scene, ray, num, &val);
 	a[0] = pow(val.xd, 4) + pow(val.yd, 4) + pow(val.zd, 4) + 2 * val.xd2
 		* val.yd2 + 2 * val.xd2 * val.zd2 + 2 * val.yd2 * val.zd2;
-	if (comp_d(a[0], 0))
+	if (comp_d((double)a[0], 0))
 		return (-1);
 	get_a_1_2(a, val);
 	a[3] = (-4 * val.r_c2 * val.xd * val.xe - 4 * val.r_c2 * val.yd * val.ye + 4

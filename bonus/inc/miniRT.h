@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/07/01 16:53:19 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/09/11 15:41:46 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ t_vect3d	hsl_to_rgb(t_vect3d hsl);
 double		get_saturation(double l, double minmax[2]);
 double		get_hue(double minmax[2], double r, double g, double b);
 int			check_shadow(t_ray ray, t_scene *scene);
-int			calculate_light(t_vect3d hsl, t_scene *scene);
+uint32_t	calculate_light(t_vect3d hsl, t_scene *scene);
 t_vect3d	get_hsl(t_scene *scene, int *num);
 
 // *** CYLINDER STUFF *** 
@@ -141,5 +141,6 @@ void		set_normal(t_scene *scene, int *num, t_vect3d phit);
 void		solve_quartic(t_solve_quartic_var *d);
 void		checkerboard_tor(t_scene *scene, t_ray *ray,
 				int *num, t_vect3d phit);
+t_vect3d	multiply_vector_long(t_vect3d vec1, long double factor);
 
 #endif

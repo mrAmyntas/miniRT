@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/07/01 17:05:48 by mgroen        ########   odam.nl         */
+/*   Updated: 2022/09/11 15:49:45 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ t_vect3d	hsl_to_rgb(t_vect3d hsl)
 	rgb.x = hsl.z * 255;
 	rgb.y = hsl.z * 255;
 	rgb.z = hsl.z * 255;
-	if (!hsl.y)
+	if (!(bool)hsl.y)
 		return (rgb);
 	temp[0] = hsl.z + hsl.y - (hsl.z * hsl.y);
 	if (hsl.z < 0.5)
@@ -79,17 +79,17 @@ t_vect3d	add_light_colours(double bright, t_vect3d colour,
 	colour = divide_vec_scalar(colour, i + 1);
 	colour = add_vectors(colour, hsl_to_rgb(hsl));
 	colour = add_vectors(colour, multiply_vector(scene->a_rgb, scene->a_ratio));
-	if (scene->a_ratio)
+	if ((bool)scene->a_ratio)
 		colour = divide_vec_scalar(colour, 3);
 	else
 		colour = divide_vec_scalar(colour, 2);
-	create_hsl(&hsl2, colour.x, colour.y, colour.z);
+	create_hsl(&hsl2, (int)colour.x, (int)colour.y, (int)colour.z);
 	hsl2.z = bright + scene->a_ratio + (hsl2.z / 2);
 	return (hsl2);
 }
 
 // calculate the brightness and colour of the pixel
-int	calculate_light(t_vect3d hsl, t_scene *scene)
+uint32_t	calculate_light(t_vect3d hsl, t_scene *scene)
 {
 	t_vect3d	colour;
 	t_vect3d	hsl2;
@@ -104,6 +104,6 @@ int	calculate_light(t_vect3d hsl, t_scene *scene)
 	if (hsl2.z > 1)
 		hsl2.z = 1;
 	colour = hsl_to_rgb(hsl2);
-	return (create_rgb(colour.x, colour.y, colour.z,
+	return ((uint32_t)create_rgb((int)colour.x, (int)colour.y, (int)colour.z,
 			"combined colours for pixel\n"));
 }

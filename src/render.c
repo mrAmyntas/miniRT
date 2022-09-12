@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 17:07:19 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/09/11 14:18:14 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void	light_strength(t_scene *scene, t_vect3d Phit[2], int num[2])
 }
 
 // returns the colour of the  pixel with the right lumination
-int	get_color(t_scene *scene, int num[2], t_vect3d Phit[2])
+uint32_t	get_color(t_scene *scene, int num[2], t_vect3d Phit[2])
 {
 	t_vect3d	hsl;
 
@@ -100,7 +100,7 @@ void	set_pixel(t_data *data, t_scene *scene, int x, int y)
 {
 	double		t;
 	int			num[2];
-	int			color;
+	uint32_t	color;
 	t_vect3d	phit[2];
 
 	scene->ray_cam = get_ray(scene, x, y);

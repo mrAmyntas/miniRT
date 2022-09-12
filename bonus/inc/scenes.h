@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/07/01 16:55:16 by mgroen        ########   odam.nl         */
+/*   Updated: 2022/09/11 15:49:09 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ typedef struct s_cy_data {
 	double	t[4];
 	double	z[2];
 	double	z_m[2];
-	int		ret;
+	double	ret;
 }			t_cy_data;
 
 typedef struct s_solve_quartic
@@ -122,7 +122,7 @@ typedef struct s_solve_quartic
 	long double			a[5];
 	long double			b[3];
 	long double			x[3];
-	long unsigned int	ret;
+	int					ret;
 	long double			q1;
 	long double			q2;
 	long double			p1;
@@ -177,25 +177,25 @@ enum	e_checkerboard
 };
 
 // read objects
-void	read_cy(t_scene *scene, char **line);
-void	read_sp(t_scene *scene, char **line);
-void	read_pl(t_scene *scene, char **line);
-void	read_di(t_scene *scene, char **line);
-void	read_tor(t_scene *scene, char **line);
+void		read_cy(t_scene *scene, char **line);
+void		read_sp(t_scene *scene, char **line);
+void		read_pl(t_scene *scene, char **line);
+void		read_di(t_scene *scene, char **line);
+void		read_tor(t_scene *scene, char **line);
 
 // read elements
-void	read_a(t_scene *scene, char **line);
-void	read_c(t_scene *scene, char **line);
-void	read_l(t_scene *scene, char **line);
+void		read_a(t_scene *scene, char **line);
+void		read_c(t_scene *scene, char **line);
+void		read_l(t_scene *scene, char **line);
 
 // Utilities
-double	ft_atod(char *str);
-void	free_strstr(char **str);
-int		strstr_len(char **str);
-void	create_hsl(t_vect3d *hsl, int r, int g, int b);
-int		create_rgb(int r, int g, int b, char *object);
-void	ft_error(int num, char *msg);
-void	set_i_t(t_vect3d *world_coord, t_matrix44d *mat);
-void	set_i_r(t_vect3d *obj_dir, t_matrix44d *mat);
+double		ft_atod(char *str);
+void		free_strstr(char **str);
+int			strstr_len(char **str);
+void		create_hsl(t_vect3d *hsl, int r, int g, int b);
+int			create_rgb(int r, int g, int b, char *object);
+void		ft_error(int num, char *msg);
+void		set_i_t(t_vect3d *world_coord, t_matrix44d *mat);
+void		set_i_r(t_vect3d *obj_dir, t_matrix44d *mat);
 
 #endif

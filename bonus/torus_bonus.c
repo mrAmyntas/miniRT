@@ -1,39 +1,65 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   torus.c                                            :+:    :+:            */
+/*   torus_bonus.c                                      :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 16:36:20 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/09/11 15:42:19 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "inc/miniRT.h"
 #define EPSIL 0.0000001
 
+//finds smallest non-negative t-value and returns which t_value this is
+//if none, returns -1
+static int	find_smallest_t(long double *t, int num, int amount)
+{
+	int	i;
+	int	j;
+
+	if (num == 0)
+		return (-1);
+	i = 0;
+	j = 1;
+	while (i + j < amount)
+	{
+		if (t[i + j] > 0 && (t[i + j] < t[i] || t[i] < 0))
+		{
+			i = i + j;
+			j = 1;
+		}
+		else
+			j++;
+	}
+	if (t[i] > 0)
+		return (i);
+	return (-1);
+}
+
 //find up to 4 intersect points with the torus
-static void	solve_quadratic(t_solve_quartic_var *d, double *t)
+static void	solve_quadratic(t_solve_quartic_var *d, long double *t)
 {
 	d->d = d->p1 * d->p1 - 4 * d->q1;
 	if (d->d > 0.0)
 	{
-		d->sqd = sqrt(d->d);
+		d->sqd = sqrt((double)d->d);
 		t[0] = (-d->p1 + d->sqd) * 0.5;
 		t[1] = (-d->p1 - d->sqd) * 0.5;
 	}
 	d->d = d->p2 * d->p2 - 4 * d->q2;
 	if (d->d > 0.0)
 	{
-		d->sqd = sqrt(d->d);
+		d->sqd = sqrt((double)d->d);
 		t[2] = (-d->p2 + d->sqd) * 0.5;
 		t[3] = (-d->p2 - d->sqd) * 0.5;
 	}
 }
 
 //a[0] * t^4 + a[1] * t^3 + a[2] * t^2 + a[3] * t + a[4]
-static int	calc_t(t_scene *scene, t_ray *ray, int *num, double *t)
+static int	calc_t(t_scene *scene, t_ray *ray, int *num, long double *t)
 {
 	t_solve_quartic_var	d;
 
@@ -61,9 +87,9 @@ static int	calc_t(t_scene *scene, t_ray *ray, int *num, double *t)
 static double	find_closest_tor(t_scene *scene, t_ray *ray,
 	int *num, int set_N)
 {
-	double		t[4];
-	int			ret;
-	t_vect3d	phit;
+	long double		t[4];
+	int				ret;
+	t_vect3d		phit;
 
 	t[0] = -1;
 	t[1] = -1;
@@ -73,17 +99,17 @@ static double	find_closest_tor(t_scene *scene, t_ray *ray,
 	rotate_ray(ray, scene->tor[*num].i_r);
 	if (calc_t(scene, ray, num, t) == -1)
 		return (-1);
-	ret = find_smallest(t, 1, 4);
+	ret = find_smallest_t(t, 1, 4);
 	if (ret < 0)
 		return (-1);
-	phit = add_vectors(ray->eye, multiply_vector(ray->dir, t[ret]));
+	phit = add_vectors(ray->eye, multiply_vector_long(ray->dir, t[ret]));
 	if (set_N == 1)
 	{
 		if (scene->cb[ON] == true)
 			checkerboard_tor(scene, ray, num, phit);
 		set_normal(scene, num, phit);
 	}
-	return (t[ret]);
+	return ((double)t[ret]);
 }
 
 double	find_hit_torus(t_scene *scene, t_ray *ray,
@@ -93,7 +119,9 @@ double	find_hit_torus(t_scene *scene, t_ray *ray,
 	t_ray	new_ray;
 	double	ret;
 
-	t = malloc(sizeof(double) * scene->amount[TORUS]);
+	t = malloc(sizeof(double) * (unsigned long)scene->amount[TORUS]);
+	if (t == NULL)
+		ft_error(1, "malloc error in find_hit_torus\n");
 	*num = 0;
 	while (*num < scene->amount[TORUS])
 	{

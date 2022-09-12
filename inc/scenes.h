@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/06/30 16:58:08 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/09/11 14:30:48 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ typedef struct s_cy_data {
 	double	t[4];
 	double	z[2];
 	double	z_m[2];
-	int		ret;
+	double	ret;
 }			t_cy_data;
 
 typedef struct s_scene
@@ -123,13 +123,13 @@ void	read_c(t_scene *scene, char **line);
 void	read_l(t_scene *scene, char **line);
 
 // Utilities
-double	ft_atod(char *str);
-void	free_strstr(char **str);
-int		strstr_len(char **str);
-void	create_hsl(t_vect3d *hsl, int r, int g, int b);
-int		create_rgb(int r, int g, int b, char *object);
-void	ft_error(int num, char *msg);
-void	set_i_t(t_vect3d *world_coord, t_matrix44d *mat);
-void	set_i_r(t_vect3d *obj_dir, t_matrix44d *mat);
+double		ft_atod(char *str);
+void		free_strstr(char **str);
+int			strstr_len(char **str);
+void		create_hsl(t_vect3d *hsl, double r, double g, double b);
+uint32_t	create_rgb(double r, double g, double b, char *object);
+void		ft_error(int num, char *msg);
+void		set_i_t(t_vect3d *world_coord, t_matrix44d *mat);
+void		set_i_r(t_vect3d *obj_dir, t_matrix44d *mat);
 
 #endif
