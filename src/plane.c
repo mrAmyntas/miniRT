@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/09/11 14:14:47 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/10/11 18:07:40 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ int	find_smallest(double *t, int num, int amount)
 }
 
 //calculates t_value for each plane
-//73: checks if plane/ray are parallel
+//87: checks if plane/ray are parallel
 static void	calc_t(t_scene *scene, t_ray *ray, int *num, double *t)
 {
 	t_vect3d	tmp;

@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/09/11 14:13:17 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/10/11 17:46:53 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,7 @@ void	set_ray_data(t_data *data, t_scene *scene)
 	scene->r.up.y = 1;
 	scene->r.up.z = 0;
 	scene->r.lookatpoint = add_vectors(scene->cam->eye, scene->cam->dir);
-	scene->r.viewdir = normalize_vector(
-			subtract_vectors(scene->r.lookatpoint, scene->cam->eye));
+	scene->r.viewdir = scene->cam->dir;
 	scene->r.u = normalize_vector(cross_product(scene->r.viewdir, scene->r.up));
 	scene->r.v = normalize_vector(cross_product(scene->r.u, scene->r.viewdir));
 	scene->r.viewplanehalfwidth = tan(scene->c_fov * M_PI / 180 / 2);
