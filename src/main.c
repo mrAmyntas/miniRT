@@ -6,7 +6,7 @@
 /*   By: mgroen <mgroen@student.codam.nl>             +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/01 12:37:15 by mgroen        #+#    #+#                 */
-/*   Updated: 2022/10/11 17:46:53 by bhoitzin      ########   odam.nl         */
+/*   Updated: 2022/10/14 14:15:26 by bhoitzin      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ void	set_ray_data(t_data *data, t_scene *scene)
 	scene->r.v = normalize_vector(cross_product(scene->r.u, scene->r.viewdir));
 	scene->r.viewplanehalfwidth = tan(scene->c_fov * M_PI / 180 / 2);
 	scene->r.aspectratio = data->height / data->width;
+	if (data->height < data->width)
+		scene->r.aspectratio = data->width / data->height;
 	scene->r.viewplanehalfheight = scene->r.aspectratio
 		* scene->r.viewplanehalfwidth;
 	scene->r.tmp = subtract_vectors(scene->r.lookatpoint, multiply_vector(
@@ -91,8 +93,8 @@ int	main(int argc, char **argv)
 	t_data	data;
 	t_scene	scene;
 
-	data.height = 600;
-	data.width = 600;
+	data.height = 1920;
+	data.width = 1080;
 	if (argc != 2)
 		ft_error(1, "Invalid amount of arguments\n");
 	read_scene(&scene, argv[1]);
