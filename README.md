@@ -1,7 +1,7 @@
 # miniRT
 miniRT
 
-Coded a basic raytracer in C.
+Coded a basic raytracer in C. Works on macOS.
 Can handle planes, cylinders, spheres, discs & tori.
 
 Runs by creating program and adding a scene to display as an argument.
@@ -30,3 +30,6 @@ Planes are set with identifier pl, followed by position, 'direction' (3d normali
 Tori (only bonus) are set with identifier tor, followed by position (centre of hole), 'direction' (3d normalized normal vector), the diameter of the larger circle (around the hole), the diameter of smaller circle (the curved cylinder) and the color. (only works when first diameter is larger than second).
 
 Checkerboard pattern (only bonus) is set by including identifier cb, followed by amount of the pattern you want vertically and then horizontally. 
+
+Example of a bunch of spheres with different light sources which have different colors. 
+![alt text]([http://url/to/img.png](https://imgur.com/a/d24xh0M)https://imgur.com/a/d24xh0M)
