@@ -31,5 +31,6 @@ Tori (only bonus) are set with identifier tor, followed by position (centre of h
 
 Checkerboard pattern (only bonus) is set by including identifier cb, followed by amount of the pattern you want vertically and then horizontally. 
 
-Example of a bunch of spheres with different light sources which have different colors. 
-![alt text]([http://url/to/img.png](https://imgur.com/a/d24xh0M)https://imgur.com/a/d24xh0M)
+Example of a bunch of spheres with different light sources which have different colors.
+
+![alt text](https://imgur.com/a/d24xh0M)
