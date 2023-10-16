@@ -33,5 +33,5 @@ Checkerboard pattern (only bonus) is set by including identifier cb, followed by
 
 Example of a bunch of spheres with different light sources which have different colors.
 
-![Alt text](/marbles.png?raw=true "Marbles")
+![Alt text](https://github.com/mrAmyntas/miniRT/blob/main/marbles.png)
 
